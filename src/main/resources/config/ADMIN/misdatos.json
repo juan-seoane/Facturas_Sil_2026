@@ -1,0 +1,12 @@
+{
+	"user": "admin",
+	"nif": { "numero": 12345678, "letra": "X", "isCIF": false},
+	"nombreEmpresa": "Nombre de la Empresa",
+	"nombre": "nombre",
+	"apellidos": "apellidos",
+	"razon": "NOMBREEMPRESAPRUEBA",
+	"direccion": "direccion del distribuidor",
+	"CP": "99999",
+	"poblacion": "Población del distribuidor",
+	"telefono": "900-000000"
+}

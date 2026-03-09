@@ -1,0 +1,11 @@
+{
+	"user": "admin",
+	"año": { "año": 2024, "trimestre": 0 },
+	"rutas": {
+		"FCT": "datos/ADMIN/FCT20240.csv",
+		"RS":  "datos/ADMIN/RS2024.csv",
+		"CJA": "datos/ADMIN/CJA20240.csv"
+		},
+	"tiposIVA": [0, 21],
+	"origenesCaja": [ "caja", "otros" ]
+}

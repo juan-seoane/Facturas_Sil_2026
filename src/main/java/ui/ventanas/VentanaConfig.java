@@ -1387,7 +1387,7 @@ public class VentanaConfig extends javax.swing.JFrame {
     private void btnOKRutaCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKRutaCajaActionPerformed
         if (!txtRutaCaja.getText().equals("")){
 
-            int res = JOptionPane.showConfirmDialog(null, "Desea guardar la Caja actual en la nueva ruta?");
+            int res = JOptionPane.showConfirmDialog(null, "Desea guardar laEntradaCajaactual en la nueva ruta?");
             if (res == JOptionPane.YES_OPTION){
                 Fichero.copia(Config.getConfigActual().getRutaCJA(), txtRutaCaja.getText()+".cja");
 

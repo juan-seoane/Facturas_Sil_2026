@@ -4,22 +4,22 @@
  */
 package modelo.base;
 
-import ui.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.JOptionPane;
-
 import modelo.records.Factura;
+import ui.*;
+
 /**
  *
  * @author Juan Seoane
  */
-public class FundirArchivos extends Thread{
- /*   
+public class FundirArchivos extends Thread {
+    /*
     ArrayList<Factura > refundido;
     ArrayList<Caja > refundidocajas;
     VentanaFundicion vf;
-    
+
     public FundirArchivos(){
         this.refundido = new ArrayList<Factura >();
         this.refundidocajas = new ArrayList<Caja >();
@@ -27,7 +27,7 @@ public class FundirArchivos extends Thread{
         vf.setVisible(true);
 
     }
-    
+
     public void run(){
         while(!vf.cancelado() && ! vf.hecho()){
             System.out.print("");
@@ -40,7 +40,7 @@ public class FundirArchivos extends Thread{
         vf.dispose();
 
     }
-    
+
     public boolean fundirArchivos(int año, ArrayList<Integer > trimestres){
         if (vf.facturas()){
             for (Integer i : trimestres){
@@ -61,7 +61,7 @@ public class FundirArchivos extends Thread{
                 i++;
                 f.setID(i);
             }
-            
+
             Collections.sort(refundido);
 
             Fichero<Factura > ficherofinal = new Fichero<Factura >("datos/"+Config.getConfig().getUsuario()+"/FCT"+año+"0.fct");
@@ -80,9 +80,9 @@ public class FundirArchivos extends Thread{
             }
 
             for (int i = 0; i < refundidocajas.size(); i++){
-                Caja c = refundidocajas.get(i);
+               EntradaCajac = refundidocajas.get(i);
                 for (int j = 0; j < refundidocajas.size(); j++){
-                Caja c2 = refundidocajas.get(j);
+               EntradaCajac2 = refundidocajas.get(j);
                     if (i == j)
                         continue;
                     else if (c.equals(c2))
@@ -91,7 +91,7 @@ public class FundirArchivos extends Thread{
                 i++;
                 c.setID(i);
             }
-            
+
             Collections.sort(refundidocajas);
 
             Fichero<Caja  > ficherofinal = new Fichero<Caja   >("datos/"+Config.getConfig().getUsuario()+"/CJA"+año+"0.cja");

@@ -45,7 +45,7 @@ public class Factura implements Comparable<Factura> {
     private SimpleStringProperty FxNumFact;
     private ObservableValue<Integer> FxID;
 //#endregion
-    
+
 //#region CONSTR
     public Factura(Integer ID, String numeroFactura, Fecha fecha, RazonSocial RS, TipoGasto categoria, boolean esDevolucion, ArrayList<Extracto> extractos, Totales totales, Nota nota) {
         this.ID = ID;
@@ -156,24 +156,29 @@ public class Factura implements Comparable<Factura> {
 // Las facturas se ordenan por fechas. Si las fechas son iguales, se ordenan por el NIF de la RazonSocial
     @Override
     public int compareTo(Factura b){
-        if ((this.fecha.compareTo(b.getFecha()))<0) 
+        if ((this.fecha.compareTo(b.getFecha()))<0)
             return -1;
-        if ((this.fecha.compareTo(b.getFecha()))>0) 
+        if ((this.fecha.compareTo(b.getFecha()))>0)
             return 1;
         return (this.RS.getNif().compareTo(b.getRS().getNif()));
    }
 //#endregion
-
-//#region TOVECTOR()   
+// NOTE - 26-03-10 : El método toVector() se ha eliminado porque no es necesario convertir una Factura a un Vector para mostrarla en la tabla de JavaFX.
+// En su lugar, se han añadido los métodos getFx...() para cada campo que se quiere mostrar en la tabla,
+// y estos métodos devuelven un ObservableValue que se puede usar directamente en la tabla de JavaFX.
+// De esta forma, se evita la necesidad de convertir la Factura a un Vector y se simplifica el código.
+// Además, los métodos getFx...() también permiten actualizar automáticamente la tabla cuando se cambian los valores de la Factura, lo que no sería posible con un Vector.
+/*
+//#region TOVECTOR()
    public static Vector<Factura> toVector(Factura f){
-     Vector<Factura> vector = new Vector<Factura>();
-     vector.add(f);
- 
-     //System.out.println("[Factura.java>toVector] transformando Factura a Vector: "+vector.toString());
-     return vector;
-   }
-//#endregion   
+ Vector<Factura> vector = new Vector<Factura>();
+ vector.add(f);
 
+ //System.out.println("[Factura.java>toVector] transformando Factura a Vector: "+vector.toString());
+ return vector;
+   }
+//#endregion
+*/
 //#region FXgetters
     public ObservableValue<Integer> getFxID() {
         this.FxID = new SimpleIntegerProperty(this.ID).asObject();
@@ -273,7 +278,7 @@ public class Factura implements Comparable<Factura> {
                 int año = Integer.parseInt(fecha[2]);
                 int rsid = Integer.parseInt(linea[3]);
                 // Revisar esto, sólo vale para NIF, no para CIF... Habrá que hacer un método nuevo que convierta un array de cadenas de texto en un objeto NIF
-                // Además habría que ver si existe ya la RS (según el ID) 
+                // Además habría que ver si existe ya la RS (según el ID)
                 String[] rsnif = linea[4].split("-");
                 NIF nifRS = NIF.array2nif(rsnif);
                 String rsnombre = linea[5];
@@ -285,7 +290,7 @@ public class Factura implements Comparable<Factura> {
                 }
                 // Revisar esto, sólo vale para cuando hay notas... Hacer un método para leer la nota si existe, y si no, hacerla null
                 // Se podría poner el TipoIVA como un Integer en vez de una clase TipoIVA...
-                f = new Factura(Integer.parseInt(linea[0]),linea[1],new Fecha(dia, mes, año),new RazonSocial(rsid,nifRS,rsnombre),new TipoGasto(linea[6],linea[6]),(linea[7].equals("S"))?true:false,extractos, new Totales(Double.parseDouble(linea[9]),(linea[10].equals("S"))?true:false,Integer.parseInt(linea[11]),Double.parseDouble(linea[12]),Double.parseDouble(linea[13]),Double.parseDouble(linea[14]),Integer.parseInt(linea[15]),Double.parseDouble(linea[16]),Double.parseDouble(linea[17]),linea[6]),((nota==null)?null:nota));            
+                f = new Factura(Integer.parseInt(linea[0]),linea[1],new Fecha(dia, mes, año),new RazonSocial(rsid,nifRS,rsnombre),new TipoGasto(linea[6],linea[6]),(linea[7].equals("S"))?true:false,extractos, new Totales(Double.parseDouble(linea[9]),(linea[10].equals("S"))?true:false,Integer.parseInt(linea[11]),Double.parseDouble(linea[12]),Double.parseDouble(linea[13]),Double.parseDouble(linea[14]),Integer.parseInt(linea[15]),Double.parseDouble(linea[16]),Double.parseDouble(linea[17]),linea[6]),((nota==null)?null:nota));
         }else{
             //se lee el extracto
             //System.out.println("[Factura>ConvertirCSVaFCT] --- leyendo extracto num " + linea[1] + "---");
@@ -295,11 +300,11 @@ public class Factura implements Comparable<Factura> {
             f.setExtractos(extractos);
         // REVIEW - 24-06-15 : - ojo con este paso: se quita la última entrada de la lista de facturas...
             ModeloFacturas.facturas_prev.removeLast();
-            
+
         }
         return f;
     }
-//#endregion  
+//#endregion
 
 //#region FCTaCSV
     public static synchronized ArrayList<String[]> convertirFCTaCSV(Factura f){
@@ -335,9 +340,9 @@ public class Factura implements Comparable<Factura> {
             arrayCSV[18] = "0";
         }
         lista.add(arrayCSV);
-        
+
         if (f.extractos.size()>0){
-            int i = 1;    
+            int i = 1;
             for (Extracto ex : f.extractos){
                 arrayCSV = new String[20];
                 arrayCSV[1] = ""+i;
@@ -346,7 +351,7 @@ public class Factura implements Comparable<Factura> {
                 arrayCSV[11] = "" + ex.getTipoIVA();
                 arrayCSV[12] = "" + ex.getIVA();
                 arrayCSV[13] = "" + ex.getSubtotal();
-        
+
                 lista.add(arrayCSV);
                 i++;
             }

@@ -1,14 +1,4 @@
-              package ui.formularios;
-
-import modelo.*;
-import modelo.base.Config;
-import modelo.records.Extracto;
-import modelo.records.Factura;
-import modelo.records.NIF;
-import modelo.records.TipoGasto;
-import modelo.records.TipoIVA;
-import modelo.records.Totales;
-import ui.helpers.Calculadora;
+package ui.formularios;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -17,9 +7,18 @@ import java.text.DecimalFormatSymbols;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import modelo.*;
+import modelo.base.Config;
+import modelo.helpers.Calculadora;
+import modelo.records.Extracto;
+import modelo.records.Factura;
+import modelo.records.NIF;
+import modelo.records.TipoGasto;
+import modelo.records.TipoIVA;
+import modelo.records.Totales;
 
 public class FormularioFact extends JFrame {
-                                                                                                
+
     private static FormularioFact instancia = null;
     private int x;
     private int y;
@@ -83,7 +82,6 @@ public class FormularioFact extends JFrame {
 
     private FormularioFact() {
         super("Nueva Factura");
-
         this.setLayout(new BorderLayout());
         this.setResizable(false);
 
@@ -93,7 +91,7 @@ public class FormularioFact extends JFrame {
         initComponents();
         initControls();
         this.pack();
-//        this.setVisible(true);
+        //        this.setVisible(true);
     }
 
     public static FormularioFact getFormulario() {
@@ -101,11 +99,9 @@ public class FormularioFact extends JFrame {
             instancia = new FormularioFact();
         }
         return instancia;
-
     }
 
     public boolean initComponents() {
-
         //POPUP MENU
 
         popup = new JPopupMenu();
@@ -119,7 +115,6 @@ public class FormularioFact extends JFrame {
         popup.add(pop04);
 
         this.add(popup);
-
 
         //DATOS FACTURA
         norte = new JPanel();
@@ -215,7 +210,6 @@ public class FormularioFact extends JFrame {
         btnCalcular = new Button[numExtractos];
 
         for (int i = 0; i < numExtractos; i++) {
-
             panelImportes[i] = new JPanel();
             panelImportes[i].setLayout(new FlowLayout());
             // panelImportes.setBorder(new LineBorder(new Color(0,0,0),1));
@@ -245,7 +239,6 @@ public class FormularioFact extends JFrame {
 
             panelImportes[i].setComponentPopupMenu(popup);
             panelesImportes.add((JPanel) panelImportes[i]);
-
         }
         centro.add(panelesImportes, BorderLayout.CENTER);
         this.add(centro, BorderLayout.CENTER);
@@ -309,7 +302,6 @@ public class FormularioFact extends JFrame {
         panelTotales.setComponentPopupMenu(popup);
         sur.add(panelTotales, BorderLayout.NORTH);
 
-
         //NOTA
 
         panelNotas = new JPanel();
@@ -340,109 +332,138 @@ public class FormularioFact extends JFrame {
     }
 
     public boolean initControls() {
-
         //CONTROLADOR FORMULARIO
 
-        this.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-                formWindowClosing();
-            }
-        });
-
-        this.btnOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                //JOptionPane.showMessageDialog(null,"Boton OK pulsado!");
-                enviarFormulario();
-            }
-        });
-        
-        this.btnCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                //JOptionPane.showMessageDialog(null,"Boton Cancel pulsado!");
-                reset();
-                dispose();
-            }
-        });
-        
-        this.addMouseListener(new MouseAdapter() {
-            public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    popup.show((Component) (e.getSource()), e.getX(), e.getY());
+        this.addWindowListener(
+                new WindowAdapter() {
+                    public void windowClosing(WindowEvent we) {
+                        formWindowClosing();
+                    }
                 }
-            }
-        });
+            );
 
-        this.pop01.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                limpiarFormulario();
-            }
-        });
+        this.btnOK.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        //JOptionPane.showMessageDialog(null,"Boton OK pulsado!");
+                        enviarFormulario();
+                    }
+                }
+            );
 
-        this.pop02.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-//                JOptionPane.showMessageDialog(null, "Ha pulsado el boton 'paso atras'");
-               pasoatras = true;
-            }
-        });
+        this.btnCancel.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        //JOptionPane.showMessageDialog(null,"Boton Cancel pulsado!");
+                        reset();
+                        dispose();
+                    }
+                }
+            );
 
-        this.pop03.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-//                JOptionPane.showMessageDialog(null, "Ha pulsado el boton 'paso adelante'");
-                pasoadelante = true;
-            }
-        });
-        
-        this.pop04.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                borrarDatosNumericos();
-            }
-        });
-        
-        this.chTipoGasto.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                //System.out.println("Tipo de gasto " + ((Choice) e.getSource()).getSelectedItem() + " seleccionado!");
-            }
-        });
+        this.addMouseListener(
+                new MouseAdapter() {
+                    public void mouseReleased(MouseEvent e) {
+                        if (e.isPopupTrigger()) {
+                            popup.show((Component) (e.getSource()), e.getX(), e.getY());
+                        }
+                    }
+                }
+            );
 
-        this.btnCalculadora.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                Calculadora calc = new Calculadora("Calculadora");
-                calc.setVisible(true);
-            }
-        });
+        this.pop01.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        limpiarFormulario();
+                    }
+                }
+            );
+
+        this.pop02.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        //                JOptionPane.showMessageDialog(null, "Ha pulsado el boton 'paso atras'");
+                        pasoatras = true;
+                    }
+                }
+            );
+
+        this.pop03.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        //                JOptionPane.showMessageDialog(null, "Ha pulsado el boton 'paso adelante'");
+                        pasoadelante = true;
+                    }
+                }
+            );
+
+        this.pop04.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        borrarDatosNumericos();
+                    }
+                }
+            );
+
+        this.chTipoGasto.addItemListener(
+                new ItemListener() {
+                    public void itemStateChanged(ItemEvent e) {
+                        //System.out.println("Tipo de gasto " + ((Choice) e.getSource()).getSelectedItem() + " seleccionado!");
+                    }
+                }
+            );
+
+        this.btnCalculadora.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        Calculadora calc = new Calculadora("Calculadora");
+                        calc.setVisible(true);
+                    }
+                }
+            );
 
         for (int i = 0; i < panelImportes.length; i++) {
             final int j = i;
-            this.btnCalcular[j].addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    calcular(txtBase[j], chIVA[j], txtIVA[j], txtTotal[j]);
-                }
-            });
+            this.btnCalcular[j].addActionListener(
+                    new ActionListener() {
+                        public void actionPerformed(ActionEvent ae) {
+                            calcular(txtBase[j], chIVA[j], txtIVA[j], txtTotal[j]);
+                        }
+                    }
+                );
         }
 
-        this.btnTotalCalcular.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                rellenarVacios();
-                calcularExtractos();
-                calcularTotales();
-            }
-        });
-        this.txtLetraNIFRS.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                revisarNIF = true;
-            }
-        });
-        this.txtRS.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                revisarRS = true;
-            }
-        });
-        this.btndistribuidor.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                ventanaRS = true;
-            }
-        });
-//                JOptionPane.showMessageDialog(null, "CARGADOS LOS ESCUCHADORES DEL FORMULARIO");
+        this.btnTotalCalcular.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        rellenarVacios();
+                        calcularExtractos();
+                        calcularTotales();
+                    }
+                }
+            );
+        this.txtLetraNIFRS.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        revisarNIF = true;
+                    }
+                }
+            );
+        this.txtRS.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        revisarRS = true;
+                    }
+                }
+            );
+        this.btndistribuidor.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        ventanaRS = true;
+                    }
+                }
+            );
+        //                JOptionPane.showMessageDialog(null, "CARGADOS LOS ESCUCHADORES DEL FORMULARIO");
         //
         return true;
     }
@@ -490,7 +511,7 @@ public class FormularioFact extends JFrame {
     public String getNumeroFactura() {
         return txtNumeroFactura.getText();
     }
-   
+
     public int getNumNIFRS() {
         return (Integer.parseInt(txtNumNIFRS.getText()));
     }
@@ -543,7 +564,6 @@ public class FormularioFact extends JFrame {
         this.pasoadelante = pasoadelante;
     }
 
-    
     public void setNombreRS(String rs) {
         this.txtRS.setText(rs);
     }
@@ -559,60 +579,59 @@ public class FormularioFact extends JFrame {
     public void setNumNIFRS(String numnif) {
         this.txtNumNIFRS.setText(numnif);
     }
-    
-    public void setCategoria(String cat){
-            try{
-                this.chTipoGasto.select(cat.toUpperCase().trim());
-            }catch(Exception e){
-                JOptionPane.showMessageDialog(null, "no se ha encontrado la categoria "+cat);
-                this.chTipoGasto.select(0);
-            }
+
+    public void setCategoria(String cat) {
+        try {
+            this.chTipoGasto.select(cat.toUpperCase().trim());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "no se ha encontrado la categoria " + cat);
+            this.chTipoGasto.select(0);
+        }
     }
- /** TODO : HAY QUE DEJAR LOS CALCULOS COMO EN LA VERSION 1.
-     * @param base  
-     * @param tipoIva   
-     * @param iva   
-     * @param total*/   
+
+    /** TODO : HAY QUE DEJAR LOS CALCULOS COMO EN LA VERSION 1.
+     * @param base
+     * @param tipoIva
+     * @param iva
+     * @param total*/
     public void calcular(TextField base, Choice tipoIva, TextField iva, TextField total) {
-        
-        DecimalFormatSymbols simbolo=new DecimalFormatSymbols();
+        DecimalFormatSymbols simbolo = new DecimalFormatSymbols();
         simbolo.setDecimalSeparator('.');
-        DecimalFormat formateador = new DecimalFormat("######.###",simbolo);
-        
+        DecimalFormat formateador = new DecimalFormat("######.###", simbolo);
+
         double dbbase; // = Double.parseDouble(base.getText());
         int inttipoIva = Integer.parseInt(tipoIva.getSelectedItem());
-        double dbIVA;// = dbbase * inttipoIva / 100;
-        double dbtotal;// = dbbase + dbIVA;
-        
-        if (base.getText().equals("") && iva.getText().equals("")){
+        double dbIVA; // = dbbase * inttipoIva / 100;
+        double dbtotal; // = dbbase + dbIVA;
+
+        if (base.getText().equals("") && iva.getText().equals("")) {
             dbtotal = filtrar(total.getText());
-            dbbase = (100*dbtotal)/(100+inttipoIva);
+            dbbase = (100 * dbtotal) / (100 + inttipoIva);
             dbIVA = dbbase * inttipoIva / 100;
-            
+
             base.setText(formateador.format(dbbase));
             iva.setText(formateador.format(dbIVA));
             total.setText(formateador.format(dbtotal));
-        }else if (total.getText().equals("") && iva.getText().equals("")){
+        } else if (total.getText().equals("") && iva.getText().equals("")) {
             dbbase = filtrar(base.getText());
             dbIVA = dbbase * inttipoIva / 100;
             dbtotal = dbbase + dbIVA;
-            
+
             base.setText(formateador.format(dbbase));
             iva.setText(formateador.format(dbIVA));
             total.setText(formateador.format(dbtotal));
-        }
-        else if (!base.getText().equals("")&&!iva.getText().equals("")){
+        } else if (!base.getText().equals("") && !iva.getText().equals("")) {
             dbbase = filtrar(base.getText());
             dbIVA = filtrar(iva.getText());
             dbtotal = dbbase + dbIVA;
-            
+
             base.setText(formateador.format(dbbase));
             iva.setText(formateador.format(dbIVA));
             total.setText(formateador.format(dbtotal));
         }
-
     }
-/** TODO : HAY QUE SOLUCIONAR LO DE FILTRAR SUMAS EN EL FORMULARIO
+
+    /** TODO : HAY QUE SOLUCIONAR LO DE FILTRAR SUMAS EN EL FORMULARIO
      * @param base
      * @return  */
     public double filtrar(String base) {
@@ -637,12 +656,18 @@ public class FormularioFact extends JFrame {
     }
 
     public void calcularExtractos() {
-
         subfacturas.clear();
 
         for (int i = 0; i < numExtractos; i++) {
             if (Double.parseDouble(txtTotal[i].getText()) != 0.0) {
-                subfacturas.add(new Extracto(Double.parseDouble(txtBase[i].getText()), Integer.parseInt(chIVA[i].getSelectedItem()), Double.parseDouble(txtIVA[i].getText()), Double.parseDouble(txtTotal[i].getText())));
+                subfacturas.add(
+                    new Extracto(
+                        Double.parseDouble(txtBase[i].getText()),
+                        Integer.parseInt(chIVA[i].getSelectedItem()),
+                        Double.parseDouble(txtIVA[i].getText()),
+                        Double.parseDouble(txtTotal[i].getText())
+                    )
+                );
             }
         }
     }
@@ -652,10 +677,10 @@ public class FormularioFact extends JFrame {
          * TODO: Solucionar el modo de averiguar la existencia de varios tipos
          * de IVA (TotalTipos) y que pasa cuando solo hay base no imponible
          */
-        DecimalFormatSymbols simbolo=new DecimalFormatSymbols();
+        DecimalFormatSymbols simbolo = new DecimalFormatSymbols();
         simbolo.setDecimalSeparator('.');
-        DecimalFormat formateador = new DecimalFormat("######.###",simbolo);
-        
+        DecimalFormat formateador = new DecimalFormat("######.###", simbolo);
+
         double totalBases = 0.00;
         double baseNI = 0.00;
         String totalTipos = "";
@@ -670,7 +695,6 @@ public class FormularioFact extends JFrame {
             totalTipos = "22";
             totalIVAS = subfacturas.get(0).getIVA();
             totalesParciales = subfacturas.get(0).getTotal();
-
         } else {
             for (int i = 0; i < this.subfacturas.size(); i++) {
                 if (subfacturas.get(i).getTipoIVA().getValor() != 0) {
@@ -711,8 +735,18 @@ public class FormularioFact extends JFrame {
         txtTotalRetenciones.setText(formateador.format(totalRetenciones));
         txtTotalAbsoluto.setText(formateador.format(totalAbsoluto));
 
-        this.totales = new Totales(totalBases, (totalTipos.equals("V")), (totalTipos.equals("V") ? 0 : Integer.parseInt(totalTipos)), totalIVAS, totalesParciales, baseNI, ret, totalRetenciones, totalAbsoluto);
-
+        this.totales =
+            new Totales(
+                totalBases,
+                (totalTipos.equals("V")),
+                (totalTipos.equals("V") ? 0 : Integer.parseInt(totalTipos)),
+                totalIVAS,
+                totalesParciales,
+                baseNI,
+                ret,
+                totalRetenciones,
+                totalAbsoluto
+            );
     }
 
     public boolean insertarFactura(Factura f) {
@@ -720,14 +754,13 @@ public class FormularioFact extends JFrame {
         txtMes.setText("" + f.getMes());
         txtAnho.setText("" + f.getAnho());
         txtNumeroFactura.setText(f.getNumeroFactura());
-        
-        if (f.getNIF().isCIF())
-            txtLetraCIFRS.setText("" + f.getNIF().getLetra());
-        else
-            txtLetraNIFRS.setText("" + f.getNIF().getLetra());
-        
+
+        if (f.getNIF().isCIF()) txtLetraCIFRS.setText("" + f.getNIF().getLetra()); else txtLetraNIFRS.setText(
+            "" + f.getNIF().getLetra()
+        );
+
         txtNumNIFRS.setText("" + f.getNIF().getNumero());
-        
+
         txtRS.setText(f.getRazonRS());
 
         chTipoGasto.select(f.getCategoria());
@@ -762,12 +795,10 @@ public class FormularioFact extends JFrame {
     }
 
     public void rellenarVacios() {
-
         if (txtRetenciones.getText().trim().equals("")) {
             txtRetenciones.setText("0");
         }
         for (int i = 0; i < numExtractos; i++) {
-
             if (txtBase[i].getText().trim().equals("")) {
                 txtBase[i].setText("0.0");
             }
@@ -781,7 +812,6 @@ public class FormularioFact extends JFrame {
     }
 
     public void limpiarFormulario() {
-
         txtDia.setText("");
         txtMes.setText("");
         txtAnho.setText("");
@@ -812,9 +842,8 @@ public class FormularioFact extends JFrame {
         txtAnho.setText(Config.getConfig().getAnho().getAnho() + "");
     }
 
-    public void borrarDatosNumericos(){
-        for (int i= 0; i<numExtractos; i++ )
-        {
+    public void borrarDatosNumericos() {
+        for (int i = 0; i < numExtractos; i++) {
             txtBase[i].setText("");
             chIVA[i].select(0);
             txtIVA[i].setText("");
@@ -829,14 +858,13 @@ public class FormularioFact extends JFrame {
         txtTotalAbsoluto.setText("");
         txtTotalRetenciones.setText("");
         txtTotalTotal.setText("");
-        
     }
-    
+
     public boolean comprobarNIF() {
-          return revisarNIF;
+        return revisarNIF;
     }
-    
-    public boolean validarNIF(NIF nif){
+
+    public boolean validarNIF(NIF nif) {
         if (nif.comprobarNIF()) {
             return true;
         } else {
@@ -844,9 +872,8 @@ public class FormularioFact extends JFrame {
             return false;
         }
     }
-    
-    public boolean comprobarRS() {
 
+    public boolean comprobarRS() {
         if (revisarRS) {
             return true;
         } else {
@@ -855,19 +882,18 @@ public class FormularioFact extends JFrame {
     }
 
     public boolean emergenteRS() {
-
         if (ventanaRS) {
             return true;
         } else {
             return false;
         }
     }
-    
-    public boolean pasoatras(){
+
+    public boolean pasoatras() {
         return this.pasoatras;
     }
-    
-    public boolean pasoadelante(){
+
+    public boolean pasoadelante() {
         return this.pasoadelante;
     }
 

@@ -26,9 +26,9 @@ public class ModeloFacturas {
     private ArrayList<String[]> arrayFacturas;
     static Fichero<Factura> ficheroFacturas;
     // Repasar los vectores de Facturas y demás...
-    static Stack<Factura> pilafacturasant = new Stack<Factura>();
-    static Stack<Factura> pilafacturassig = new Stack<Factura>();
-    static Vector<Factura> vectorfacturas;
+//    static Stack<Factura> pilafacturasant = new Stack<Factura>();
+ //   static Stack<Factura> pilafacturassig = new Stack<Factura>();
+//    static Vector<Factura> vectorfacturas;
     //static Vector vectorcolumnas;
     static int ultimaID;
     static int numeroFacturas = 0;
@@ -46,7 +46,7 @@ public class ModeloFacturas {
         //System.out.println("[ModeloFacturas>Constructor] Fichero FCT de Facturas leido. Numero de Facturas = "+ numeroFacturas);
         ultimaID = ModeloFacturas.facturas.size();
         //System.out.println("[ModeloFacturas.java>Constructor] Última ID : " + ultimaID);
-        vectorfacturas = generarVectorFacturas();
+ //       vectorfacturas = generarVectorFacturas();
         //System.out.println("[ModeloFacturas.java>Constructor] Vector de Facturas generado!\n********************");
 
         //System.out.println(" [ModeloFacturas>Constructor] Tamano del array de facturas: " + facturas.size());
@@ -88,11 +88,11 @@ public class ModeloFacturas {
     }
 
     public Stack<Factura> getPilaFacturasAnt() {
-        return pilafacturasant;
+        return null; //pilafacturasant;
     }
 
     public Stack<Factura> getPilaFacturasSig() {
-        return pilafacturassig;
+        return null; //pilafacturassig;
     }
 
     public int getIndexOfFactura(Factura f) throws NullPointerException, IOException {
@@ -330,7 +330,7 @@ public class ModeloFacturas {
     }
 
     public boolean borrarFactura(Factura factura) {
-        pilafacturasant.push(factura);
+       // pilafacturasant.push(factura);
         System.out.println(" [ModeloFacturas>borrarFactura] borrando factura:\n" + factura.toString());
         // Crear una alerta de tipo confirmación
         Alert alert = new Alert(AlertType.CONFIRMATION);

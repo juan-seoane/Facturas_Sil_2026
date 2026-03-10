@@ -7,21 +7,23 @@ import java.text.DecimalFormatSymbols;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
-import modelo.*;
+// import modelo.*;
 import modelo.base.Config;
 import modelo.helpers.Calculadora;
+// import modelo.records.Concepto;
+// import modelo.records.ConfigData;
 import modelo.records.Extracto;
 import modelo.records.Factura;
 import modelo.records.NIF;
-import modelo.records.TipoGasto;
-import modelo.records.TipoIVA;
+//import modelo.records.TipoGasto;
+//import modelo.records.TipoIVA;
 import modelo.records.Totales;
 
 public class FormularioFact extends JFrame {
 
     private static FormularioFact instancia = null;
-    private int x;
-    private int y;
+    // private int x;
+    // private int y;
     private String estado = "insertando";
     private TextField txtDia;
     private TextField txtMes;
@@ -58,14 +60,14 @@ public class FormularioFact extends JFrame {
     private JPanel sur;
     private JPanel panelDatosFactura;
     private JPanel panelDatosRS;
-    private JPanel panelNotas;
+    // private JPanel panelNotas;
     private JPanel panelTipoGasto;
     private JPanel[] panelImportes;
     private JPanel panelTotales;
     private JPanel panelTotales1;
     private JPanel panelTotales2;
     private JPanel panelesImportes;
-    private JPanel panelbotones;
+    // private JPanel panelbotones;
     private static JPopupMenu popup;
     private JMenuItem pop01;
     private JMenuItem pop02;
@@ -169,8 +171,8 @@ public class FormularioFact extends JFrame {
 
         chTipoGasto = new Choice();
 
-        for (TipoGasto t : Config.getConfig().getTiposGasto()) {
-            chTipoGasto.add(t.tipo);
+        for (String t : Config.getConfig().getConfigData().getOrigenesCaja()) {
+            chTipoGasto.add(t);
         }
 
         panelTipoGasto.add(new Label("Concepto"));
@@ -208,7 +210,7 @@ public class FormularioFact extends JFrame {
         txtIVA = new TextField[numExtractos];
         txtTotal = new TextField[numExtractos];
         btnCalcular = new Button[numExtractos];
-
+        /*
         for (int i = 0; i < numExtractos; i++) {
             panelImportes[i] = new JPanel();
             panelImportes[i].setLayout(new FlowLayout());
@@ -240,6 +242,7 @@ public class FormularioFact extends JFrame {
             panelImportes[i].setComponentPopupMenu(popup);
             panelesImportes.add((JPanel) panelImportes[i]);
         }
+            */
         centro.add(panelesImportes, BorderLayout.CENTER);
         this.add(centro, BorderLayout.CENTER);
 
@@ -261,11 +264,11 @@ public class FormularioFact extends JFrame {
         panelTotales1.add(new Label("Base"));
         txtTotalBase = new TextField("", 8);
         panelTotales1.add(txtTotalBase);
-
+        /*
         panelTotales1.add(new Label("tipo"));
         chTotalIVA = new Choice();
-        for (TipoIVA t : Config.getConfig().getTiposIVA()) {
-            chTotalIVA.add("" + t.getValor());
+        for (int[] t : ((ConfigData) (Config.getConfig()).getTiposIVA() ) {
+            chTotalIVA.add( String.valueOf( t[0] ) );
         }
         chTotalIVA.add("V");
         panelTotales1.add(chTotalIVA);
@@ -327,7 +330,7 @@ public class FormularioFact extends JFrame {
 
         //CAMPOS AUTOCOMPLETADOS
         this.txtAnho.setText(Config.getConfig().getAnho().getAnho() + "");
-
+        */
         return true;
     }
 
@@ -665,7 +668,8 @@ public class FormularioFact extends JFrame {
                         Double.parseDouble(txtBase[i].getText()),
                         Integer.parseInt(chIVA[i].getSelectedItem()),
                         Double.parseDouble(txtIVA[i].getText()),
-                        Double.parseDouble(txtTotal[i].getText())
+                        Double.parseDouble(txtTotal[i].getText()),
+                                this.getTipoGasto()
                     )
                 );
             }
@@ -690,18 +694,18 @@ public class FormularioFact extends JFrame {
         int ret = 0;
         double totalRetenciones = 0.00;
 
-        if (this.subfacturas.size() == 1 && subfacturas.get(0).getTipoIVA().getValor() == 0) {
+        if (this.subfacturas.size() == 1 && subfacturas.get(0).getTipoIVA() == 0) {
             totalBases = subfacturas.get(0).getBase();
             totalTipos = "22";
             totalIVAS = subfacturas.get(0).getIVA();
-            totalesParciales = subfacturas.get(0).getTotal();
+            totalesParciales = subfacturas.get(0).getSubtotal();
         } else {
             for (int i = 0; i < this.subfacturas.size(); i++) {
-                if (subfacturas.get(i).getTipoIVA().getValor() != 0) {
+                if (subfacturas.get(i).getTipoIVA() != 0) {
                     totalBases += subfacturas.get(i).getBase();
-                    totalTipos += subfacturas.get(i).getTipoIVA().getFormat() + "";
+                    totalTipos += subfacturas.get(i).getTipoIVA();
                     totalIVAS += subfacturas.get(i).getIVA();
-                    totalesParciales += subfacturas.get(i).getTotal();
+                    totalesParciales += subfacturas.get(i).getSubtotal();
                 } else {
                     baseNI += subfacturas.get(i).getBase();
                 }
@@ -745,19 +749,21 @@ public class FormularioFact extends JFrame {
                 baseNI,
                 ret,
                 totalRetenciones,
-                totalAbsoluto
+                totalAbsoluto, ""
             );
     }
 
     public boolean insertarFactura(Factura f) {
-        txtDia.setText("" + f.getDia());
-        txtMes.setText("" + f.getMes());
-        txtAnho.setText("" + f.getAnho());
+        txtDia.setText("" + f.getFecha().getDia());
+        txtMes.setText("" + f.getFecha().getMes());
+        txtAnho.setText("" + f.getFecha().getAnho());
         txtNumeroFactura.setText(f.getNumeroFactura());
-
-        if (f.getNIF().isCIF()) txtLetraCIFRS.setText("" + f.getNIF().getLetra()); else txtLetraNIFRS.setText(
-            "" + f.getNIF().getLetra()
-        );
+/*
+        if (f.getNif().isCIF()) {
+            txtLetraCIFRS.setText("" + f.getNIF().getLetra());
+        } else {
+            txtLetraNIFRS.setText("" + f.getNIF().getLetra());
+        }
 
         txtNumNIFRS.setText("" + f.getNIF().getNumero());
 
@@ -771,7 +777,7 @@ public class FormularioFact extends JFrame {
             txtBase[i].setText("" + e.getBase());
             chIVA[i].select("" + e.getTipoIVA().getValor());
             txtIVA[i].setText("" + e.getIVA());
-            txtTotal[i].setText("" + e.getTotal());
+            txtTotal[i].setText("" + e.getSubtotal());
             i++;
         }
 
@@ -787,7 +793,7 @@ public class FormularioFact extends JFrame {
         } else {
             txtNota.setText("");
         }
-
+*/
         rellenarVacios();
         calcularExtractos();
         calcularTotales();
@@ -839,7 +845,7 @@ public class FormularioFact extends JFrame {
         txtTotalAbsoluto.setText("");
 
         //CAMPOS AUTOCOMPLETADOS
-        txtAnho.setText(Config.getConfig().getAnho().getAnho() + "");
+        txtAnho.setText(Config.getConfig().getConfigData().getAnho().getAnho() + "");
     }
 
     public void borrarDatosNumericos() {

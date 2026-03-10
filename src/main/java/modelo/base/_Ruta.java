@@ -1,8 +1,8 @@
 package modelo.base;
 
 public enum _Ruta {
-    CONFIG("./data/config"),
-    DATOS("./data/datos");
+    CONFIG("/config"),
+    DATOS("/datos");
 
     private final String ruta;
 

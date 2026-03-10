@@ -52,15 +52,15 @@ private Config(String user) {
       e.printStackTrace();
     }
   // Archivo 'rutasconfig.json'
-    String rutaCFG = "./data/config/"+user.toUpperCase()+"/rutasconfig.json";
+    String rutaCFG = _Ruta.CONFIG.getRuta() + "/" + user.toUpperCase() + "/rutasconfig.json";
     File rutascfg = new File(rutaCFG);
     if (rutascfg.exists()){
       String rutasCFG = Fichero.leerJSON(rutaCFG);
       this.rutasconfig = new Gson().fromJson(rutasCFG, RutasConfig.class);
-      if (this.rutasconfig==null){
-        //System.out.println("[Config>Config(user)] No existen Rutas para la Config del usuario " + user);
-        this.rutasconfig = getRutasConfigStd(user);
-        Fichero.guardarJSON(this.rutasconfig.toJSON(), rutaCFG);
+        if (this.rutasconfig==null){
+            //System.out.println("[Config>Config(user)] No existen Rutas para la Config del usuario " + user);
+            this.rutasconfig = getRutasConfigStd(user);
+            Fichero.guardarJSON(this.rutasconfig.toJSON(), rutaCFG);
       }
     }else{
       System.out.println("[Config>Config(user)] El fichero rutasconfig.json del usuario " + user +" no existe!!!\nSe creará una configuración estándar");
@@ -70,7 +70,7 @@ private Config(String user) {
   // Archivo 'configdata.json'
       String rutaconfigdata = _Ruta.CONFIG.getRuta() + "/" + user.toUpperCase() + "/configdata.json";
       File f_configdata = new File(rutaconfigdata);
-      if (!(f_configdata.exists())||(f_configdata==null)){
+      if (!f_configdata.exists()){
         this.configData = getConfigDataStd();
         Fichero.guardarJSON(this.configData.toJSON(), rutaconfigdata);
       }else

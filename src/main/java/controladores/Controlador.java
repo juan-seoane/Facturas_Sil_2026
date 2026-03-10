@@ -2,7 +2,6 @@ package controladores;
 
 import java.io.IOException;
 import java.util.concurrent.BrokenBarrierException;
-//import java.util.concurrent.CyclicBarrier;
 
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -12,7 +11,7 @@ import ui.fxcontrollers.FxCntrlTablaFCT;
 import ui.fxcontrollers.PanelControl;
 
 public class Controlador extends Thread {
-
+// NOTE 26-03-10 : Hacer unos Enum con estas constantes??
     //#region CONST
     public static final int NAV = 0;
     public static final int INGR = 1;

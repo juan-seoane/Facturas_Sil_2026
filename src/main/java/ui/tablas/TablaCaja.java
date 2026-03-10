@@ -20,7 +20,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TablaCaja extends javax.swing.JFrame {
 
-    private Vector<Vector> vectorcajas;
+   // private Vector<Vector> vectorcajas;
     private Vector columnas;
     private boolean cambiado = false;
     private int pulsado = 0;
@@ -31,6 +31,7 @@ public class TablaCaja extends javax.swing.JFrame {
     /**
      * Creates new form TablaCaja
      */
+/*
     public TablaCaja(Vector<Vector> vectorcajas, Vector columnas) {
         initComponents();
         startup();
@@ -43,26 +44,26 @@ public class TablaCaja extends javax.swing.JFrame {
             }
         });
     }
-    
-    
+
+*/
     private ArrayList<Image> startup(){
-        
+
         icon = Toolkit.getDefaultToolkit().getImage("imagenes/tray.png");
         setIconImage(icon);
         ArrayList<Image> listaIconos = new ArrayList<Image>();
-        
+
         listaIconos.add(icon);
         return listaIconos;
     }
-    
+
     public void actualizarDatos(Vector<Vector> vector, Vector columnas){
         DefaultTableModel modelo = new DefaultTableModel(vector,columnas);
         this.tablacajas.setModel(modelo);
         this.tablacajas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
+
         actualizarTotales(vector);
     }
-    
+
     public void actualizarTotales(Vector<Vector> vector){
         double debe = 0.0;
         double haber = 0.0;
@@ -91,7 +92,7 @@ public class TablaCaja extends javax.swing.JFrame {
         columnas2.add("SALDO");
         DefaultTableModel modelo2 = new DefaultTableModel(total,columnas2);
         this.tablatotalescaja.setModel(modelo2);
-        
+
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -303,7 +304,7 @@ public class TablaCaja extends javax.swing.JFrame {
             this.pulsado = 7;
             this.cambiado = true;
     }//GEN-LAST:event_btnPDFActionPerformed
-    
+
     public int filaSeleccionada() {
         ListSelectionModel selectionModel = tablacajas.getSelectionModel();
         indice = selectionModel.getLeadSelectionIndex();
@@ -314,7 +315,7 @@ public class TablaCaja extends javax.swing.JFrame {
 //        cambiado = true;
 //        JOptionPane.showMessageDialog(null,"Ha seleccionado la caja "+(indice+1));
     }
-    
+
     public boolean cambiado() {
         return this.cambiado;
     }
@@ -331,7 +332,7 @@ public class TablaCaja extends javax.swing.JFrame {
     public JCheckBox getChbxFiltros() {
         return chbxFiltros;
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -339,7 +340,7 @@ public class TablaCaja extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -362,7 +363,7 @@ public class TablaCaja extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TablaCaja(new Vector<Vector>(), new Vector()).setVisible(true);
+                //new TablaCaja(new Vector<Vector>(), new Vector()).setVisible(true);
             }
         });
     }

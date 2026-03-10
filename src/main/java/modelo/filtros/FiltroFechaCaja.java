@@ -7,6 +7,7 @@ package modelo.filtros;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import modelo.base.Filtro;
+import modelo.records.EntradaCaja;
 
 /**
  *
@@ -27,17 +28,21 @@ public class FiltroFechaCaja implements Filtro {
 
     public List filtrar(List lista) {
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-        List<Caja> lista2 = new ArrayList<Caja>();
+        List<EntradaCaja> lista2 = new ArrayList<EntradaCaja>();
 
         for (Object entrada : lista) {
             try {
                 if (
-                    (formato.parse(((Caja) entrada).getFecha().format())).after(fechainicio) &&
-                    (formato.parse(((Caja) entrada).getFecha().format())).before(fechafinal)
-                ) lista2.add((Caja) entrada); else if (
-                    (formato.parse(((Caja) entrada).getFecha().format())).equals(fechainicio) ||
-                    (formato.parse(((Caja) entrada).getFecha().format())).equals(fechafinal)
-                ) lista2.add((Caja) entrada);
+                    (formato.parse(((EntradaCaja) entrada).getFecha().format())).after(fechainicio) &&
+                    (formato.parse(((EntradaCaja) entrada).getFecha().format())).before(fechafinal)
+                ) {
+                    lista2.add((EntradaCaja) entrada);
+                } else if (
+                    (formato.parse(((EntradaCaja) entrada).getFecha().format())).equals(fechainicio) ||
+                    (formato.parse(((EntradaCaja) entrada).getFecha().format())).equals(fechafinal)
+                ) {
+                    lista2.add((EntradaCaja) entrada);
+                }
             } catch (Exception e) {}
         }
         return lista2;
@@ -47,13 +52,15 @@ public class FiltroFechaCaja implements Filtro {
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         int cuenta = 0;
         try {
-            EntradaCajaentrada = (Caja) lista.get(0);
+            EntradaCaja entrada = (EntradaCaja) lista.get(0);
             if (
-                (formato.parse(entrada.getFecha().format())).after(fechainicio) &&
-                (formato.parse(entrada.getFecha().format())).before(fechafinal)
-            ) return true; else if (
-                (formato.parse(entrada.getFecha().format())).equals(fechainicio) &&
-                (formato.parse(entrada.getFecha().format())).equals(fechafinal)
+                (formato.parse(((EntradaCaja) entrada).getFecha().format())).after(fechainicio) &&
+                ((formato.parse(((EntradaCaja) entrada).getFecha().format())).before(fechafinal))
+            )
+                return true;
+            else if (
+                (formato.parse(((EntradaCaja) entrada).getFecha().format())).equals(fechainicio) &&
+                (formato.parse(((EntradaCaja) entrada).getFecha().format())).equals(fechafinal)
             ) return true; else return false;
         } catch (Exception e) {
             return false;
@@ -64,11 +71,11 @@ public class FiltroFechaCaja implements Filtro {
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         try {
             if (
-                (formato.parse(((Caja) f).getFecha().format())).after(fechainicio) &&
-                (formato.parse(((Caja) f).getFecha().format())).before(fechafinal)
+                (formato.parse(((EntradaCaja) f).getFecha().format())).after(fechainicio) &&
+                (formato.parse(((EntradaCaja) f).getFecha().format())).before(fechafinal)
             ) return f; else if (
-                (formato.parse(((Caja) f).getFecha().format())).equals(fechainicio) &&
-                (formato.parse(((Caja) f).getFecha().format())).equals(fechafinal)
+                (formato.parse(((EntradaCaja) f).getFecha().format())).equals(fechainicio) &&
+                (formato.parse(((EntradaCaja) f).getFecha().format())).equals(fechafinal)
             ) return f;
         } catch (Exception e) {}
         return null;

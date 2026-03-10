@@ -1,6 +1,7 @@
 package modelo.records;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class Fecha implements Comparable<Fecha> {
@@ -14,8 +15,8 @@ public class Fecha implements Comparable<Fecha> {
         this.año = año;
     }
 
-	public Fecha getFecha() {
-		return this;
+	public Date getFecha() {
+		return new Date(this.format());
 	}
 
     public int getDia() {
@@ -47,7 +48,7 @@ public class Fecha implements Comparable<Fecha> {
 		GregorianCalendar fecha = new GregorianCalendar(this.getAnho(), (this.getMes()-1), this.getDia());
 		return (""+fecha.get(Calendar.DAY_OF_MONTH) + "/" + (fecha.get(Calendar.MONTH)+1) +"/"+ fecha.get(Calendar.YEAR));
 		}
-	
+
 
     @Override
 	public int compareTo(Fecha b) {
@@ -61,9 +62,14 @@ public class Fecha implements Comparable<Fecha> {
 		else if (fecha.after(b.getFecha()))
 			return 1;
 		return 0;
-			
+
 	  }
-	
+
+	public String format() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'format'");
+	}
+
 }
 
 

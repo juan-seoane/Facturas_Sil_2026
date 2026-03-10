@@ -1,46 +1,49 @@
-##############################
 # Maven
-##############################
 target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
 
-##############################
-# VSCode
-##############################
-.vscode/
-*.code-workspace
-
-##############################
-# Java / Build Artifacts
-##############################
-bin/
-out/
+# Java
 *.class
+*.log
 *.jar
+*.war
+*.ear
+*.iml
+
+# VSCode
+.vscode/
+.history/
+.settings/
+
+# Eclipse (por si acaso)
+.project
+.classpath
+.settings/
+
+# IntelliJ IDEA
+.idea/
+*.ipr
+*.iws
+*.iml
+out/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
 *.log
 
-##############################
-# JavaFX SDK (NO debe estar en el repo)
-##############################
-lib/
-javafx-sdk*/
-
-##############################
-# Sistema Operativo / Windows
-##############################
-Thumbs.db
-Desktop.ini
-$RECYCLE.BIN/
+# Temporary files
 *.tmp
-
-##############################
-# Node / NPM
-##############################
-node_modules/
-
-##############################
-# IDEs
-##############################
-.idea/
-*.iml
 *.swp
 *.swo
+
+# Test reports
+surefire-reports/
+failsafe-reports/
+
+# Java Language Server cache
+.jdt/
+

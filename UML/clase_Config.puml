@@ -1,0 +1,52 @@
+@startuml
+title Diagrama de Clases - Config
+
+' ====== CLASE PRINCIPAL ======
+class Config {
+    - static usuario : String
+    - static misdatos : MisDatos
+    - static configdata : ConfigData
+    - static configActual : Config
+    - static listaConfigs : ArrayList<ConfigData>
+    - static uidata : UIData
+
+    --
+    + static Config getConfig()
+    + String leerJSON()
+    + ConfigData stringJSONaConfigData()
+    + MisDatos stringJSONaMisDatos()
+    + UIData stringJSONaUIData()
+}
+
+' ====== RECORDS ======
+class MisDatos <<record>> {
+    razonSocial
+    nombre
+    apellidos
+    telefono
+    codigoPostal
+    localidad
+    pais
+    nif
+}
+
+class ConfigData <<record>> {
+    usuario : String
+    rutaMisDatos : String
+    rutaUIData : String
+    rutas : HashMap<String, String>
+    tiposIVA : int[]
+    origenesCaja : String[]
+}
+
+class UIData <<record>> {
+    nombreColsFCT : String[]
+    anchoColsFCT : int[]
+}
+
+' ====== RELACIONES ======
+Config --> MisDatos : usa
+Config --> ConfigData : usa
+Config --> UIData : usa
+
+@enduml

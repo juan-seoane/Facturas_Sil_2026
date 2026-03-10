@@ -1,10 +1,5 @@
 package ui.fxcontrollers;
 
-import modelo.base.Config;
-import modelo.helpers.ComprobacionesAcceso;
-import controladores.Controlador;
-import ui.helpers.FxmlHelper;
-
 import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
@@ -12,12 +7,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.BrokenBarrierException;
 
-import javafx.application.Application;
-import javafx.application.Platform;
+import controladores.Controlador;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -26,9 +19,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import modelo.base.Config;
+import modelo.helpers.ComprobacionesAcceso;
+import ui.helpers.FxmlHelper;
 
 public class Acceso implements Initializable{
 
@@ -49,17 +43,18 @@ public class Acceso implements Initializable{
     public static int intentos = 1;
 
     private boolean credsOK;
-    public static boolean aceptado = false;    
+    public static boolean aceptado = false;
 //#endregion
 
 //#region INIT
     // REVIEW: Lo de abajo sólo funciona si se implementa el Interfaz "Inicializable" (implements Initilizable)
     @FXML
-    public void initialize(URL location, ResourceBundle resources) {  
-        canvasAcceso = this.txtArea;   
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        canvasAcceso = this.txtArea;
         // REVIEW: No sé cómo hacer para poner el foco al arrancar en ese campo de texto... la siguiente línea no funciona
         //txtUsuario.requestFocus();
-        
+
         canvasAcceso.sceneProperty().addListener((observableScene, oldScene, newScene) -> {
             if (newScene != null) {
                 // 'txtUsuario' está ahora en una escena, podemos obtener el Stage
@@ -67,18 +62,18 @@ public class Acceso implements Initializable{
             }
         });
         //System.out.println("[Acceso - initialize()] canvasAcceso activado: " + (canvasAcceso!=null) );
-    }    
+    }
 //#endregion
 
 //#region RUN_CTLLR
     private void arrancarControlador() throws IOException, InterruptedException, BrokenBarrierException{
-    // REVIEW - 24-05-13 : Aquí arroja una 'IOException' que afecta al hilo general del programa... Habría que ver cómo evitar que se propague a las llamadas anteriores...       
-           
+    // REVIEW - 24-05-13 : Aquí arroja una 'IOException' que afecta al hilo general del programa... Habría que ver cómo evitar que se propague a las llamadas anteriores...
+
            Controlador ctrThread = Controlador.getControlador();
-   
+
            ctrThread.setName("Ctrl_Ppal");
            ctrThread.start();
-   
+
            if (!cargarPanelControl())
                System.exit(0);
     }
@@ -90,7 +85,7 @@ public class Acceso implements Initializable{
         return Acceso.usuario;
     }
 
-    public static TextArea getCanvas(){ 
+    public static TextArea getCanvas(){
         return canvasAcceso;
     }
 //#endregion
@@ -99,7 +94,7 @@ public class Acceso implements Initializable{
     private void pulsartecla() throws IOException {
 
         iniciarPrograma();
-        
+
         if (!entrar()){
             System.exit(0);
         }
@@ -150,7 +145,7 @@ public class Acceso implements Initializable{
             reintento();
         else if(!credsOK&&intentos>=3)
             fallo();
-        else 
+        else
             acierto();
     }
 
@@ -160,8 +155,8 @@ public class Acceso implements Initializable{
         //System.out.println("[Acceso>fallo] intentos>=5 y cred NO] El proceso de Autenticación ha fallado!");
         //System.out.println("[Acceso>fallo] El programa se cerrará!");
         imprimir("\nEl proceso de Autenticación ha fallado!");
-        imprimir("\nEl programa se cerrará!\nPulse cualquier tecla para continuar..."); 
-        ventanaAcceso.requestFocus(); 
+        imprimir("\nEl programa se cerrará!\nPulse cualquier tecla para continuar...");
+        ventanaAcceso.requestFocus();
     }
 
     private void acierto() {
@@ -172,7 +167,7 @@ public class Acceso implements Initializable{
         cambiarEscena(scene2);
         imprimir("Ok...Entrando!\nBienvenido a FacturasSIL 24!\nPulse una tecla para continuar...");
         System.out.println("[Acceso>acierto] intentos<5 y cred OK]...OK, entrando...pulse una tecla para continuar");
-        ventanaAcceso.requestFocus();  
+        ventanaAcceso.requestFocus();
     }
 
     private void reintento() throws InterruptedException {
@@ -183,14 +178,14 @@ public class Acceso implements Initializable{
         this.txtPassword.clear();
         this.txtUsuario.requestFocus();
     }
-    
+
     public boolean entrar(){
         if(aceptado)
             return true;
         else
             return false;
     }
-    
+
     private void iniciarPrograma(){
         try {
             arrancarControlador();
@@ -205,16 +200,16 @@ public class Acceso implements Initializable{
 //#region HELPERS
 
     public static Scene crearScene1 (Parent root) {
-        
+
         Scene esc1 = new Scene(root,525,550);
         //scene.getStylesheets().add(getClass().getResource("acceso.css").toExternalForm());
         //System.out.println("[Acceso>crearScene1] escena1 creada : " + esc1.hashCode());
         return esc1;
-        
+
     }
 
     private Scene crearScene2() {
-        FxmlHelper loader2 = new FxmlHelper("/ui/resources/Acceso2.fxml");      
+        FxmlHelper loader2 = new FxmlHelper("/ui/resources/Acceso2.fxml");
         Parent root2 = loader2.cargarFXML();
         Scene esc2 = new Scene(root2);
         //scene.getStylesheets().add(getClass().getResource("acceso.css").toExternalForm());
@@ -289,13 +284,13 @@ private void cambiarEscena(Scene es) {
         vPC.setOnCloseRequest(e -> System.exit(0));
         PanelControl.setGUI(vPC);
         PanelControl.getPanelControl().mostrar();
-        
+
         //Asignar el actual P/C a las clases necesarias
         //ControladorFacturas.FXcontrlTablaFCT = (FxCntrlTablaFCT)(FXMLtablafct.getFXcontr());
         //ControladorFacturas.FXcontrlVisorFCT = (FxCntrlVisorFCT)(FXMLvisorfct.getFXcontr());
         Controlador.setPanelControl((PanelControl)(FXMLpc.getFXcontr()));
-        
-        return true;        
+
+        return true;
     }
 
     public void rutaExiste(String ruta){

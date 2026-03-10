@@ -1,16 +1,12 @@
 package ui.fxcontrollers;
 
-import modelo.ModeloFacturas;
-import modelo.records.Factura;
-import controladores.Controlador;
-import controladores.ControladorFacturas;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.ResourceBundle;
-import java.util.concurrent.BrokenBarrierException;
 
+import controladores.Controlador;
+import controladores.ControladorFacturas;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -22,6 +18,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
+import modelo.ModeloFacturas;
+import modelo.records.Factura;
 
 public class FxCntrlTablaFCT implements Initializable{
 
@@ -58,7 +56,7 @@ public class FxCntrlTablaFCT implements Initializable{
 	@FXML Label lblInfoListaFXfacturas;
 	@FXML Label lblInfoCntrFXtabla;
 
-	@FXML Label lblIndexT;	
+	@FXML Label lblIndexT;
 	@FXML Label lblNumFact;
 	@FXML Label lblBase;
 	@FXML Label lblIVA;
@@ -96,7 +94,7 @@ public class FxCntrlTablaFCT implements Initializable{
 //#region INI_FCT/T
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
+
 		//Adjudicar valores para las Columnas de la Tabla de Facturas
 		//System.out.println("[FxControladorFacturas.java>initialize()] Comenzando initialize - Adjudicando valores para las columnas de la Tabla de Facturas");
 		colID.setCellValueFactory(cellData -> cellData.getValue().getFxID());
@@ -145,12 +143,12 @@ public class FxCntrlTablaFCT implements Initializable{
 		setListaFXFacturas(listaFXtemp);
 		String[] datosResumen = ModeloFacturas.getModelo().calcularTotales();
 		actualizarTotales(datosResumen);
-		actualizarInfoTabla();	
+		actualizarInfoTabla();
 
 		//NOTE - 02-07-24 : generar listener en el TableView para que informe del cambio de elemento seleccionad
 		//Arrancar el hilo del ControladorFacturas
 		//System.out.println("[FxCntrlTablaFCT>initialize] Comenzando el initialize del ControladorFX de Facturas");
-		//NOTE - 07-07-24 : Saco la barrera para los tests de JavaFX 
+		//NOTE - 07-07-24 : Saco la barrera para los tests de JavaFX
 		//Controlador.barreraControladores.await();
 		cfct = Controlador.getControladorFacturas(this);
 		//System.out.println("[FxCntrlTablaFCT>initialize] Saliendo del initialize del ControladorFX de Facturas");
@@ -168,7 +166,7 @@ public class FxCntrlTablaFCT implements Initializable{
 	public void btnNuevaFctPulsado(Event ev){
 		this.haCambiado = true;
 		this.pulsado = 2;
-	}	
+	}
 
 	@FXML
 	public void btnEditarFctPulsado(Event ev){
@@ -187,7 +185,7 @@ public class FxCntrlTablaFCT implements Initializable{
 		this.haCambiado = true;
 		this.pulsado = 5;
 	}
-	
+
 	@FXML
 	public void btnImprimirFctPulsado(){
 		this.haCambiado = true;
@@ -210,7 +208,7 @@ public class FxCntrlTablaFCT implements Initializable{
 	}
 //#endregion
 
-//#region GET/SET	
+//#region GET/SET
 	public static FxCntrlTablaFCT getFxController(){
 		if (instancia==null){
 			instancia = new FxCntrlTablaFCT();
@@ -232,7 +230,7 @@ public class FxCntrlTablaFCT implements Initializable{
 		this.tblvwfct  = cfct.getFXcontrlTablaFCT().tblvwfct ;
 		return this.tblvwfct ;
 	}
-	
+
 	public int getIndiceSeleccionadoTabla() {
 		System.out.println("[FxCntrlTablaFCT>getIndiceSeleccionadoTabla] Devolviendo indiceActual desde contrFxtabla->" + this.hashCode());
 		return  indiceActual;
@@ -263,7 +261,7 @@ public class FxCntrlTablaFCT implements Initializable{
 			this.tblvwfct.getSelectionModel().select(nuevoindice);
 			indiceActual = nuevoindice;
 			this.lblIndexT.setText(""+(indiceActual+1));
-			ControladorFacturas.facturaActual = getFacturaSeleccionadaTabla(); 
+			ControladorFacturas.facturaActual = getFacturaSeleccionadaTabla();
 		}
 			setIndiceActual(nuevoindice);
 	}

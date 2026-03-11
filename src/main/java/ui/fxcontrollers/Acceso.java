@@ -21,6 +21,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import modelo.base.Config;
+import modelo.base._Ruta;
 import modelo.helpers.ComprobacionesAcceso;
 import ui.helpers.FxmlHelper;
 
@@ -180,17 +181,15 @@ public class Acceso implements Initializable{
     }
 
     public boolean entrar(){
-        if(aceptado)
-            return true;
-        else
-            return false;
+        return aceptado;
     }
 
     private void iniciarPrograma(){
         try {
             arrancarControlador();
         } catch (IOException | InterruptedException | BrokenBarrierException e) {
-            e.printStackTrace();
+            System.out.println("[Acceso>iniciarPrograma] Error al iniciar el programa: " + e.getMessage());
+            System.exit(1);
         }
         ventanaAcceso.close();
         //Platform.exit();
@@ -203,13 +202,13 @@ public class Acceso implements Initializable{
 
         Scene esc1 = new Scene(root,525,550);
         //scene.getStylesheets().add(getClass().getResource("acceso.css").toExternalForm());
-        //System.out.println("[Acceso>crearScene1] escena1 creada : " + esc1.hashCode());
+        System.out.println("[Acceso>crearScene1] escena1 creada : " + esc1.hashCode());
         return esc1;
 
     }
 
     private Scene crearScene2() {
-        FxmlHelper loader2 = new FxmlHelper("/ui/resources/Acceso2.fxml");
+        FxmlHelper loader2 = new FxmlHelper(_Ruta.FXML.getRuta() + "/Acceso2.fxml");
         Parent root2 = loader2.cargarFXML();
         Scene esc2 = new Scene(root2);
         //scene.getStylesheets().add(getClass().getResource("acceso.css").toExternalForm());
@@ -235,7 +234,7 @@ private void cambiarEscena(Scene es) {
             try {
                 pulsartecla();
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("[Acceso>cambiarEscena] Error al pulsar tecla: " + e.getMessage());
             }
 
             ke.consume();
@@ -255,20 +254,9 @@ private void cambiarEscena(Scene es) {
 
 //#region LOAD_C/P
     private synchronized boolean cargarPanelControl(){
-/*
-        File miDir = new File (".");
-        String path = "";
-        try {
-            path = miDir.getCanonicalPath();
-            //System.out.println("[Acceso>cargarPanelControl] path: " + path);
-        } catch (IOException e) {
-            //System.out.println("[Acceso>cargarPanelControl] Error al obtener la ruta de los controladores");
-            e.printStackTrace();
-        }
-        path = path.replace('\\','/');
-*/
-        String ruta  = "/ui/resources/PanelControl.fxml";
-        //System.out.println("[Acceso>cargarPanelControl] ruta  : " + ruta);
+
+        String ruta  = _Ruta.FXML.getRuta() + "/PanelControl.fxml";
+        System.out.println("[Acceso>cargarPanelControl] ruta  : " + ruta);
 
         FxmlHelper FXMLpc = new FxmlHelper(ruta);
 
@@ -297,11 +285,10 @@ private void cambiarEscena(Scene es) {
 
         boolean rutaExiste = (new File(ruta)).exists();
         if (rutaExiste){
-            //System.out.println("[Acceso>rutaExiste] El archivo " + ruta + " existe.");
+            System.out.println("[Acceso>rutaExiste] El archivo " + ruta + " existe.");
         }
         else{
-            //System.out.println("[Acceso>rutaExiste] El archivo " + ruta + " no existe.");
-            //System.out.println ("[Acceso>rutaExiste] Directorio actual: " + miDir.getCanonicalPath());
+            System.out.println("[Acceso>rutaExiste] El archivo " + ruta + " no existe.");
         }
     }
 //#endregion

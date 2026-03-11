@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 
 import modelo.base.Config;
+import modelo.base._Ruta;
 
 
 public class ComprobacionesAccesoTest {
@@ -19,7 +20,7 @@ public class ComprobacionesAccesoTest {
 	@Test
 	void fileCredsIsNotNull(){
 
-		rutaCreds = "./config/creds.json";
+		rutaCreds = _Ruta.CONFIG.getRuta() + "/creds.json";
  		File f = new File(rutaCreds);
 		assertTrue(f.exists());
 
@@ -29,7 +30,7 @@ public class ComprobacionesAccesoTest {
 	void CredsNotNull(){
 
 		//ComprobacionesAcceso test_check = new ComprobacionesAcceso();
-		rutaCreds = "./config/creds.json";
+		rutaCreds = _Ruta.CONFIG.getRuta() + "/creds.json";
 		File f = new File(rutaCreds);
 		assertNotNull(Config.leerCredenciales(rutaCreds).creds);
 

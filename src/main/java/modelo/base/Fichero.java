@@ -1,6 +1,7 @@
 package modelo.base;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.logging.Level;
@@ -19,7 +20,7 @@ import static java.nio.file.StandardCopyOption.*;
 public class Fichero<T> {
 
     public String rutaArchivo;
-    
+
     File fichero;
     File directorio;
     File dir;
@@ -32,7 +33,7 @@ public class Fichero<T> {
     public Fichero(String rutaArchivo) {
         ////System.out.println("[Fichero] Creando nuevo fichero".toUpperCase());
         this.rutaArchivo = rutaArchivo;
-        
+
         this.directorio = new File(rutaArchivo.substring(0,rutaArchivo.lastIndexOf("/")));
         if (!this.directorio.exists()){
             try{
@@ -76,7 +77,7 @@ public class Fichero<T> {
             } catch (NullPointerException | IOException | ClassNotFoundException e) {
                 ////System.out.println("[Fichero.java>leer()] Error en la lectura del tipo " + e + " al leer el fichero "+ this.rutaArchivo);
             }
-        } else { 
+        } else {
             ////System.out.println("[Fichero.java>leer()] El fichero "+ this.rutaArchivo + " está vacío...");
         }
         cerrarInputStream();
@@ -108,16 +109,16 @@ public class Fichero<T> {
     public boolean anexar(T entrada) {
         ////System.out.println(">>>>>>Añadiendo a fichero".toUpperCase());
         ArrayList<T> entradas = this.leer();
-        
+
         entradas.add(entrada);
-        
+
         this.escribir(entradas);
         ////System.out.println("Entrada guardada!");
         return true;
-        
+
     }
-//#endregion  
-//#region EDITAR 
+//#endregion
+//#region EDITAR
     public boolean editar(T entrada, int index){
 	////System.out.println(">>>>>>Editando entrada en fichero con indice "+index);
 	ArrayList<T> entradas = this.leer();
@@ -129,7 +130,7 @@ public class Fichero<T> {
 	return false;
     }
 //#endregion
-//#region BORRAR  
+//#region BORRAR
     public boolean borrar(T entrada, int index){
 	////System.out.println(">>>>>>Borrando entrada en fichero con indice "+index);
 
@@ -167,7 +168,7 @@ public class Fichero<T> {
             ////System.out.println("Flujo de salida abierto!");
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Fichero.class.getName()).log(Level.SEVERE, null, ex);
-            
+
             return false;
         }
         try {
@@ -225,14 +226,14 @@ public class Fichero<T> {
     }
 //#endregion
     public String toString(){
-        
-       return ("Fichero ->[ ruta= "+this.rutaArchivo+" ]"); 
-        
+
+       return ("Fichero ->[ ruta= "+this.rutaArchivo+" ]");
+
     }
-    
+
     public boolean estaVacio()
     {
-        
+
         return (this.fichero.length()==0);
     }
 //#region FILE_EXISTS
@@ -268,7 +269,7 @@ public class Fichero<T> {
                 carpeta.mkdir();
                 return true;
 
-            } catch (Exception ex) { 
+            } catch (Exception ex) {
                 //System.out.println("[Fichero.java] Error creando la carpeta." +ruta + nombre);
                 System.err.println( ex.toString( ));
                 return false;
@@ -277,7 +278,7 @@ public class Fichero<T> {
         //La carpeta YA existe
         } else {
             ////System.out.println("[Fichero.java] La carpeta " + ruta + nombre + " ya existe.");
-            return false; 
+            return false;
         }
     }
 
@@ -290,7 +291,7 @@ public class Fichero<T> {
                 carpeta.mkdir();
                 return true;
 
-            } catch (Exception e) { 
+            } catch (Exception e) {
                 //System.out.println("[Fichero.java] Error creando la carpeta " + rutaYnombre);
                 System.err.println( e.toString( ));
                 return false;
@@ -299,7 +300,7 @@ public class Fichero<T> {
         //La carpeta YA existe
         } else {
             ////System.out.println("[Fichero.java] La carpeta " + rutaYnombre + " ya existe.");
-            return false; 
+            return false;
         }
     }
 //#endregion
@@ -347,28 +348,26 @@ public class Fichero<T> {
     }
 //#endregion
 //#region LEER_JSON
-public static synchronized String leerJSON(String rutaYnombre){
-    
-    String fichero = "";
-    try {
-        FileReader f = new FileReader(rutaYnombre);
-        BufferedReader input = new BufferedReader(f);
-        String linea;
-        while ((linea = input.readLine()) != null) {
-            fichero += linea;
+public static synchronized String leerJSON(String rutaYnombre) {
+
+    try (InputStream is = Fichero.class.getResourceAsStream(rutaYnombre)) {
+
+        if (is == null) {
+            System.out.println("[Fichero] ERROR: No se encontró el JSON en ruta: " + rutaYnombre);
+            return null;
         }
-        input.close();
-        ////System.out.println("[Fichero.java] Leído el fichero JSON "+ rutaYnombre);
+
+        return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+
     } catch (IOException ex) {
-        //System.out.println(ex.getMessage());
-        //System.out.println("[Fichero.java] Error leyendo el fichero JSON "+ rutaYnombre);
+        System.out.println("[Fichero] ERROR leyendo JSON: " + ex.getMessage());
+        return null;
     }
-    return fichero;
 }
 //#endregion
 //#region GUARDAR_JSON
 public static synchronized boolean guardarJSON(String datosFormateados, String rutaYnombre){
-              
+
     try{
         FileWriter f = new FileWriter(rutaYnombre);
         BufferedWriter output = new BufferedWriter(f);
@@ -381,7 +380,7 @@ public static synchronized boolean guardarJSON(String datosFormateados, String r
         //System.out.println("[Fichero.java] Error guardando el fichero " + rutaYnombre);
         ex.printStackTrace();
         return false;
-    }        
+    }
 }
 //#endregion
 //#region leerCSV
@@ -392,7 +391,7 @@ public synchronized ArrayList<String[]> leerCSV(String rutaYnombre){
     ArrayList<String[]> resp = new ArrayList<String[]>();
     try {
         csvReader = new CSVReader(new FileReader(rutaYnombre));
- 
+
         String[] fila = null;
 
         while((fila = csvReader.readNext()) != null) {
@@ -409,7 +408,7 @@ public synchronized ArrayList<String[]> leerCSV(String rutaYnombre){
                 resp.add(fila);
             //}
         }
-        
+
         csvReader.close();
 
     } catch (CsvValidationException | IOException e) {
@@ -419,7 +418,7 @@ public synchronized ArrayList<String[]> leerCSV(String rutaYnombre){
     // REVIEW - 2024-06-14 : (Hay que devolver ya una lista de facturas) En fichero.leerCSV se devuelve un ArrayList<String[]> genérico, luego cada Modelo lo pasa a su ArrayList<T> parametrizado a la clase que convenga, Factura, RS, EntradaCaja...
     return resp;
     }
-//#endregion 
+//#endregion
 //#region guardarCSV
     public synchronized boolean guardarCSV(ArrayList<String[]> datos){
 

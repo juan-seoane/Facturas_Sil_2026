@@ -2,10 +2,11 @@ package modelo.helpers;
 
 import java.awt.HeadlessException;
 import java.io.IOException;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
 import modelo.base.Config;
-import modelo.base.Fichero;
 import modelo.base._Ruta;
 import modelo.records.Contrasena;
 import ui.fxcontrollers.Acceso;
@@ -23,22 +24,21 @@ public class ComprobacionesAcceso {
         // REVIEW : 24/04/09 - Si no existe carpeta de Usuario, preguntar si quiere crear un Nuevo Usuario.
         // REVIEW : 24/04/12 - Para las comprobaciones tanto usuario como contraseña se pasan a mayúsculas (CASE INSENSITIVE)
         String rutaCreds = _Ruta.CONFIG.getRuta() + "/creds.json";
-        String rutaDirPers = _Ruta.DATOS.getRuta() + "/" + user.toUpperCase();
-        String rutasCFG = _Ruta.CONFIG.getRuta() + "/" + user.toUpperCase() + "/" + "rutasconfig.json";
+        //String rutaDirPers = _Ruta.DATOS.getRuta() + "/" + user.toUpperCase();
+        //String rutasCFG = _Ruta.CONFIG.getRuta() + "/" + user.toUpperCase() + "/" + "rutasconfig.json";
 
-        Acceso.imprimir("\nDatos introducidos : " + user + " - " + pass + "\n(...espere 2 seg...)");
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (Fichero.dirExists(rutaDirPers) && Fichero.fileExists(rutasCFG)) {
+        Acceso.imprimir("\nDatos introducidos : " + user + " - " + pass + "\n(...espere..)");
+
+        // TODO : 26-03-11 : Arreglar este boolean... Ahora mismo no es exacto... O solamente chequea creds
+        boolean existen = (getClass().getResource(rutaCreds) != null);
+
+        if (existen) {
             // REVIEW : Si existe el Subdirectorio y el archivo config, lo lee.. (Cambiar por chequear las credenciales del archivo config base)
             // REVIEW : Otra vez tuve que hacer público el constructor de la clase Config...por lo que...¿Singleton...?
             // REVIEW - 24-04-11 : Escribir un método estático para leer las credenciales del archivo config base
             for (Contrasena contr : Config.leerCredenciales(rutaCreds).creds) {
                 // REVIEW : Revisar el modo de comprobación de credenciales
-                //System.out.println("[ComprobacionesAcceso.java>comprobarCredenciales()] Datos obtenidos de Config: " + contr.usuario +" - " + contr.contra);
+                Acceso.imprimir("[ComprobacionesAcceso.java>comprobarCredenciales()]\nDatos obtenidos de Config: " + contr.usuario +" - " + contr.contra);
                 if (user.equals(contr.usuario)) {
                     ComprobacionesAcceso.userOK = true;
                     if (pass.equals(contr.contra)) {
@@ -71,7 +71,7 @@ public class ComprobacionesAcceso {
 
             }
         }
-        if (userOK && passOK) return true; else return false;
+        return (userOK && passOK);
     }
 
     //#endregion

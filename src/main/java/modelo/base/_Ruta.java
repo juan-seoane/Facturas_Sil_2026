@@ -2,7 +2,9 @@ package modelo.base;
 
 public enum _Ruta {
     CONFIG("/config"),
-    DATOS("/datos");
+    DATOS("/datos"),
+    IMG("/imagenes"),
+    FXML("/ui/resources");
 
     private final String ruta;
 

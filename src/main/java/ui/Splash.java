@@ -8,41 +8,42 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.JWindow;
 
-public class Splash extends JWindow implements Runnable{
-    private BufferedImage splash = null;
-    private BufferedImage image=null;
+import modelo.base._Ruta;
 
+public class Splash extends JWindow implements Runnable {
+
+    private BufferedImage splash = null;
+    private BufferedImage image = null;
 
     public Splash() {
-         //System.out.println("Entrando en el constructor del splash");
-         FileInputStream in = null;
-         int i = (int)(Math.floor(Math.random()*5+1));
-        try {
-            in = new FileInputStream("imagenes/splash"+i+".jpg");
-        } catch (FileNotFoundException ex) {
-             //Logger.getLogger(FacturasUI.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Error "+ex+" al cargar la imagen de inicio");
-        }
+        //System.out.println("Entrando en el constructor del splash");
+        InputStream in;
+        int i = (int) (Math.floor(Math.random() * 4 ) + 1);
 
         try {
-            image = ImageIO.read(in);
+            in = getClass().getResourceAsStream(_Ruta.IMG.getRuta() + "/splash" + i + ".jpg");
+
+            if (in == null) {
+                System.out.println("No se encontró la imagen splash" + i + ".jpg");
+            } else {
+                image = ImageIO.read(in);
+            }
         } catch (IOException ex) {
-            // Logger.getLogger(FacturasUI.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Error "+ex+" al volcar la imagen de inicio");
+            System.out.println("Error " + ex + " al cargar la imagen de inicio");
         }
 
         createShadowPicture(image);
     }
 
+    @Override
     public void paint(Graphics g) {
         //System.out.println("Entrando en el paint del splash");
         if (splash != null) {
@@ -66,9 +67,11 @@ public class Splash extends JWindow implements Runnable{
 
         try {
             Robot robot = new Robot(getGraphicsConfiguration().getDevice());
-            BufferedImage capture = robot.createScreenCapture(new Rectangle(windowRect.x, windowRect.y, windowRect.width + extra, windowRect.height + extra));
+            BufferedImage capture = robot.createScreenCapture(
+                new Rectangle(windowRect.x, windowRect.y, windowRect.width + extra, windowRect.height + extra)
+            );
             g2.drawImage(capture, null, 0, 0);
-        } catch (AWTException e) { }
+        } catch (AWTException e) {}
 
         BufferedImage shadow = new BufferedImage(width + extra, height + extra, BufferedImage.TYPE_INT_ARGB);
         Graphics g = shadow.getGraphics();
@@ -78,11 +81,7 @@ public class Splash extends JWindow implements Runnable{
         g2.drawImage(image, 0, 0, this);
     }
 
-
-
     public static void main(String[] args) {
-
-
         /*    Timer timer = new Timer(5000, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent evt) {
@@ -94,12 +93,11 @@ public class Splash extends JWindow implements Runnable{
 
     @Override
     public void run() {
-                setVisible(true);
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Splash.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
+        setVisible(true);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Splash.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

@@ -248,10 +248,10 @@ public class FxCntrlTablaFCT implements Initializable{
 			try {
 				f = cfct.m.getFactura(1);
 			} catch (NullPointerException | IOException e) {
-				e.printStackTrace();
+                System.out.println("[FxCntrlTablaFCT>getFacturaSeleccionadaTabla] Error al obtener la factura seleccionada de la tabla (posiblemente por falta de datos o porque la tabla no es visible) - " + e);
 				System.exit(0);
 			}
-			//System.out.println("[FxCntrlTablaFCT>getFacturaSeleccionadaTabla] Como this.tblvwfct .isVisible(): " + this.tblvwfct .isVisible() + " se muestra la *(segunda) factura:" + f.toString());
+			System.out.println("[FxCntrlTablaFCT>getFacturaSeleccionadaTabla] Como this.tblvwfct.isVisible(): " + this.tblvwfct .isVisible() + " se muestra la *(segunda) factura:" + f.toString());
 			return f;
 		}
 	}
@@ -299,7 +299,7 @@ public class FxCntrlTablaFCT implements Initializable{
 		lblRetenc.setText(datos[4]);
 		lblTotal.setText(datos[5]);
 		lblNumFact.setText(datos[6]);
-		System.out.println("[FxCntrlTablaFCT>actualizarTotales] Totales actualizados en tablaFCT con tblVw->" + tblvwfct .hashCode() + " - contrFx->" + this.hashCode());
+		System.out.println("[FxCntrlTablaFCT>actualizarTotales] Totales actualizados en tablaFCT con tblVw->" + tblvwfct.hashCode() + " - contrFx->" + this.hashCode());
 	}
 //#endregion
 

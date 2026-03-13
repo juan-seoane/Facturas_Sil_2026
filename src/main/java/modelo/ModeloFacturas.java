@@ -117,22 +117,21 @@ public class ModeloFacturas {
     }
 
     //#endregion
-
+    // TODO : 26-03-13 : Cambiar a LeerFacturas() (con filtros, a base de streams)
     //#region leerFacturas
     public ObservableList<Factura> getListaFXFacturas() {
         List<Factura> fact_prev = null;
         try {
             fact_prev = leerFacturasSinFiltrar();
         } catch (NullPointerException e) {
-            //System.out.println("[ModeloFacturas>getListaFXFacturas] Error al recoger la lista observable (para JFX) de facturas");
-            e.printStackTrace();
+            System.out.println("[ModeloFacturas>getListaFXFacturas] Error al recoger la lista observable (para JFX) de facturas : " + e.getMessage());
         }
         var facturasFX = FXCollections.observableList(fact_prev);
         return facturasFX;
     }
 
     public List<Factura> leerFacturas() throws NullPointerException, IOException {
-        ficheroFacturas = new Fichero<Factura>(Config.getConfig(Controlador.getUsuario()).getRutaFCT().toString());
+        ficheroFacturas = new Fichero<>(Config.getConfig(Controlador.getUsuario()).getRutaFCT());
         this.arrayFacturas = ficheroFacturas.leerCSV(ficheroFacturas.rutaArchivo);
         ModeloFacturas.facturas = ConvertirArrayCSVenListaFCT(this.arrayFacturas);
         numeroFacturas = ModeloFacturas.facturas.size();
@@ -146,7 +145,7 @@ public class ModeloFacturas {
     }
 
     public static List<Factura> leerFacturasSinFiltrar() {
-        ficheroFacturas = new Fichero<Factura>(Config.getConfig(Controlador.getUsuario()).getRutaFCT().toString());
+        ficheroFacturas = new Fichero<>(Config.getConfig(Controlador.getUsuario()).getRutaFCT());
         ArrayList<String[]> arrayFct = ficheroFacturas.leerCSV(ficheroFacturas.rutaArchivo);
         ArrayList<Factura> listaFct = null;
         listaFct = ConvertirArrayCSVenListaFCT(arrayFct);
@@ -211,7 +210,7 @@ public class ModeloFacturas {
     }
 
     //#endregion
-
+    // TODO : 26-03-13 : Convertir la función 'filtrar' en una función que se basa en sreams
     //#region filtrar
     public List<Factura> filtrar(List<Factura> lista) {
         // REVIEW - 24-06-14 : - Habría que convertir este ArrayList<String[]> a un ArrayList<Factura>...

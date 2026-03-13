@@ -29,7 +29,7 @@ public class ComprobacionesAcceso {
 
         Acceso.imprimir("\nDatos introducidos : " + user + " - " + pass + "\n(...espere..)");
 
-        // TODO : 26-03-11 : Arreglar este boolean... Ahora mismo no es exacto... O solamente chequea creds
+        // STUB : 26-03-11 : [ComprobarCredenciales.java > comprobarCredenciales(String user, String pass)] Arreglar este boolean... Ahora mismo no es exacto... solamente chequea creds
         boolean existen = (getClass().getResource(rutaCreds) != null);
 
         if (existen) {

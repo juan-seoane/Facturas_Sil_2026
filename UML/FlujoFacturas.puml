@@ -1,0 +1,64 @@
+@startuml
+title Flujo general: LeerFacturas() → Procesar → Mostrar/Imprimir
+
+start
+
+:'Fichero.leerFacturas()';
+note right
+  Lee archivo JSON/CSV/TXT desde disco o resources.
+  Devuelve texto bruto.
+end note
+
+:'Parsear JSON → List<Factura>';
+note right
+  Convierte el texto en objetos Factura.
+  Aquí puede intervenir Gson/Jackson.
+end note
+
+:'Validar facturas';
+note right
+  - Fechas válidas
+  - Importes correctos
+  - Campos obligatorios
+  - Estado permitido (Enum)
+end note
+
+if (¿Facturas válidas?) then (sí)
+  :Continuar;
+else (no)
+  :Registrar errores;
+  stop
+endif
+
+:'Procesar facturas (Streams)';
+note right
+  Ejemplos:
+  - filter() por usuario
+  - filter() por fecha
+  - filter() por estado
+  - map() → DTO
+  - sorted() por fecha o importe
+  - groupingBy() para totales
+end note
+
+:'Resultado: List<Factura> procesada';
+
+if (¿Mostrar en tabla?) then (sí)
+  :'ControladorFX.cargarTabla()';
+  note right
+    Convierte Factura → FacturaDTO.
+    Rellena TableView.
+  end note
+endif
+
+if (¿Generar informe?) then (sí)
+  :'JasperReports.generarInforme()';
+  note right
+    Exporta a PDF/impresión.
+    Usa JRBeanCollectionDataSource.
+  end note
+endif
+
+stop
+
+@enduml

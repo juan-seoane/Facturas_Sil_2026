@@ -402,7 +402,7 @@ public class Config {
     }
 
     //#endregion
-// NOTE : 26-03-11 : He cambiado la forma en que manejo los ficheros dentro de este método... posiblemente necesite cambiarla en más...
+// NOTE    - 26-03-11 [Config.java>leerCredenciales(String ruta)] : He cambiado la forma en que manejo los ficheros dentro de este método... posiblemente necesite cambiarla en más...
     //#region GUARDAR_CREDS()
     public static boolean guardarCredenciales(String user) {
         String ruta = _Ruta.CONFIG.getRuta() + "/creds.json";

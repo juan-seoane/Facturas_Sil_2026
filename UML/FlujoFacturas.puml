@@ -5,7 +5,7 @@ start
 
 :'Fichero.leerFacturas()';
 note right
-  Lee archivo JSON/CSV/TXT desde disco o resources.
+  Lee archivo JSON/CSV/TXT desde /data/.
   Devuelve texto bruto.
 end note
 

@@ -23,6 +23,12 @@ import javafx.stage.Stage;
 import modelo.ModeloFacturas;
 import modelo.base.Config;
 import modelo.records.Factura;
+import vista.fxcontrollers.FxCntrlTablaFCT;
+import vista.fxcontrollers.FxCntrlVisorFCT;
+import vista.fxcontrollers.PanelControl;
+import vista.fxcontrollers.SplashFX;
+import vista.helpers.FxmlHelper;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -35,11 +41,6 @@ import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.framework.junit5.Start;
 import org.testfx.service.query.NodeQuery;
 import org.testfx.util.WaitForAsyncUtils;
-import ui.fxcontrollers.FxCntrlTablaFCT;
-import ui.fxcontrollers.FxCntrlVisorFCT;
-import ui.fxcontrollers.PanelControl;
-import ui.fxcontrollers.SplashFX;
-import ui.helpers.FxmlHelper;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FxApplicationTest extends ApplicationTest {
@@ -47,7 +48,7 @@ public class FxApplicationTest extends ApplicationTest {
     //#region CAMPOS
     public String usuario = "admin";
     public static Config config;
-    public static Controlador ctrlPpal;
+    public static Controlador_prev ctrlPpal;
     public static ControladorFacturas ctrlFct;
     public static ModeloFacturas modeloFCT;
     public static PanelControl pc;
@@ -139,9 +140,9 @@ public class FxApplicationTest extends ApplicationTest {
 
         System.out.println("[FxApplicationTest>PCcargaOK]******INICIO*****");
         config = Config.getConfig("admin");
-        ctrlPpal = Controlador.getControlador();
-        ctrlFct = Controlador.getControladorFacturas();
-        pc = Controlador.getPanelControl();
+        ctrlPpal = Controlador_prev.getControlador();
+        ctrlFct = Controlador_prev.getControladorFacturas();
+        pc = Controlador_prev.getPanelControl();
         assertNotNull(pc);
         hashCodePC = pc.hashCode();
         System.out.println("[FxApplicationTest>pcCargaOK] hashCodePC: " + hashCodePC);
@@ -159,10 +160,10 @@ public class FxApplicationTest extends ApplicationTest {
         do {
             System.out.print("[FxApplicationTest>pcFunciona] Esperando a cargar el ControladorFacturas");
         } while ((ctrlFct = ControladorFacturas.getControlador()) == null);
-        ctrlPpal = Controlador.getControlador();
+        ctrlPpal = Controlador_prev.getControlador();
         config = Config.getConfig(usuario);
         config = Config.getConfig("admin");
-        ctrlPpal = Controlador.getControlador();
+        ctrlPpal = Controlador_prev.getControlador();
         pc = PanelControl.getPanelControl();
         hashCodePC = pc.hashCode();
         assertEquals(hashCodePC, pc.hashCode());
@@ -226,7 +227,7 @@ public class FxApplicationTest extends ApplicationTest {
 			}
 		});*/
         config = Config.getConfig("admin");
-        ctrlPpal = Controlador.getControlador();
+        ctrlPpal = Controlador_prev.getControlador();
         ctrlFct = ControladorFacturas.getControlador();
         ctrlFxTablaFct = ctrlFct.getFXcontrlTablaFCT();
         modeloFCT = ModeloFacturas.getModelo();
@@ -248,7 +249,7 @@ public class FxApplicationTest extends ApplicationTest {
 		assertNotNull(fact);
 		ctrlFct.mostrarVisorFCT(iact, fact);*/
         //NOTE - 24-07-26 : Esperamos a que acabe de cargar el visorFCT
-        ctrlFxTablaFct = Controlador.getControladorFacturas().getFXcontrlTablaFCT();
+        ctrlFxTablaFct = Controlador_prev.getControladorFacturas().getFXcontrlTablaFCT();
         assertNotNull(ctrlFxTablaFct);
         Platform.runLater(
             new Runnable() {
@@ -281,7 +282,7 @@ public class FxApplicationTest extends ApplicationTest {
         do {
             Thread.sleep(1000);
             System.out.println("[FxApplicationTest>visorFCTcargaOK] " + cnt + " - Esperando a que cargue el visorFCT.");
-        } while ((ctrlFxVisorFct = Controlador.getControladorFacturas().getFXcontrlVisorFCT()) == null);
+        } while ((ctrlFxVisorFct = Controlador_prev.getControladorFacturas().getFXcontrlVisorFCT()) == null);
         assertNotNull(ctrlFxVisorFct);
         visorFCT = ctrlFxVisorFct.getVisorFCT();
         hashCodeVisor = visorFCT.hashCode();
@@ -350,7 +351,7 @@ public class FxApplicationTest extends ApplicationTest {
         System.out.println("FxApplicationTest>edFactVisfunciona]*****INICIO*****");
         System.out.println("FxApplicationTest>edFactVisfunciona] comprobando la ruta del archivo FCT");
 
-        assertEquals("datos/ADMIN/FCT20240.csv", Config.getConfig(Controlador.getUsuario()).getRutaFCT());
+        assertEquals("datos/ADMIN/FCT20240.csv", Config.getConfig(Controlador_prev.getUsuario()).getRutaFCT());
         Thread.sleep(2000);
         moveTo("#btnVizda");
         clickOn("#btnVizda");

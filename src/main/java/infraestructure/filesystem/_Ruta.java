@@ -1,0 +1,21 @@
+package infraestructure.filesystem;
+
+public enum _Ruta {
+    // Datos en filesystem (fuera de src/main/resources)
+    CONFIG("data/config"),
+    DATOS("data/datos"),
+
+    // Recursos dentro de src/main/resources
+    IMG("/imagenes"),
+    FXML("/fxml");
+
+    final String ruta;
+
+    _Ruta(String ruta) {
+        this.ruta = ruta;
+    }
+
+    public String getRuta() {
+        return ruta;
+    }
+}

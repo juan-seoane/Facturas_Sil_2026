@@ -22,7 +22,7 @@ import modelo.base.Config;
 public class ControladorTest {
 
 	private Config config;
-	private Controlador cntrlPpal;
+	private Controlador_prev cntrlPpal;
 	private ControladorFacturas cntrlFact;
 	private ModeloFacturas modFact;
 
@@ -30,7 +30,7 @@ public class ControladorTest {
 	public void setUp() throws NullPointerException, IOException, InterruptedException, BrokenBarrierException{
 		System.out.println("[ControladorTest] Comenzando el setUp");
 		this.config = Config.getConfig("admin");
-		this.cntrlPpal = Controlador.getControlador();
+		this.cntrlPpal = Controlador_prev.getControlador();
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class ControladorTest {
 		System.out.println("[ControladorTest] Comenzando el test de carga del Controlador Principal");
 		assertNotNull(this.config);
 		assertNotNull(this.cntrlPpal);
-		this.cntrlFact = Controlador.getControladorFacturas();
+		this.cntrlFact = Controlador_prev.getControladorFacturas();
 		assertNotNull(this.cntrlFact);
 		assertEquals(this.cntrlFact,ControladorFacturas.getControlador());
 		this.modFact = this.cntrlFact.m;

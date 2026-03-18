@@ -28,11 +28,11 @@ public class ConfigTest {
 	void borrarDatosUsuario(){
 		userAelim = "TESTuSER";
 		Credenciales cred_prev = Config.leerCredenciales("./config/creds.json");
-		var listaCredsNueva = new ArrayList<Contrasena>();
+		var listaCredsNueva = new ArrayList<Creds>();
 		//Generar nuevo archivo de credenciales sin el usuario declarado
-		for (Contrasena c : cred_prev.getlistacreds()){
+		for (Creds c : cred_prev.getlistacreds()){
 			if (!c.getUsuario().equals(userAelim))
-				listaCredsNueva.add(c); 
+				listaCredsNueva.add(c);
 		}
 
 		var n_creds = new Credenciales();
@@ -56,20 +56,20 @@ public class ConfigTest {
 	}
 
 	static void recursiveDelete(File targetDirectory) {
-		
+
 		File[] data = targetDirectory.listFiles();
-	
+
 		for (File file : data) {
 		  if (file.isDirectory())
 			recursiveDelete(file);
-	
+
 		  else
 			file.delete();
 		}
-	
+
 		targetDirectory.delete();
 	  }
-	
+
 	@Test
 	void CreaConfigOK() throws NullPointerException, IOException{
 		Config configPrueba = Config.getConfig(user);
@@ -100,7 +100,7 @@ public class ConfigTest {
 		*/
     // REVIEW - 24-04-11 : Revisar esto: Si es Arraylist.class o Contrasena.class
 	// REVIEW - 24-04-21 : Parece que hay un problema al leer las credenciales... El fichero lo lee bien, pero el Objeto 'Credenciales' lo coge mal...
-    
+
     	//System.out.println("\n---------------\ncredenciales:\n"+credenciales.toString());
 		if(credenciales.creds.size()>1)
 			assertNotEquals(credenciales.creds.get(0).usuario, credenciales.creds.get(1).usuario);
@@ -186,7 +186,7 @@ public class ConfigTest {
 		System.out.println(uidtjson);
 
 		assertEquals(user, cfgPrueba.usuario);
-		
+
 		String rutacfg1 = "config/"+cfgPrueba.usuario.toUpperCase()+"/rutasconfig.json";
 		File fcfg1 = new File(rutacfg1);
 		assertTrue(fcfg1.exists());

@@ -22,7 +22,7 @@ import modelo.records.Factura;
 
 public class FicheroTest {
 
-	@Test 
+	@Test
 	void fileCredsExists(){
 
 		String ruta="./config/creds.json";
@@ -30,13 +30,13 @@ public class FicheroTest {
 		assertTrue(f.exists());
 
 	}
-	
+
 	@Test
 	void OKcredsJSON(){
-    
+
 		String ruta="./config/creds.json";
         String fichero = Fichero.leerJSON(ruta);
- 			
+
 		//System.out.println("[FicheroTest>OKcredsJSON] fichero:\n" + fichero);
 		//Además informa de que el fichero no está vacío
 		assertNotEquals("", fichero);
@@ -46,10 +46,10 @@ public class FicheroTest {
 	@Test
 	void OKMisDatosJSON(){
 		String usuario = "admin";
-    
+
 		String ruta="./config/" + usuario.toUpperCase() + "/misdatos.json";
         String fichero = Fichero.leerJSON(ruta);
- 			
+
 		//System.out.println("[FicheroTest>OKMisDatosJSON] fichero:\n" + fichero);
 		//Además informa de que el fichero no está vacío
 		assertNotEquals("", fichero);
@@ -61,27 +61,27 @@ public class FicheroTest {
 		String usuario = "admin";
 		String rutaYnombre = "./datos/" + usuario.toUpperCase() + "/FCT242.csv";
 
-		var ctrlPpal = Controlador.getControlador();
-		Controlador.setUsuario(usuario);
+		var ctrlPpal = Controlador_prev.getControlador();
+		Controlador_prev.setUsuario(usuario);
 
 		var fichero = new Fichero(rutaYnombre);
 		var datosCSV = fichero.leerCSV(rutaYnombre);
-	
+
 		assertNotNull(datosCSV);
-	
+
 		assertNotNull(ModeloFacturas.getModelo().leerFacturasSinFiltrar());
 
 		//System.out.println("\n*****[FicheroTest]********\nFacturas en la lista final:");
 		for (Factura f : ModeloFacturas.getModelo().leerFacturasSinFiltrar()){
 			//System.out.println(f.toString());
 		}
-		
+
 	}
 // REVIEW - 24-06-14 : Repasar este test, y comprobar el proceso de creacion de nuevos archivos de config y de trabajo, parece que se crean ficheros que no deberían existir en el directorio raiz, en vez de en el de cada usuario...
 	@Test
 	void OKguardarCSV() throws NullPointerException, IOException, InterruptedException, BrokenBarrierException{
 		OKleerCSV();
-		String rutaYnombre = "./datos/" + Controlador.getUsuario().toUpperCase()+"/FCT242.csv";
+		String rutaYnombre = "./datos/" + Controlador_prev.getUsuario().toUpperCase()+"/FCT242.csv";
 		Fichero<Factura> fichero = new Fichero<Factura>(rutaYnombre);
 		ModeloFacturas modeloFCT;
 
@@ -92,7 +92,7 @@ public class FicheroTest {
 
 		ArrayList<String[]>datosCSV = modeloFCT.ConvertirListaFCTaCSV((ArrayList<Factura>)listaFCT);
 		Boolean ok = fichero.guardarCSV(datosCSV);
-		
+
 		assertTrue(ok);
 	}
 }

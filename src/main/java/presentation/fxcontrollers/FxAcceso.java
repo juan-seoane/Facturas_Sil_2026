@@ -1,0 +1,217 @@
+package presentation.fxcontrollers;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import app.services.NavService;
+import infraestructure.servicios.AuthService;
+import javafx.animation.PauseTransition;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+
+public class FxAcceso implements Initializable {
+
+//#region campos fxml
+    @FXML private TextField txtUsuario;
+    @FXML private PasswordField txtPassword;
+    @FXML private Button btnOK;
+    @FXML
+    public TextArea txtArea;
+    @FXML
+    public ImageView imgvAcceso;
+//#endregion
+
+//#region otros campos
+    public static Stage ventanaAcceso;
+
+    public static Scene scene2;
+    public Stage stage;
+    public static TextArea canvasAcceso;
+    public static String usuario ="";
+    public static int intentos = 1;
+
+    //private boolean credsOK;
+    public static boolean aceptado = false;
+
+
+    // --- NUEVO LISTENER SEGURO ---
+    public EventHandler<KeyEvent> handlerTeclas = (KeyEvent ke) -> {
+        if (ke.getCode() == KeyCode.ENTER || ke.getCode().isLetterKey() || ke.getCode().isDigitKey()) {
+            System.out.println("[FxAcceso>HandlerTeclas] Key Pressed: " + ke.getCode());
+
+        Stage ventana = (Stage) txtUsuario.getScene().getWindow();
+        // Evitar ejecutar si la ventana ya no está visible
+        if (!ventana.isShowing())
+            return;
+
+        try {
+            pulsartecla();
+        } catch (IOException e) {
+            System.out.println("[FxAcceso>HandlerTeclas] Error al pulsar tecla: " + e.getMessage());
+        }
+
+        ke.consume();
+    }
+    };
+//#endregion
+
+//#region inicializacion
+    // REVIEW: Lo de abajo sólo funciona si se implementa el Interfaz "Inicializable" (implements Initilizable)
+    @FXML
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        canvasAcceso = this.txtArea;
+        // REVIEW: No sé cómo hacer para poner el foco al arrancar en ese campo de texto... la siguiente línea no funciona
+        //txtUsuario.requestFocus();
+
+        canvasAcceso.sceneProperty().addListener((observableScene, oldScene, newScene) -> {
+            if (newScene != null) {
+                // 'txtUsuario' está ahora en una escena, podemos obtener el Stage
+                FxAcceso.ventanaAcceso = (Stage) newScene.getWindow();
+            }
+        });
+
+    // Obtener el Stage cuando la escena esté lista
+    txtArea.sceneProperty().addListener((obs, oldScene, newScene) -> {
+        if (newScene != null) {
+            stage = (Stage) newScene.getWindow();
+        }
+    });
+
+
+        //System.out.println("[Acceso - initialize()] canvasAcceso activado: " + (canvasAcceso!=null) );
+    }
+//#endregion
+
+//#region botones de eventos
+    private void pulsartecla() throws IOException {
+
+        AuthService.iniciarPrograma();
+        ventanaAcceso.close();
+        //Platform.exit();
+
+        if (!aceptado){
+            System.exit(0);
+        }
+    }
+
+    @FXML
+    private void pulsarbotonOK() throws InterruptedException, IOException{
+        if (aceptado){
+            pulsartecla();
+            System.out.println("[Acceso] Entrando...????");
+        }else{
+            probar();
+        }
+    }
+// NOTE : 26-03-16 : pulsar Enter equivale a pulsar el botón OK
+    @FXML
+    private void pulsarEnter(KeyEvent ke) throws InterruptedException, IOException{
+        if(ke.getCode()==KeyCode.ENTER){
+            pulsarbotonOK();
+            ke.consume(); // <-- stops passing the event to next node
+        }
+    }
+
+    @FXML
+    public void probar() throws InterruptedException, IOException {
+        TextField userF = this.txtUsuario;
+        PasswordField passF = this.txtPassword;
+
+        String user = userF.getText();
+        String pass = passF.getText();
+
+        int resp = AuthService.autenticar(user, pass, intentos);
+
+        switch (resp) {
+            case 1 -> {
+                acierto();
+                break;
+            }
+            case 0 -> {
+                fallo();
+                break;
+            }
+            default -> {
+                reintentar();
+                break;
+            }
+
+        }
+    }
+    //#endregion
+
+//#region setters,getters y demás
+    public static String getUsuario() {
+        //Este procedimiento tiene que leer el usuario antes de cerrarse la ventana...
+        return FxAcceso.usuario;
+    }
+
+    public static TextArea getCanvas() {
+        return canvasAcceso;
+    }
+
+    public static void imprimir(String cont) {
+        getCanvas().appendText("\n" + cont);
+    }
+
+    //#endregion
+
+//#region post-auth
+    public void fallo() {
+        scene2 = NavService.crearEscena("Acceso2");
+
+        NavService.cambiarEscena(stage, scene2, handlerTeclas);
+        System.out.println("[Acceso>fallo] intentos>=5 y AUTH_FAIL] El proceso de Autenticación ha fallado!");
+        System.out.println("[Acceso>fallo] El programa se cerrará!");
+        imprimir("\nEl proceso de Autenticación ha fallado!");
+        imprimir("\nEl programa se cerrará!\nPulse cualquier tecla para continuar...");
+        ventanaAcceso.requestFocus();
+        System.exit(0);
+    }
+
+    public void acierto() {
+        usuario=txtUsuario.getText();
+        aceptado = true;
+        // TODO : 26-03-16 : La nueva Config no se debería cargar desde el FxController...
+        //Config.getConfig(usuario);
+        scene2 = NavService.crearEscena("Acceso2");
+        NavService.cambiarEscena(stage, scene2, handlerTeclas);
+        System.out.println("[FxAcceso>acierto] intentos<5 y cred OK]...OK, entrando...pulse una tecla para continuar");
+        imprimir("Ok...Entrando!\nBienvenido a FacturasSIL 24!\nPulse una tecla para continuar...");
+        ventanaAcceso.requestFocus();
+        // NOTE : 26-03-17 : En vez de un Thread.sleep -> PauseTransition
+        PauseTransition pausa = new PauseTransition(Duration.seconds(3));
+        pausa.setOnFinished(e -> {
+            // lo que quieras hacer después de los 3 segundos
+            System.exit(0);
+        });
+        pausa.play();
+        // TODO : 26-03-17 : A partir de aquí se cierra esta escena, solamente, y por otro lado (AuthService) arranca el Controlador Principal, y con él el programa  en si...
+    }
+
+    public void reintentar() throws InterruptedException {
+        imprimir("\nDatos incorrectos: " + this.txtUsuario.getText() + " - " + this.txtPassword.getText()
+                + "\n...Por favor vuelva a intentarlo... (intentos: " + intentos + ")");
+        intentos++;
+
+        this.txtUsuario.clear();
+        this.txtPassword.clear();
+        this.txtUsuario.requestFocus();
+    }
+    //#endregion
+
+}

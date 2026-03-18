@@ -10,9 +10,10 @@ import javafx.application.Application;
 import javafx.embed.swing.JFXPanel;
 import javax.swing.SwingUtilities;
 import modelo.base.Config;
+import vista.fxcontrollers.Acceso;
+import vista.helpers.Splash;
+
 import org.junit.jupiter.api.Test;
-import ui.Splash;
-import ui.fxcontrollers.Acceso;
 
 public class LoginTest {
 

@@ -1,0 +1,113 @@
+@startuml
+title Arquitectura MVC Extendida (modeloDominio / modeloNegocio / infraestructura)
+
+package "modeloDominio" {
+
+    package "base" {
+    }
+
+    package "interfaces" {
+    }
+
+    package "dtos" {
+        package "records" {
+        }
+    }
+
+    package "enums" {
+    }
+
+    package "helpers" {
+    }
+}
+
+package "modeloNegocio" {
+
+    package "filtros" {
+    }
+
+    package "validadores" {
+    }
+
+    package "base" {
+    }
+
+    package "i_repositorio" {
+    }
+
+    package "infraestructura" {
+
+        package "filesystem" {
+        }
+
+        package "json" {
+        }
+
+        package "csv" {
+        }
+
+        package "informes" {
+            package "generacion" {
+            }
+            package "datasources" {
+            }
+            package "mappers" {
+            }
+        }
+    }
+
+    package "helpers" {
+    }
+
+    package "servicios" {
+        package "ocr" {
+        }
+    }
+}
+
+package "controladores" {
+    package "fxmlControllers" {
+    }
+    package "helpers" {
+    }
+}
+
+package "vista" {
+    package "fxml" {
+    }
+    package "css" {
+    }
+    package "images" {
+    }
+    package "modelos_informes" {
+    }
+}
+
+package "data" {
+    package "config" {
+        package "$USERNAME" {
+        }
+    }
+    package "datos" {
+        package "$USERNAME" {
+            package "csv" {
+            }
+            package "informes" {
+            }
+            package "escaneos" {
+            }
+        }
+    }
+}
+
+package "UML" {
+}
+
+package "especifSO" {
+}
+
+package "src/test/java" {
+}
+
+@enduml
+

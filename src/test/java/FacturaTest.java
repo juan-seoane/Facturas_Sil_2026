@@ -22,8 +22,8 @@ public class FacturaTest {
 		String usuario = "admin";
 		String rutaYnombre = "datos/" + usuario.toUpperCase() + "/FCT20240.csv";
 		var config = Config.getConfig(usuario);
-		var contrlPpal = Controlador.getControlador();
-		Controlador.setUsuario("admin");
+		var contrlPpal = Controlador_prev.getControlador();
+		Controlador_prev.setUsuario("admin");
 		var modeloFCT = ModeloFacturas.getModelo();
 		//Se lee el fichero CSV
 		var fichero = new Fichero(rutaYnombre);

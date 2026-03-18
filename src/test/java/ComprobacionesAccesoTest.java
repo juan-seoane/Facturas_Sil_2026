@@ -1,16 +1,10 @@
 
 
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
-import modelo.base.Config;
-import modelo.base._Ruta;
+import modeloNegocio.Infraestructura.filesystem._Ruta;
+import infraestructure.services.config.Config;
 
 
 public class ComprobacionesAccesoTest {

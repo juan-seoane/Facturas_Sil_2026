@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1066.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.fxcontrollers.FxCntrlTablaFCT">
+   <children>
+      <VBox layoutX="35.0" layoutY="22.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="650.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane prefHeight="600.0" prefWidth="900.0">
+               <children>
+                  <TableView fx:id="tblvwFct" prefHeight="599.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columns>
+                      <TableColumn fx:id="colID" prefWidth="29.0" text="ID" />
+                      <TableColumn fx:id="colNumFact" prefWidth="115.0" text="#" />
+                        <TableColumn fx:id="colFecha" prefWidth="69.0" text="fecha" />
+                        <TableColumn fx:id="colRS" prefWidth="146.0" text="nombreEmpresa" />
+                        <TableColumn fx:id="colCat" minWidth="4.79998779296875" prefWidth="140.0" text="categoría" />
+                        <TableColumn fx:id="colDev" prefWidth="29.59991455078125" text="dev" />
+                        <TableColumn fx:id="colNumExtr" prefWidth="40.79998779296875" text="#Extr" />
+                        <TableColumn fx:id="colBase" prefWidth="77.0" text="Base" />
+                        <TableColumn fx:id="colTipoIVA" prefWidth="36.0" text="tIva" />
+                        <TableColumn fx:id="colIVA" prefWidth="56.0" text="IVA" />
+                        <TableColumn fx:id="colST" prefWidth="79.0" text="SubTotal" />
+                        <TableColumn fx:id="colTipoRet" prefWidth="36.0" text="\%ret" />
+                        <TableColumn fx:id="colRetenc" prefWidth="57.0" text="retenc" />
+                        <TableColumn fx:id="colTotal" prefWidth="96.0" text="TOT" />
+                        <TableColumn fx:id="colNota" prefWidth="60.0" text="nt" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+            <Pane prefHeight="115.0" prefWidth="1001.0" style="-fx-background-color: #bfd3e3;" VBox.vgrow="NEVER">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <children>
+                  <VBox prefHeight="77.0" prefWidth="1001.0">
+                     <children>
+                        <Pane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <Button fx:id="btnBorrarFct" layoutX="897.0" mnemonicParsing="false" onAction="#btnBorrarFctPulsado" prefHeight="39.0" prefWidth="104.0" text="BORRAR" />
+                              <Button fx:id="btnVisorFct" mnemonicParsing="false" onAction="#btnVisorFctPulsado" prefHeight="39.0" prefWidth="100.0" text="VISOR">
+                                 <font>
+                                    <Font name="Arial Black" size="14.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="btnNuevaFct" layoutX="772.0" mnemonicParsing="false" onAction="#btnNuevaFctPulsado" prefHeight="39.0" prefWidth="125.0" text="NUEVA FCT">
+                                 <font>
+                                    <Font name="Arial Black" size="14.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="btnEditarFct" layoutX="672.0" mnemonicParsing="false" onAction="#btnEditarFctPulsado" prefHeight="38.0" prefWidth="100.0" text="EDITAR" />
+                              <Button fx:id="btnFiltrosFct" layoutX="553.0" layoutY="1.0" mnemonicParsing="false" onAction="#btnFiltrosFctPulsado" prefHeight="39.0" prefWidth="100.0" text="FILTROS">
+                                 <font>
+                                    <Font name="Arial Black" size="14.0" />
+                                 </font>
+                              </Button>
+                              <CheckBox fx:id="chkbxFiltrosActivosFct" layoutX="449.0" layoutY="11.0" mnemonicParsing="false" text="Filtros ACTIVOS" />
+                           </children>
+                        </Pane>
+                        <Pane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <HBox prefHeight="39.0" prefWidth="1066.0">
+                                 <children>
+                                    <Label alignment="CENTER" prefHeight="48.0" prefWidth="72.0" text="Base" textAlignment="RIGHT" textOverrun="CENTER_ELLIPSIS">
+                                       <font>
+                                          <Font name="Arial Black" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lblBase" alignment="CENTER" prefHeight="39.0" prefWidth="74.0" text="Base" />
+                                    <Label prefHeight="39.0" prefWidth="56.0" text="IVA">
+                                       <font>
+                                          <Font name="Arial Black" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lblIVA" alignment="CENTER" prefHeight="39.0" prefWidth="74.0" text="IVA" />
+                                    <Label prefHeight="45.0" prefWidth="72.0" text="SubTotal">
+                                       <font>
+                                          <Font name="Arial Black" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lblST" alignment="CENTER_RIGHT" prefHeight="39.0" prefWidth="74.0" text="ST" />
+                                    <Label alignment="CENTER" prefHeight="45.0" prefWidth="72.0" text="BaseNI">
+                                       <font>
+                                          <Font name="Arial Black" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lblBaseNI" alignment="CENTER" prefHeight="39.0" prefWidth="74.0" text="BaseNI" />
+                                    <Label alignment="CENTER" prefHeight="45.0" prefWidth="72.0" text="Retenc">
+                                       <font>
+                                          <Font name="Arial Black" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lblRetenc" alignment="CENTER" prefHeight="39.0" prefWidth="74.0" text="Retenc" />
+                                    <Label alignment="CENTER" prefHeight="45.0" prefWidth="72.0" text="TOTAL">
+                                       <font>
+                                          <Font name="Arial Black" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lblTotal" alignment="CENTER_RIGHT" prefHeight="39.0" prefWidth="74.0" text="Total" />
+                                    <Label alignment="CENTER_RIGHT" prefHeight="39.0" prefWidth="105.0" text="#Facts" textAlignment="RIGHT">
+                                       <font>
+                                          <Font name="Arial Black" size="14.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </Pane>
+                     </children>
+                  </VBox>
+                  <Label fx:id="lblNumFact" alignment="CENTER" layoutX="960.0" layoutY="39.0" prefHeight="39.0" prefWidth="108.0" text="#n">
+                     <font>
+                        <Font name="Arial Black" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.fxcontrollers.Acceso">
+   <children>
+      <SplitPane dividerPositions="0.2550855666774297" layoutX="163.0" layoutY="81.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="142.0" prefWidth="598.0">
+               <children>
+                  <HBox layoutX="-2.0" prefHeight="195.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-2.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="195.0" prefWidth="163.0">
+                           <children>
+                              <AnchorPane layoutX="5.0" layoutY="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                 <children>
+                                    <ImageView fx:id="imgvAcceso" fitHeight="151.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../imagenes/cafeSIL.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane centerShape="false" layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0" prefHeight="195.0" prefWidth="449.0" style="-fx-background-color: #1e81b0;" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Button fx:id="btnOK" mnemonicParsing="false" onAction="#probar" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #063970;" text="OK" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                 <font>
+                                    <Font name="System Bold" size="24.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="255.0" prefWidth="598.0">
+               <children>
+                  <TextArea fx:id="txtArea" editable="false" focusTraversable="false" layoutX="-1.0" layoutY="33.0" nodeOrientation="LEFT_TO_RIGHT" pickOnBounds="false" prefHeight="229.0" prefWidth="598.0" style="-fx-border-image-width: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="DISAPPEAR" />
+                     </cursor></TextArea>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

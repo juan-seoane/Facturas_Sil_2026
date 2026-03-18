@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="666.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controladores.fxcontrollers.Acceso">
+   <children>
+      <SplitPane dividerPositions="0.24548192771084337" layoutX="163.0" layoutY="81.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="142.0" prefWidth="598.0">
+               <children>
+                  <HBox layoutX="-2.0" prefHeight="195.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-2.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="195.0" prefWidth="163.0">
+                           <children>
+                              <AnchorPane layoutX="5.0" layoutY="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                 <children>
+                                    <ImageView fx:id="imgvAcceso" fitHeight="151.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../imagenes/cafeSIL.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane centerShape="false" layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0" prefHeight="195.0" prefWidth="449.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="161.0" prefWidth="443.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
+                                <items>
+                                    <AnchorPane prefHeight="112.0" prefWidth="437.0">
+                                       <children>
+                                          <GridPane prefHeight="91.0" prefWidth="587.0" style="-fx-background-color: #1e81b0;" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <padding>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+                                             </padding>
+                                             <children>
+                                                <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefWidth="200.0" text="Usuario" textAlignment="RIGHT" textFill="WHITE" GridPane.halignment="RIGHT">
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                   <padding>
+                                                      <Insets right="10.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefWidth="200.0" text="Contrasena" textAlignment="RIGHT" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                   <padding>
+                                                      <Insets right="10.0" />
+                                                   </padding>
+                                                </Label>
+                                                <TextField fx:id="txtUsuario" maxHeight="-Infinity" prefHeight="10.0" prefWidth="140.0" GridPane.columnIndex="1" GridPane.rowSpan="2147483647" GridPane.valignment="TOP">
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets />
+                                                   </GridPane.margin>
+                                                   <padding>
+                                                      <Insets top="2.0" />
+                                                   </padding>
+                                                   <cursor>
+                                                      <Cursor fx:constant="TEXT" />
+                                                   </cursor>
+                                                </TextField>
+                                                <PasswordField fx:id="txtPassword" maxHeight="-Infinity" onKeyPressed="#pulsarEnter" prefHeight="10.0" prefWidth="140.0" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="2147483647" GridPane.valignment="TOP">
+                                                   <font>
+                                                      <Font size="18.0" />
+                                                   </font>
+                                                   <padding>
+                                                      <Insets top="2.0" />
+                                                   </padding>
+                                                   <cursor>
+                                                      <Cursor fx:constant="TEXT" />
+                                                   </cursor></PasswordField>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane prefHeight="122.0" prefWidth="441.0" style="-fx-background-color: #1e81b0;">
+                                       <children>
+                                          <Button fx:id="btnOK" layoutX="215.0" layoutY="22.0" mnemonicParsing="false" onAction="#pulsarBotonOK" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #063970;" text="OK" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                             <font>
+                                                <Font name="System Bold" size="24.0" />
+                                             </font>
+                                          </Button>
+                                       </children>
+                                    </AnchorPane>
+                                </items>
+                              </SplitPane>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="255.0" prefWidth="598.0">
+               <children>
+                  <TextArea fx:id="txtArea" editable="false" focusTraversable="false" layoutX="-1.0" layoutY="33.0" nodeOrientation="LEFT_TO_RIGHT" pickOnBounds="false" prefHeight="229.0" prefWidth="598.0" style="-fx-border-image-width: 10;" text="...introduzca sus credenciales" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="DISAPPEAR" />
+                     </cursor></TextArea>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

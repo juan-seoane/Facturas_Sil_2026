@@ -3,10 +3,10 @@ package infraestructure.csv;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import domain.interfaces.IfacturasRepo;
 import domain.records.Extracto;
 import domain.records.Factura;
-import infraestructure.servicios.config.Config;
-import domain.interfaces.IfacturasRepo;
 
 public class FacturaCSVRepo implements IfacturasRepo {
 
@@ -53,7 +53,8 @@ public class FacturaCSVRepo implements IfacturasRepo {
     }
 
     public static List<Factura> leerTodasLasFacturas() {
-        String ruta = Config.getConfig(Config.usuario).getConfigData().getRutas().getFCT();
+        // STUB : 26-03-18
+        String ruta = ""; //Config.getConfig(Config.usuario).getConfigData().getRutas().getFCT();
         try {
             List<Factura> listaFCT;
             listaFCT = CsvReader.leerFacturas(ruta);
@@ -74,7 +75,8 @@ public class FacturaCSVRepo implements IfacturasRepo {
     @Override
     public boolean guardarListaFacturas(List<Factura> listaFCT) {
         List<String[]> listaLineas = parsearListaFacturas(listaFCT);
-        String ruta = Config.getConfig(Config.usuario).getConfigData().getRutas().getFCT();
+        // STUB : 26-03-18
+        String ruta = ""; //Config.getConfig(Config.usuario).getConfigData().getRutas().getFCT();
 
         return (CsvWriter.escribirCSV(ruta, listaLineas));
     }

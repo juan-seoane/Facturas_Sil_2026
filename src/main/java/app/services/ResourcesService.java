@@ -1,10 +1,10 @@
 package app.services;
 
+import infraestructure.filesystem._Ruta;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import modeloNegocio.Infraestructura.filesystem._Ruta;
 
 /* CONTROLA EL PROCESO DE CREACIÓN DE RUTAS DE USUARIO, CHEQUEO DE SU EXISTENCIA, CARGA DE IMÁGENES, DE FXML, ETC... */
 public class ResourcesService {
@@ -16,7 +16,9 @@ public class ResourcesService {
         try {
             img = new Image(ResourcesService.class.getResource(ruta).toExternalForm());
         } catch (Exception e) {
-            System.out.println("ex tipo " + e.getClass() + " al cargar la imagen " + ruta + " desde el ResourcesService");
+            System.out.println(
+                "ex tipo " + e.getClass() + " al cargar la imagen " + ruta + " desde el ResourcesService"
+            );
             System.exit(1);
         }
         return img;

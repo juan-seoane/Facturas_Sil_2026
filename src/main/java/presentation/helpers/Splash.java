@@ -50,7 +50,7 @@ public class Splash extends JWindow implements Runnable {
     }
 
     private void createShadowPicture(BufferedImage image) {
-        //System.out.println("Creando Shadow Picture del splash");
+        System.out.println("Creando Shadow Picture del splash");
         int width = image.getWidth();
         int height = image.getHeight();
 

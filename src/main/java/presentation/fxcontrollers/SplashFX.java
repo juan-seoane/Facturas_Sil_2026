@@ -73,9 +73,9 @@ public class SplashFX extends Application {
     //#region HELPERS
     private synchronized Image cargarImagenAleatoria() {
         Image img;
-        int i = (int) (Math.floor(Math.random() * 5 + 1));
+        int i = (int) (Math.floor(Math.random() *4 + 1));
         String rutaRel = "/splash" + i + ".jpg";
-        System.out.println("[Splash>cargarImagenAleatoria] Ruta de la Imagen : " + rutaRel);
+        System.out.println("[FxSplash>cargarImagenAleatoria] Ruta de la Imagen : " + rutaRel);
 
         img = ResourcesService.cargarImagen(rutaRel);
 

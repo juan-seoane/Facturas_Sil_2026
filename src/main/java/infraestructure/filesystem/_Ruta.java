@@ -6,7 +6,7 @@ public enum _Ruta {
     DATOS("data/datos"),
 
     // Recursos dentro de src/main/resources
-    IMG("/imagenes"),
+    IMG("/images"),
     FXML("/fxml");
 
     final String ruta;

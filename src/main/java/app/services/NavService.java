@@ -1,12 +1,12 @@
 package app.services;
 
+import infraestructure.filesystem._Ruta;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import modeloNegocio.Infraestructura.filesystem._Ruta;
-import vista.helpers.FxmlHelper;
+import presentation.helpers.FxmlHelper;
 
 /* CONTROLA LA CREACIÓN DE ESCENAS Y DEMÁS ASPECTOS DE LA NAVEGACIÓN POR VENTANAS */
 public class NavService {

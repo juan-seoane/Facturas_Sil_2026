@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.fxcontrollers.PanelControl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentation.fxcontrollers.PanelControl">
    <children>
       <GridPane prefHeight="150.0" prefWidth="750.0" style="-fx-background-color: #CCDFE7; -fx-border-color: #063970; -fx-border-width: 5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -109,7 +109,7 @@
             </Label>
             <ImageView fitHeight="88.0" fitWidth="91.0" pickOnBounds="true" preserveRatio="true" smooth="false" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" GridPane.vgrow="NEVER">
                <image>
-                  <Image url="@../imagenes/cafeSIL.png" />
+                  <Image url="@../images/cafeSIL.png" />
                </image>
                <GridPane.margin>
                   <Insets bottom="5.0" left="10.0" />

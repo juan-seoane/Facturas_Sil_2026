@@ -26,7 +26,7 @@ public class CsvReader {
             String[] linea = lineas.get(idx.get());
 
             if (esLineaFactura(linea)) {
-                Factura f = FacturaCSVRepo.leerFacturaConExtractos(lineas, idx.get());
+                Factura f = FacturaCSVRepo.leerFactura(lineas, idx.get());
 
                 facturas.add(f);
 

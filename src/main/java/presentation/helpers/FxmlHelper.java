@@ -14,15 +14,6 @@ public class FxmlHelper {
 	public FxmlHelper(String ruta){
 
 		this.ruta = ruta;
-	/*
-		try {
-			System.out.println("[FxmlHelper>constructor] Fichero " + this.ruta + " existe: " + Fichero.fileExists(ruta));
-
-		} catch (NullPointerException | IOException e) {
-			System.out.println("[FxmlHelper>constructor] Excepcion comprobando ruta: " + ruta);
-			e.printStackTrace();
-		}
-	*/
 		this.loader = new FXMLLoader();
 
 		this.loader.setLocation(getClass().getResource(ruta));

@@ -15,6 +15,7 @@ target/
 .vscode/
 .history/
 .settings/
+*.code-workspace
 
 # Eclipse (por si acaso)
 .project

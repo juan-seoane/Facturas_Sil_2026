@@ -48,3 +48,11 @@ failsafe-reports/
 # Java Language Server cache
 .jdt/
 
+# Libs
+lib/
+*.zip
+*.dll
+*.so
+*.deb
+
+

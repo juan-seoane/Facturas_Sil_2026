@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import app.services.NavService;
 import infraestructure.servicios.AuthService;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -50,22 +51,29 @@ public class FxAcceso implements Initializable {
     // --- NUEVO LISTENER SEGURO ---
     public EventHandler<KeyEvent> handlerTeclas = (KeyEvent ke) -> {
         if (ke.getCode() == KeyCode.ENTER || ke.getCode().isLetterKey() || ke.getCode().isDigitKey()) {
+
             System.out.println("[FxAcceso>HandlerTeclas] Key Pressed: " + ke.getCode());
 
-        Stage ventana = (Stage) txtUsuario.getScene().getWindow();
-        // Evitar ejecutar si la ventana ya no está visible
-        if (!ventana.isShowing())
-            return;
+            // 1. Si el nodo ya no está en escena → salir
+            if (txtUsuario.getScene() == null)
+                return;
 
-        try {
-            pulsartecla();
-        } catch (IOException e) {
-            System.out.println("[FxAcceso>HandlerTeclas] Error al pulsar tecla: " + e.getMessage());
+            // 2. Obtener la ventana de forma segura
+            Stage ventana = (Stage) txtUsuario.getScene().getWindow();
+            if (ventana == null || !ventana.isShowing())
+                return;
+
+            // 3. Ejecutar la acción
+            try {
+                pulsartecla();
+            } catch (IOException e) {
+                System.out.println("[FxAcceso>HandlerTeclas] Error al pulsar tecla: " + e.getMessage());
+            }
+
+            ke.consume();
         }
-
-        ke.consume();
-    }
     };
+
 //#endregion
 
 //#region inicializacion
@@ -99,9 +107,9 @@ public class FxAcceso implements Initializable {
 //#region botones de eventos
     private void pulsartecla() throws IOException {
 
-        AuthService.iniciarPrograma();
         ventanaAcceso.close();
-        //Platform.exit();
+        //TODO : 26-03-18 : Desde aquí iniciar la Aplicación, ya autenticado
+        Platform.exit();
 
         if (!aceptado){
             System.exit(0);

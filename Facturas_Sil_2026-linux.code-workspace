@@ -12,6 +12,7 @@
 		"java.project.sourcePaths": [
 			"src"
 		],
-		"java.debug.settings.onBuildFailureProceed": true
+		"java.debug.settings.onBuildFailureProceed": true,
+		"commentAnchors.workspace.lazyLoad": false
 	}
 }

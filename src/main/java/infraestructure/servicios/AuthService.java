@@ -14,14 +14,6 @@ import infraestructure.helpers._Auth;
 /* CONTROLA EL PROCESO DE AUTENTICACIÓN */
 public class AuthService {
 
-    //#region AUTH
-
-    public static void iniciarPrograma() {
-
-    }
-
-    //#endregion
-
     public static int autenticar(String user, String pass, int intentos) {
         // STUB : 26-03-16 : completar el método autenticar
         int resp = 3;

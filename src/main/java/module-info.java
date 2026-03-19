@@ -12,6 +12,9 @@ module facturas.sil {
     opens presentation.fxcontrollers to javafx.fxml;
     opens presentation to javafx.fxml;
 
+    // Para permitir a GSON leer records (creds)
+    opens domain.records to com.google.gson;
+
     // Para permitir que JavaFX instancie SplashFX (Application)
     exports presentation.fxcontrollers;
 

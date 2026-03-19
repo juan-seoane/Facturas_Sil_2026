@@ -1,5 +1,6 @@
 package app.services;
 /* CONTROLA TODAS LAS OPERACIONES SOBRE UNA FACTURA */
+/*
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -156,13 +157,13 @@ public class FacturaService {
                 f.setID(i);
                 i++;
             // // }
-            /*// Crear una alerta de tipo información
+            // Crear una alerta de tipo información
             Alert alert2 = new Alert(AlertType.INFORMATION);
             alert2.setTitle("Atención!!");
             alert2.setHeaderText("[ModeloFacturas]");
             alert2.setContentText("Borrando factura!");
             // Mostrar la alerta y esperar a que el usuario la cierre
-            alert2.showAndWait();*/
+            alert2.showAndWait();*//*
             System.out.println("Borrando factura!");
             numeroFacturas--;
             var datosLista = ConvertirListaFCTaCSV(facturas);
@@ -174,13 +175,13 @@ public class FacturaService {
             return false;
         } else {
             // El usuario seleccionó "No" o cerró el cuadro de diálogo
-            /*// Crear una alerta de tipo información
+            /* Crear una alerta de tipo información
             Alert alert2 = new Alert(AlertType.INFORMATION);
             alert2.setTitle("Atención!!");
             alert2.setHeaderText("[ModeloFacturas]");
             alert2.setContentText("Operación de borrado de Factura cancelada.");
             // Mostrar la alerta y esperar a que el usuario la cierre
-            alert2.showAndWait();*/
+            alert2.showAndWait();*//*
             System.out.println("Operacion de borrado de Factura cancelada.");
             return false;
         }
@@ -188,3 +189,4 @@ public class FacturaService {
 
     //#endregion
 }
+*/

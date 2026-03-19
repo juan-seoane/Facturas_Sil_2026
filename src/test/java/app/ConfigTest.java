@@ -1,5 +1,4 @@
-
-
+package app;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -8,11 +7,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import modelo.base.*;
-import modelo.records.*;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import domain.records.ConfigData;
+import domain.records.Credenciales;
+import domain.records.Creds;
+import domain.records.MisDatos;
+import domain.records.RutasConfig;
+import domain.records.UIData;
+import infraestructure.filesystem.Fichero;
+import infraestructure.filesystem._Ruta;
+import infraestructure.servicios.AuthService;
+import infraestructure.servicios.config.Config;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,18 +34,19 @@ public class ConfigTest {
 	@Test
 	void borrarDatosUsuario(){
 		userAelim = "TESTuSER";
-		Credenciales cred_prev = Config.leerCredenciales("./config/creds.json");
+		Credenciales cred_prev = AuthService.leerCredenciales(_Ruta.CONFIG.getRuta() + "/creds.json");
 		var listaCredsNueva = new ArrayList<Creds>();
 		//Generar nuevo archivo de credenciales sin el usuario declarado
-		for (Creds c : cred_prev.getlistacreds()){
-			if (!c.getUsuario().equals(userAelim))
+		for (Creds c : cred_prev.getCreds()){
+			if (!c.usuario().equals(userAelim))
 				listaCredsNueva.add(c);
 		}
 
 		var n_creds = new Credenciales();
-		n_creds.setListaCredenciales(listaCredsNueva);
+		n_creds.setCreds(listaCredsNueva);
 
-		Config.guardarCredenciales(n_creds);
+		// STUB : 26-03-19 : Falta método para Guardar Credenciales
+		//Config.guardarCredenciales(n_creds);
 		//Borrar subdirectorios de Config y Trabajo
 		borrarSubdirs(userAelim);
 
@@ -102,16 +110,16 @@ public class ConfigTest {
 	// REVIEW - 24-04-21 : Parece que hay un problema al leer las credenciales... El fichero lo lee bien, pero el Objeto 'Credenciales' lo coge mal...
 
     	//System.out.println("\n---------------\ncredenciales:\n"+credenciales.toString());
-		if(credenciales.creds.size()>1)
-			assertNotEquals(credenciales.creds.get(0).usuario, credenciales.creds.get(1).usuario);
+		if(credenciales.getCreds().size()>1)
+			assertNotEquals(credenciales.getCreds().get(0).usuario(), credenciales.getCreds().get(1).usuario());
 		else
-			assertEquals("admin", credenciales.creds.get(0).usuario);
+			assertEquals("admin", credenciales.getCreds().get(0).usuario());
 	}
 
 	@Test
 	void RutasConfigJsonExiste(){
 
-		String ruta="config/" + user.toUpperCase() + "/rutasconfig.json";
+		String ruta= _Ruta.CONFIG.getRuta() + user.toUpperCase() + "/rutasconfig.json";
 		File fichero = new File(ruta);
 
 		assertTrue(fichero.exists());
@@ -119,7 +127,7 @@ public class ConfigTest {
 
 	@Test
 	void leerConfigDataJson(){
-		String ruta="./config/" + user.toUpperCase() + "/configdata.json";
+		String ruta=_Ruta.CONFIG.getRuta() + user.toUpperCase() + "/configdata.json";
 		String datos = Fichero.leerJSON(ruta);
 		Gson gson = new Gson();
 		ConfigData configData = gson.fromJson(datos, ConfigData.class);
@@ -129,18 +137,18 @@ public class ConfigTest {
 	@Test
 	void leerRutasConfigJson(){
 
-		String ruta = "config/" + user.toUpperCase() + "/rutasconfig.json";
+		String ruta = _Ruta.CONFIG.getRuta() + user.toUpperCase() + "/rutasconfig.json";
 		String datos = Fichero.leerJSON(ruta);
 		Gson gson = new Gson();
 		RutasConfig rutas = gson.fromJson(datos, RutasConfig.class);
-		String rutaMSDATS = "config/" + user.toUpperCase() + "/misdatos.json";
+		String rutaMSDATS = _Ruta.CONFIG.getRuta() + user.toUpperCase() + "/misdatos.json";
 		assertEquals( rutaMSDATS, rutas.getRutaMisDatos());
 	}
 
 	@Test
 	void leerUIDataJson(){
 
-		String ruta = "config/" + user.toUpperCase() + "/uidata.json";
+		String ruta = _Ruta.CONFIG.getRuta() + user.toUpperCase() + "/uidata.json";
 		String datos = Fichero.leerJSON(ruta);
 		Gson gson = new Gson();
 		UIData uidata = gson.fromJson(datos, UIData.class);
@@ -151,7 +159,7 @@ public class ConfigTest {
 	@Test
 	void leerMisDatosJson(){
 
-		String ruta = "config/" + user.toUpperCase() + "/misdatos.json";
+		String ruta = _Ruta.CONFIG.getRuta() + user.toUpperCase() + "/misdatos.json";
 		String datos = Fichero.leerJSON(ruta);
 		Gson gson = new Gson();
 		MisDatos misdatos = gson.fromJson(datos, MisDatos.class);
@@ -164,7 +172,7 @@ public class ConfigTest {
 		Config cfgPrueba;
 		if((cfgPrueba = Config.getConfig(user))!=null){
 			System.out.println("[ConfigTest>configToStringOK] config(user).toString():\n" + cfgPrueba.toString());
-			assertEquals( user, cfgPrueba.usuario);
+			assertEquals( user, cfgPrueba.getUsuario());
 		}
 	}
 
@@ -179,27 +187,27 @@ public class ConfigTest {
 		String cfgdtjson = cfgPrueba.configData.toJSON();
 		System.out.println("[ConfigTest>configToStringOK] configdata:\n" + cfgdtjson);
 
-		String msdtsjson = cfgPrueba.getMisDatos().toJSON();
+		String msdtsjson = cfgPrueba.misDatos.toJSON();
 		System.out.println("[ConfigTest>configToStringOK] misdatos:\n" + msdtsjson);
 
 		String uidtjson = cfgPrueba.uiData.toJSON();
 		System.out.println(uidtjson);
 
-		assertEquals(user, cfgPrueba.usuario);
+		assertEquals(user, cfgPrueba.getUsuario());
 
-		String rutacfg1 = "config/"+cfgPrueba.usuario.toUpperCase()+"/rutasconfig.json";
+		String rutacfg1 = "config/"+cfgPrueba.getUsuario().toUpperCase()+"/rutasconfig.json";
 		File fcfg1 = new File(rutacfg1);
 		assertTrue(fcfg1.exists());
 
-		String rutacfg2 = "config/"+cfgPrueba.usuario.toUpperCase()+"/configdata.json";
+		String rutacfg2 = "config/"+cfgPrueba.getUsuario().toUpperCase()+"/configdata.json";
 		File fcfg2 = new File(rutacfg2);
 		assertTrue(fcfg2.exists());
 
-		String rutacfg3 = "config/"+cfgPrueba.usuario.toUpperCase()+"/misdatos.json";
+		String rutacfg3 = "config/"+cfgPrueba.getUsuario().toUpperCase()+"/misdatos.json";
 		File fcfg3 = new File(rutacfg3);
 		assertTrue(fcfg3.exists());
 
-		String rutacfg4 = "config/"+cfgPrueba.usuario.toUpperCase()+"/uidata.json";
+		String rutacfg4 = "config/"+cfgPrueba.getUsuario().toUpperCase()+"/uidata.json";
 		File fcfg4 = new File(rutacfg4);
 		assertTrue(fcfg4.exists());
 // REVIEW - 24-05-02 : Hay que guardar las credenciales y los ficheros de trabajo

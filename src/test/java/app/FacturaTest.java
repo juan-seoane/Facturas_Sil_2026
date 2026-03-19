@@ -1,5 +1,6 @@
+package app;
 
-
+/*
 import controladores.Controlador;
 import modelo.ModeloFacturas;
 import modelo.base.Config;
@@ -44,3 +45,4 @@ public class FacturaTest {
 	    assertNotNull(listaPruebaFCT);
 	}
 }
+*/

@@ -43,10 +43,11 @@ en un objeto Factura, ésta se añade automáticamente a la lista de facturas...
 También se actualizan las GUI con JavaFX, en vez de Swing, y se usan FXtest + JUnit5 para pruebas unitarias. Esta vez se usa VSCode con Java, en vez de Netbeans IDE.
 
 ## Project Architecture
-Arquitectura MVC extendida...
+<!-- #region previa -->
+Arquitectura Previa: Arquitectura MVC extendida...
 
 src/main/java/
-    1-modeloDominio/          <!-- lógica del dominio (qué es una factura) -->
+    1-modeloDominio/          
         base/                           <!-- clases base del dominio -->
         interfaces/                 	<!-- Interfaces del dominio: IOrdenable, Identificable, ConFecha -->
         dtos/                           <!-- objetos simples (DTOs, records) -->
@@ -75,11 +76,11 @@ src/main/java/
 	4-vista/			<!-- vista -->
 		helpers/						<!--  FxmlHelper.java o Splash.java -->
 src/main/resources/
-        fxml/							<!-- plantillas FXML -->
+        fxml/							
         css/							<!-- hojas de estilo CSS -->
         images/							<!-- imágenes utilizadas -->
         modelos_informes/               <!-- plantillas JRXML -->
-data/                   <!-- datos guardados, persistencia -->
+data/                   
     config/								<!-- archivos de configurac. para todos los usuarios (creds, etc...) -->
 		$USERNAME/						<!-- archivos de configurac. para cada usuario (rutas, año, etc...) -->
     datos/
@@ -90,12 +91,14 @@ data/                   <!-- datos guardados, persistencia -->
 
 --------------------(aparte)--------------------------------------------------------------------------------------------------------------
 
-UML/				  <!-- diagramas UML usados para el desarrollo -->
-especifSO/			  <!-- archivos necesarios específicos para cada SO -->
+UML/				  
+especifSO/			  
 src/test/java  		  <!-- tests unitarios (JUnit y testFX) -->
+------------------------------------------------------------------------------------------------------------------------------------------
+<!-- #endregion -->
+------------------------------------------------------------------------------------------------------------------------------------------
 
-
-[2026-03-17 : Propuesta de arquitectura]
+[2026-03-17 : Nueva arquitectura]
 
 Proyecto/
 │
@@ -123,7 +126,7 @@ Proyecto/
 │   │   │   │         ├── Ifiltro.java
 │   │   │   │         └── IfiltroFactura.java
 │   │   │   │
-│   │   │   ├── domain/                       ← Domain Layer
+│   │   │   ├── domain/                       ← Domain Layer    <!-- lógica del dominio (qué es una factura) -->
 │   │   │   │   ├── base/
 │   │   │   │   ├── enums/
 │   │   │   │   ├── helpers/
@@ -198,7 +201,7 @@ Proyecto/
 │   │   │             └── Splash.java
 │   │   │
 │   │   └── resources/
-│   │       ├── fxml/
+│   │       ├── fxml/       <!-- plantillas FXML -->
 │   │       ├── css/
 │   │       ├── images/
 │   │       └── modelos_informes/
@@ -207,7 +210,7 @@ Proyecto/
 │       └── java/
 │             (tests unitarios)
 │
-├── data/
+├── data/                   <!-- datos guardados, persistencia -->
 │   ├── config/
 │   │     ├── creds.json
 │   │     ├── global.json
@@ -221,9 +224,9 @@ Proyecto/
 │               ├── informes/
 │               └── escaneos/
 │
-├── UML/
+├── UML/                    <!-- diagramas UML usados para el desarrollo -->
 │
-└── especifSO/
+└── especifSO/              <!-- archivos necesarios específicos para cada SO -->
 		  
 <!-- #endregion -->
 

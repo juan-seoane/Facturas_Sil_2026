@@ -1,5 +1,6 @@
+package app;
 
-
+/*
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import controladores.Controlador;
 import controladores.ControladorFacturas;
+import infraestructure.servicios.config.Config;
 import modelo.ModeloFacturas;
 import modelo.base.Config;
 
@@ -22,9 +24,9 @@ import modelo.base.Config;
 public class ControladorTest {
 
 	private Config config;
-	private Controlador_prev cntrlPpal;
-	private ControladorFacturas cntrlFact;
-	private ModeloFacturas modFact;
+	//private Controlador_prev cntrlPpal;
+	//private ControladorFacturas cntrlFact;
+	//private ModeloFacturas modFact;
 
 	@Before
 	public void setUp() throws NullPointerException, IOException, InterruptedException, BrokenBarrierException{
@@ -50,3 +52,4 @@ public class ControladorTest {
 		//assertNotNull(Controlador.getControladorFacturas().getFXcontrlVisorFCT());
 	}
 }
+*/

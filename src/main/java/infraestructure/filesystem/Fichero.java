@@ -4,7 +4,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.opencsv.CSVReader;
@@ -12,6 +11,7 @@ import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvValidationException;
 
 import static java.nio.file.StandardCopyOption.*;
+import java.util.logging.Level;
 
 /*
  * @author Juan Seoane

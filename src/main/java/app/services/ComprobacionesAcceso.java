@@ -1,12 +1,16 @@
 package app.services;
 
-import domain.records.Creds;
-import infraestructure.filesystem._Ruta;
-import infraestructure.servicios.config.Config;
 import java.awt.HeadlessException;
 import java.io.IOException;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+import domain.records.Credenciales;
+import domain.records.Creds;
+import infraestructure.filesystem._Ruta;
+import infraestructure.servicios.AuthService;
+import infraestructure.servicios.config.Config;
 import presentation.fxcontrollers.FxAcceso;
 
 public class ComprobacionesAcceso {
@@ -34,17 +38,17 @@ public class ComprobacionesAcceso {
             // REVIEW : Si existe el Subdirectorio y el archivo config, lo lee.. (Cambiar por chequear las credenciales del archivo config base)
             // REVIEW : Otra vez tuve que hacer público el constructor de la clase Config...por lo que...¿Singleton...?
             // REVIEW - 24-04-11 : Escribir un método estático para leer las credenciales del archivo config base
-            for (Creds contr : Config.leerCredenciales(rutaCreds).creds) {
+            for (Creds contr : ((Credenciales)(AuthService.leerCredenciales(rutaCreds))).getCreds()){
                 // REVIEW : Revisar el modo de comprobación de credenciales
                 FxAcceso.imprimir(
                     "[ComprobacionesAcceso.java>comprobarCredenciales()]\nDatos obtenidos de Config: " +
-                    contr.usuario +
+                    contr.usuario() +
                     " - " +
-                    contr.contra
-                );
-                if (user.equals(contr.usuario)) {
+                    contr.pass());
+
+                if (user.equals(contr.usuario())) {
                     ComprobacionesAcceso.userOK = true;
-                    if (pass.equals(contr.contra)) {
+                    if (pass.equals(contr.pass())) {
                         ComprobacionesAcceso.passOK = true;
                     }
                 }
@@ -81,7 +85,8 @@ public class ComprobacionesAcceso {
 
     //#region CREAR_NUEVO_USUARIO()
     private void crearNuevoUsuario(String user) {
-        Config.guardarCredenciales(user);
+        //STUB: 26-03-19 : Escribir el método crearNuevoUsuario() ... puede que deba estar en otra clase...
+       // Config.guardarCredenciales(user);
     }
     //#endregion
 }

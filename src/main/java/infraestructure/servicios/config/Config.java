@@ -72,6 +72,8 @@ public class Config {
     //#endregion
 
     public Object getConfigData() {
-        tleerConfigData(rutaconfigdata);
+        // STUB : 26-03-19 : Escribir este método getConfigData()
+        //leerConfigData(rutaconfigdata);
+        return null;
     }
 }

@@ -1,8 +1,6 @@
+package app;
 
-
-import org.junit.Test;
-
-import modelo.records.NIF;
+import domain.records.NIF;
 
 public class TestNIF {
 

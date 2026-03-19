@@ -1,15 +1,14 @@
 package presentation.fxcontrollers;
-
-import modelo.dtos.records.Extracto;
-import modelo.records.Factura;
-import modelo.records.Fecha;
-import modelo.records.NIF;
-import modelo.records.Nota;
-import modelo.records.RazonSocial;
-import modelo.records.TipoGasto;
-import modelo.records.Totales;
+/*
+import domain.records.Extracto;
+import domain.records.Factura;
+import domain.records.Fecha;
+import domain.records.NIF;
+import domain.records.Nota;
+import domain.records.RazonSocial;
+import domain.records.TipoGasto;
+import domain.records.Totales;
 import controladores.Controlador;
-import controladores.ControladorFacturas;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -757,3 +756,4 @@ public class FxCntrlVisorFCT implements Initializable{
 //#endregion
 
 }
+*/

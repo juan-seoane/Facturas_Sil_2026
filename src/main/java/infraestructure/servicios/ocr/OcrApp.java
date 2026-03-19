@@ -1,7 +1,5 @@
-/*
-
-*/
 package infraestructure.servicios.ocr;
+/*
 
 import java.io.File;
 
@@ -11,9 +9,9 @@ import com.asprise.ocr.Ocr;
 
 public class OcrApp {
 
-    String s="OCR sin respuesta";
+String s="OCR sin respuesta";
 
-    public OcrApp(String ruta, int s_x, int s_y, int w, int h){
+public OcrApp(String ruta, int s_x, int s_y, int w, int h){
         Ocr.setUp(); // one time setup
         Ocr ocr = new Ocr(); // create a new OCR engine
         ocr.startEngine("spa", Ocr.SPEED_SLOW); // Español, antes eng:English
@@ -29,3 +27,5 @@ public class OcrApp {
 
 
 }
+
+*/

@@ -1,5 +1,5 @@
 package presentation.fxcontrollers;
-
+/*
 import java.io.IOException;
 import java.net.URL;
 import java.util.Comparator;
@@ -133,7 +133,7 @@ public class FxCntrlTablaFCT implements Initializable{
 		tblvwfct .getColumns().add(colRetenc);
 		tblvwfct .getColumns().add(colTotal);
 		tblvwfct .getColumns().add(colNota);
-*/
+*//*
 		for (TableColumn<Factura, ?> column : tblvwfct.getColumns()) {
 			column.setSortable(false);
 		}
@@ -326,3 +326,4 @@ public class FxCntrlTablaFCT implements Initializable{
         return facturasFX;
     }
 }
+*/

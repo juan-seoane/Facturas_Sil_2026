@@ -2,7 +2,7 @@ package app.services;
 /* CONTROLA LAS PILAS DEL HISTORIAL */
 import java.util.Stack;
 
-import modeloDominio.records.Factura;
+import domain.records.Factura;
 
 public class UndoRedoService {
 

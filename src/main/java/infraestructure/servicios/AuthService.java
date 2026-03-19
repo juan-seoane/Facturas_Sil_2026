@@ -15,7 +15,7 @@ import infraestructure.helpers._Auth;
 public class AuthService {
 
     public static int autenticar(String user, String pass, int intentos) {
-        // STUB : 26-03-16 : completar el método autenticar
+        // DONE : 26-03-18 // STUB : 26-03-16 : completar el método autenticar
         int resp = 3;
         boolean valido = false;
         String rutaCreds = _Ruta.CONFIG.getRuta() + "/creds.json";

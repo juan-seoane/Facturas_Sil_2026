@@ -1,5 +1,5 @@
 package presentation.fxcontrollers;
-
+/*
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.BrokenBarrierException;
@@ -266,6 +266,7 @@ public class PanelControl implements Initializable{
 
         return Controlador.cfct;
     }*/
+   /*
 //#endregion
 
 //#region HELPERS
@@ -278,3 +279,4 @@ public class PanelControl implements Initializable{
 //#endregion
 
 }
+*/

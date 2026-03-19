@@ -1,3 +1,4 @@
+package app;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -6,14 +7,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
+
 import javafx.application.Application;
-import javafx.embed.swing.JFXPanel;
+
+
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import modelo.base.Config;
-import vista.fxcontrollers.Acceso;
-import vista.helpers.Splash;
+
+
 
 import org.junit.jupiter.api.Test;
+
+import presentation.helpers.Splash;
 
 public class LoginTest {
 
@@ -33,7 +38,7 @@ public class LoginTest {
         assertTimeout(
             Duration.ofSeconds(45),
             () -> {
-                new JFXPanel(); // inicializa el entorno de JavaFX
+                new JPanel(); // inicializa el entorno de JavaFX
                 latch.countDown();
             }
         );

@@ -6,12 +6,12 @@ import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import app.core.AppContext;
 import domain.records.Credenciales;
 import domain.records.Creds;
 import infraestructure.filesystem._Ruta;
-import infraestructure.servicios.AuthService;
 import infraestructure.servicios.config.Config;
-import presentation.fxcontrollers.FxAcceso;
+import presentation.fxcontrollers.FxCntrlAcceso;
 
 public class ComprobacionesAcceso {
 
@@ -29,7 +29,7 @@ public class ComprobacionesAcceso {
         //String rutaDirPers = _Ruta.DATOS.getRuta() + "/" + user.toUpperCase();
         //String rutasCFG = _Ruta.CONFIG.getRuta() + "/" + user.toUpperCase() + "/" + "rutasconfig.json";
 
-        FxAcceso.imprimir("\nDatos introducidos : " + user + " - " + pass + "\n(...espere..)");
+        FxCntrlAcceso.imprimir("\nDatos introducidos : " + user + " - " + pass + "\n(...espere..)");
 
         // STUB : 26-03-11 : [ComprobarCredenciales.java > comprobarCredenciales(String user, String pass)] Arreglar este boolean... Ahora mismo no es exacto... solamente chequea creds
         boolean existen = (getClass().getResource(rutaCreds) != null);
@@ -38,9 +38,9 @@ public class ComprobacionesAcceso {
             // REVIEW : Si existe el Subdirectorio y el archivo config, lo lee.. (Cambiar por chequear las credenciales del archivo config base)
             // REVIEW : Otra vez tuve que hacer público el constructor de la clase Config...por lo que...¿Singleton...?
             // REVIEW - 24-04-11 : Escribir un método estático para leer las credenciales del archivo config base
-            for (Creds contr : ((Credenciales)(AuthService.leerCredenciales(rutaCreds))).getCreds()){
+            for (Creds contr : ((Credenciales)(AppContext.get().auth().leerCredenciales(rutaCreds))).getCreds()){
                 // REVIEW : Revisar el modo de comprobación de credenciales
-                FxAcceso.imprimir(
+                FxCntrlAcceso.imprimir(
                     "[ComprobacionesAcceso.java>comprobarCredenciales()]\nDatos obtenidos de Config: " +
                     contr.usuario() +
                     " - " +
@@ -65,7 +65,7 @@ public class ComprobacionesAcceso {
             );
             if (resp == JOptionPane.YES_OPTION) {
                 Config.getConfig(user);
-                crearNuevoUsuario(user);
+                //crearNuevoUsuario(user);
                 //System.out.println("[ComprobacionesAcceso.java] No existen Usuario, Subdirectorio y archivo Config personal..Creándose...\nLa contrasena será su nombre de Usuario, hasta que la cambie...");
                 JOptionPane.showMessageDialog(
                     null,
@@ -83,10 +83,10 @@ public class ComprobacionesAcceso {
 
     //#endregion
 
+    //STUB: 26-03-19 : Escribir el método crearNuevoUsuario() ... puede que deba estar en otra clase...
     //#region CREAR_NUEVO_USUARIO()
-    private void crearNuevoUsuario(String user) {
-        //STUB: 26-03-19 : Escribir el método crearNuevoUsuario() ... puede que deba estar en otra clase...
-       // Config.guardarCredenciales(user);
-    }
+    // private void crearNuevoUsuario(String user) {
+    //    // Config.guardarCredenciales(user);
+    // }
     //#endregion
 }

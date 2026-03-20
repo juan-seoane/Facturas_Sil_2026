@@ -1,12 +1,13 @@
 module facturas.sil {
-    requires javafx.controls;
+    requires transitive javafx.controls;
     requires javafx.fxml;
-    requires javafx.graphics;
+    requires transitive javafx.graphics;
 	requires com.google.gson;
 	requires java.desktop;
 	requires com.opencsv;
 	requires java.logging;
 	requires jasperreports;
+	requires javafx.base;
 
     // Para controladores FXML
     opens presentation.fxcontrollers to javafx.fxml;

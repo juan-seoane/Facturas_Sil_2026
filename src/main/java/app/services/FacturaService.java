@@ -1,29 +1,29 @@
 package app.services;
 /* CONTROLA TODAS LAS OPERACIONES SOBRE UNA FACTURA */
-/*
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collector;
 
-import javax.swing.JOptionPane;
+// import java.io.IOException;
+// import java.util.ArrayList;
+// import java.util.Collections;
+// import java.util.List;
+// import java.util.Optional;
+// import java.util.stream.Collector;
 
-import controladores.ControladorFacturas;
-import controladores.fxcontrollers.PanelControl;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.stage.Modality;
-import modeloDominio.records.Factura;
-import modeloDominio.records.RazonSocial;
-import modeloDominio.records.Totales;
-import modeloNegocio.Infraestructura.csv.FacturaCSVRepo;
+// import javax.swing.JOptionPane;
+
+// import controladores.ControladorFacturas;
+// import controladores.fxcontrollers.PanelControl;
+// import javafx.scene.control.Alert;
+// import javafx.scene.control.Alert.AlertType;
+// import javafx.scene.control.ButtonType;
+// import javafx.stage.Modality;
+// import modeloDominio.records.Factura;
+// import modeloDominio.records.RazonSocial;
+// import modeloDominio.records.Totales;
+// import modeloNegocio.Infraestructura.csv.FacturaCSVRepo;
 
 
 public class FacturaService {
-
+/*
     private final FacturaCSVRepo repo;
 
     public FacturaService(FacturaCSVRepo repo) {
@@ -188,5 +188,5 @@ public class FacturaService {
     }
 
     //#endregion
+    */
 }
-*/

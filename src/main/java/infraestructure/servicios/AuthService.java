@@ -14,7 +14,7 @@ import infraestructure.helpers._Auth;
 /* CONTROLA EL PROCESO DE AUTENTICACIÓN */
 public class AuthService {
 
-    public static int autenticar(String user, String pass, int intentos) {
+    public int autenticar(String user, String pass, int intentos) {
         // DONE : 26-03-18 // STUB : 26-03-16 : completar el método autenticar
         int resp = 3;
         boolean valido = false;
@@ -23,7 +23,7 @@ public class AuthService {
         boolean existenCreds = Files.exists(Path.of(rutaCreds));
         System.out.println("existe el archivo: " + existenCreds);
         if (existenCreds) {
-            Credenciales creds = leerCredenciales(rutaCreds);
+            Credenciales creds = this.leerCredenciales(rutaCreds);
 
             List<Creds> listaCreds = creds.getCreds();
             valido = listaCreds.stream().anyMatch(c -> c.usuario().equals(user) && c.pass().equals(pass));
@@ -37,7 +37,7 @@ public class AuthService {
     }
 
     //#region LEER_CREDS()
-    public static synchronized Credenciales leerCredenciales(String ruta) {
+    public synchronized Credenciales leerCredenciales(String ruta) {
 
         try {
             Path p = Path.of(ruta);

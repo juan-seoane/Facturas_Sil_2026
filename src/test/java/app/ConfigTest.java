@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import app.core.AppContext;
+
 public class ConfigTest {
 	//Declara el usuario del que testear los datos
 	String user="admin";
@@ -34,7 +36,7 @@ public class ConfigTest {
 	@Test
 	void borrarDatosUsuario(){
 		userAelim = "TESTuSER";
-		Credenciales cred_prev = AuthService.leerCredenciales(_Ruta.CONFIG.getRuta() + "/creds.json");
+		Credenciales cred_prev = AppContext.get().auth().leerCredenciales(_Ruta.CONFIG.getRuta() + "/creds.json");
 		var listaCredsNueva = new ArrayList<Creds>();
 		//Generar nuevo archivo de credenciales sin el usuario declarado
 		for (Creds c : cred_prev.getCreds()){

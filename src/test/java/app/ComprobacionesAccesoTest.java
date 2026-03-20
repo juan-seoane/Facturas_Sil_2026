@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
+import app.core.AppContext;
 import infraestructure.filesystem._Ruta;
 import infraestructure.servicios.AuthService;
 
@@ -31,14 +32,14 @@ public class ComprobacionesAccesoTest {
 		//ComprobacionesAcceso test_check = new ComprobacionesAcceso();
 		rutaCreds = _Ruta.CONFIG.getRuta() + "/creds.json";
 		File f = new File(rutaCreds);
-		assertNotNull(AuthService.leerCredenciales(rutaCreds).getCreds());
+		assertNotNull(AppContext.get().auth().leerCredenciales(rutaCreds).getCreds());
 
 	}
 	@Test
 	void fileCredsLeidaOK(){
 		rutaCreds = "./config/creds.json";
 		File f = new File(rutaCreds);
-		var listaContr = AuthService.leerCredenciales(rutaCreds).getCreds();
+		var listaContr = AppContext.get().auth().leerCredenciales(rutaCreds).getCreds();
 		if (listaContr.size()>1)
 			assertNotEquals(listaContr.get(0).usuario(),listaContr.get(1).usuario());
 		else

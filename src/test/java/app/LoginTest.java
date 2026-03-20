@@ -18,13 +18,13 @@ import javax.swing.SwingUtilities;
 
 import org.junit.jupiter.api.Test;
 
-import presentation.helpers.Splash;
+
 
 public class LoginTest {
-
+/*
     @Test
     public void splashOK() {
-        Splash window = new Splash();
+
 
         window.run();
         window.setAlwaysOnTop(true);

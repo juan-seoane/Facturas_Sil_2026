@@ -11,35 +11,53 @@ import presentation.helpers.FxmlHelper;
 /* CONTROLA LA CREACIÓN DE ESCENAS Y DEMÁS ASPECTOS DE LA NAVEGACIÓN POR VENTANAS */
 public class NavService {
 
+    private Stage ventana;
+    
+    public void cambiarEscena( Scene es) {
 
-    public static void cambiarEscena(Stage stage, Scene es, EventHandler<KeyEvent> handlerTeclas) {
+        this.ventana.setScene(es);
 
-        Stage ventana = stage;
-        ventana.setScene(es);
+    }
 
-    ventana.getScene().addEventFilter(KeyEvent.KEY_PRESSED, handlerTeclas);
+    public void cambiarEscena(Stage stage, Scene es) {
 
-    // --- ELIMINAR EL LISTENER AL CERRAR LA VENTANA ---
-    ventana.setOnHidden(e -> {
-        if (handlerTeclas != null) {
-            ventana.getScene().removeEventFilter(KeyEvent.KEY_PRESSED, handlerTeclas);
-        }
-    });
-}
+        this.ventana = stage;
+        this.ventana.setScene(es);
 
-public static Scene crearEscena(String nombreArchivoFxmlSinExt) {
+    }
+
+    public void cambiarEscena(Stage stage, Scene es, EventHandler<KeyEvent> handlerTeclas) {
+
+        this.ventana = stage;
+        this.ventana.setScene(es);
+
+        this.ventana.getScene().addEventFilter(KeyEvent.KEY_PRESSED, handlerTeclas);
+
+        // --- ELIMINAR EL LISTENER AL CERRAR LA VENTANA ---
+        this.ventana.setOnHidden(e -> {
+            if (handlerTeclas != null) {
+                this.ventana.getScene().removeEventFilter(KeyEvent.KEY_PRESSED, handlerTeclas);
+            }
+        });
+    }
+
+    public Scene crearEscena(String nombreArchivoFxmlSinExt) {
         String ruta = _Ruta.FXML.getRuta() + "/" + nombreArchivoFxmlSinExt + ".fxml";
-        FxmlHelper loader = new FxmlHelper(ruta.trim());
-        System.out.print("[NavService>crearEscena] ruta del FXML: " + ruta.trim());
+        FxmlHelper loader = new FxmlHelper(ruta);
+        System.out.println("[NavService>crearEscena] ruta del FXML: " + ruta);
         Parent parent = loader.cargarFXML();
         Scene esc = new Scene(parent);
         System.out.println("[NavService>crearEscena] escena creada : " + nombreArchivoFxmlSinExt + " : " + esc.hashCode() );
         return esc;
     }
 
-    public static Stage crearStage(Scene sc) {
+    public Stage crearStage(Scene sc) {
         Stage st = new Stage();
         st.setScene(sc);
         return st;
+    }
+
+    public void setStage(Stage stage) {
+        this.ventana = stage;
     }
 }

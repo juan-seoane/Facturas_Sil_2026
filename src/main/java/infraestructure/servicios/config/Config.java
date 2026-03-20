@@ -6,7 +6,6 @@ import domain.records.ConfigData;
 import domain.records.MisDatos;
 import domain.records.RutasConfig;
 import domain.records.UIData;
-import infraestructure.filesystem._Ruta;
 
 // REVIEW - 24-04-22 : configdata.json y misdatos.json deberían contener un JsonArray de sus respectivos objetos
 
@@ -27,12 +26,12 @@ public class Config {
         usuario = user;
 
         // TODO : chequear la existencia de todas estas rutas o su creación (en un archivo aparte?)
-        String dirCFGpers = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase();
-        String rutaCFG = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase() + "/rutasconfig.json";
-        String rutaconfigdata = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase() + "/configdata.json";
-        String rutamisdatos = _Ruta.CONFIG.getRuta() + usuario.toUpperCase() + "/misdatos.json";
-        String rutauidata = _Ruta.CONFIG.getRuta() + usuario.toUpperCase() + "/uidata.json";
-        String rutaDirTrab = _Ruta.DATOS.getRuta() + "/" + usuario.toUpperCase();
+        // String dirCFGpers = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase();
+        // String rutaCFG = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase() + "/rutasconfig.json";
+        // String rutaconfigdata = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase() + "/configdata.json";
+        // String rutamisdatos = _Ruta.CONFIG.getRuta() + usuario.toUpperCase() + "/misdatos.json";
+        // String rutauidata = _Ruta.CONFIG.getRuta() + usuario.toUpperCase() + "/uidata.json";
+        // String rutaDirTrab = _Ruta.DATOS.getRuta() + "/" + usuario.toUpperCase();
 
         System.out.println("[Config>Config(user)] Creada la Configuracion del Usuario " + usuario );
 

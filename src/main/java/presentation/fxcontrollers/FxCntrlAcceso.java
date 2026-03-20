@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import app.core.AppContext;
 import app.services.NavService;
 import infraestructure.servicios.AuthService;
 import javafx.animation.PauseTransition;
@@ -23,7 +24,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
-public class FxAcceso implements Initializable {
+public class FxCntrlAcceso implements Initializable {
 
 //#region campos fxml
     @FXML private TextField txtUsuario;
@@ -88,7 +89,7 @@ public class FxAcceso implements Initializable {
         canvasAcceso.sceneProperty().addListener((observableScene, oldScene, newScene) -> {
             if (newScene != null) {
                 // 'txtUsuario' está ahora en una escena, podemos obtener el Stage
-                FxAcceso.ventanaAcceso = (Stage) newScene.getWindow();
+                FxCntrlAcceso.ventanaAcceso = (Stage) newScene.getWindow();
             }
         });
 
@@ -142,7 +143,7 @@ public class FxAcceso implements Initializable {
         String user = userF.getText();
         String pass = passF.getText();
 
-        int resp = AuthService.autenticar(user, pass, intentos);
+        int resp = AppContext.get().auth().autenticar(user, pass, intentos);
 
         switch (resp) {
             case 1 -> {
@@ -165,7 +166,7 @@ public class FxAcceso implements Initializable {
 //#region setters,getters y demás
     public static String getUsuario() {
         //Este procedimiento tiene que leer el usuario antes de cerrarse la ventana...
-        return FxAcceso.usuario;
+        return FxCntrlAcceso.usuario;
     }
 
     public static TextArea getCanvas() {
@@ -180,9 +181,8 @@ public class FxAcceso implements Initializable {
 
 //#region post-auth
     public void fallo() {
-        scene2 = NavService.crearEscena("Acceso2");
-
-        NavService.cambiarEscena(stage, scene2, handlerTeclas);
+        scene2 = AppContext.get().nav().crearEscena("FxAcceso2");
+        AppContext.get().nav().cambiarEscena(stage, scene2, handlerTeclas);
         System.out.println("[Acceso>fallo] intentos>=5 y AUTH_FAIL] El proceso de Autenticación ha fallado!");
         System.out.println("[Acceso>fallo] El programa se cerrará!");
         imprimir("\nEl proceso de Autenticación ha fallado!");
@@ -196,16 +196,21 @@ public class FxAcceso implements Initializable {
         aceptado = true;
         // TODO : 26-03-16 : La nueva Config no se debería cargar desde el FxController...
         //Config.getConfig(usuario);
-        scene2 = NavService.crearEscena("Acceso2");
-        NavService.cambiarEscena(stage, scene2, handlerTeclas);
+        scene2 = AppContext.get().nav().crearEscena("FxAcceso2");
+        AppContext.get().nav().cambiarEscena(stage, scene2, handlerTeclas);
         System.out.println("[FxAcceso>acierto] intentos<5 y cred OK]...OK, entrando...pulse una tecla para continuar");
-        imprimir("Ok...Entrando!\nBienvenido a FacturasSIL 24!\nPulse una tecla para continuar...");
+        imprimir("Ok...Entrando!\nBienvenido a FacturasSIL 24!\nPulse una tecla para continuar o espere...");
         ventanaAcceso.requestFocus();
         // NOTE : 26-03-17 : En vez de un Thread.sleep -> PauseTransition
         PauseTransition pausa = new PauseTransition(Duration.seconds(3));
         pausa.setOnFinished(e -> {
             // lo que quieras hacer después de los 3 segundos
-            System.exit(0);
+            Stage pcStage = new Stage();
+            AppContext.get().nav().setStage(pcStage);
+            Scene pc = AppContext.get().nav().crearEscena("FxPanelControl");
+            AppContext.get().nav().cambiarEscena(pcStage, pc);
+            pcStage.show();
+            stage.close();
         });
         pausa.play();
         // TODO : 26-03-17 : A partir de aquí se cierra esta escena, solamente, y por otro lado (AuthService) arranca el Controlador Principal, y con él el programa  en si...

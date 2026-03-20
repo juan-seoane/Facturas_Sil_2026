@@ -107,14 +107,17 @@ Proyecto/
 │   │   ├── java/
 │   │   │   │
 │   │   │   ├── app/                          ← Application Layer
-│   │   │   │   ├── controladores/
+│   │   │   │   │ 
+│   │   │   │   ├── core
 │   │   │   │   │     ├── AppController.java
+│   │   │   │   │     └── AppContext.java
+│   │   │   │   │ 
+│   │   │   │   ├── controladores/
 │   │   │   │   │     ├── FacturaController.java
 │   │   │   │   │     └── helpers/
 │   │   │   │   │           ├── _Modo.java
 │   │   │   │   │           └── _Seccion.java
 │   │   │   │   │
-│   │   │   │   ├── ControladorPrincipal.java
 │   │   │   │   ├── servicios/
 │   │   │   │   │     ├── FacturaService.java
 │   │   │   │   │     ├── AutoSaveService.java
@@ -187,11 +190,12 @@ Proyecto/
 │   │   │       ├── Main.java
 │   │   │       │
 │   │   │       ├── fxcontrollers/
-│   │   │       │     ├── FxAcceso.java
+│   │   │       │     ├── FxCntrlPrincipal.java
+│   │   │       │     ├── FxCntrlAcceso.java
 │   │   │       │     ├── FxCntrlTablaFCT.java
 │   │   │       │     ├── FxCntrlVisorFCT.java
-│   │   │       │     ├── PanelControl.java
-│   │   │       │     └── SplashFX.java
+│   │   │       │     ├── FxCntrlPanelControl.java
+│   │   │       │     └── FxCntrlSplash.java
 │   │   │       │
 │   │   │       ├── viewmodels/
 │   │   │       │     └── FacturaFX.java
@@ -229,6 +233,11 @@ Proyecto/
 └── especifSO/              <!-- archivos necesarios específicos para cada SO -->
 		  
 <!-- #endregion -->
+
+Clase	                Rol	                                                                                                            ¿Dónde va?
+AppContext	            Estado global, servicios, usuario autenticado	                                                                app/ o app/core/
+AppController	        Orquestador del flujo (login → panel de control → etc.)	                                                        app/ o app/core/
+ControladorFxPrincipal	Controlador raíz de la UI si tienes un layout principal (menú lateral, barra superior, contenedor central)	    presentation.fxcontrollers
 
 <!-- #region TODO's -->
 ## TODO's y demás

@@ -1,25 +1,30 @@
 package presentation;
 
-import java.io.IOException;
-
+import app.core.AppContext;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
-import presentation.fxcontrollers.FxAcceso;
-import presentation.fxcontrollers.SplashFX;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
-public class Main {
+public class Main extends Application {
 
-    //public static Controlador ctr;
-    public static FxAcceso acceso;
-    public static String usuario;
-    public static boolean credsOK;
+   @Override
+public void start(Stage stageSplash) {
 
-    public static void main(String[] args) throws IOException {
+    stageSplash.initStyle(StageStyle.UNDECORATED);
+    AppContext.get().nav().setStage(stageSplash);
+    Scene splash = AppContext.get().nav().crearEscena("FxSplash");
 
-        Application.launch(SplashFX.class);
-    // NOTE : Desde aquí no debería funcionar hasta que se acabe la aplicación JavaFX
-        System.out.println("[Main.java] Aplicación finalizada");
-        System.exit(0);
+    AppContext.get().nav().cambiarEscena(splash);
 
-    }
-
+    stageSplash.show();
 }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+

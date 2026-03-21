@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.BrokenBarrierException;
 
+import app.core.AppContext;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -38,7 +40,8 @@ public class FxCntrlPanelControl implements Initializable{
     //static TrayIcon trayIcon;
     static Popup popMenu;
     public static Scene escena1;
-// REVIEW - 24-06-30 : Los controladoresFx de FCT deberían estar en el ControladorFacturas, no aquí...
+    // TODO : 26-03-21 : Cuando iniciamos el PC se tiene que cargar (desde AppContext) la Config personal etc...
+    // REVIEW - 24-06-30 : Los controladoresFx de FCT deberían estar en el ControladorFacturas, no aquí...
     //static FxCntrlTablaFCT fxTablaFCTcontr;
 
     //static FxCntrlVisorFCT fxVisorFCTcontr;
@@ -60,7 +63,9 @@ public class FxCntrlPanelControl implements Initializable{
 
 //#region CONSTR
     public FxCntrlPanelControl() {
-        // this.usuarioActual = Controlador_prev.getUsuario();
+        this.usuarioActual = AppContext.usuarioActual.toLowerCase();
+        System.out.println(
+                "[FxCntrlPanelControl] En el constructor, estableciendo el usuario actual en : " + this.usuarioActual);
 // Luego habrá que cambiar esto de abajo a modo NAV por defecto...
 //         PanelControl.modo = Controlador_prev.INGR;
 //         this.configActual = Config.getConfig(this.usuarioActual);
@@ -80,8 +85,10 @@ public class FxCntrlPanelControl implements Initializable{
         // REVIEW : Arreglar la inicialización de la GUI del PanelControl... No funciona
         // setAnho((Integer)this.configActual.configData.getAnho().getAnho());
         // setTrimestre(this.configActual.configData.getAnho().getTrimestre());
-
-        // setUsuario(this.configActual.usuario.toLowerCase());
+        this.usuarioActual = AppContext.usuarioActual.toLowerCase();
+        setUsuario(this.usuarioActual);
+        System.out.println(
+                "[FxCntrlPanelControl] Inicializando, estableciendo la etiqueta de usuario en : " + this.usuarioActual);
         // //sólo cargar tablas, no mostrarlas...
         // try {
         //     boolean ok1 = this.ctrlFct.cargarTablaFacturas();
@@ -120,7 +127,7 @@ public class FxCntrlPanelControl implements Initializable{
     }
 
     public void setUsuario(String user){
-        // Platform.runLater(() -> Controlador_prev.getPanelControl().lblUsuario.setText(user +""));
+         Platform.runLater(() -> this.lblUsuario.setText(user +""));
     }
 
     public static int getModo(){

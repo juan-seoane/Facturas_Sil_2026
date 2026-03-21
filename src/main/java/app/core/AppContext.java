@@ -8,7 +8,7 @@ public class AppContext {
 
     private static AppContext instance;
 
-    private String usuarioActual;
+    public static String usuarioActual;
     private final AuthService authService = new AuthService();
     private final FacturaService facturaService = new FacturaService();
     private final NavService navService = new NavService();
@@ -34,11 +34,8 @@ public class AppContext {
         return navService;
     }
 
-    public String getUsuarioActual() {
-        return this.usuarioActual;
-    }
 
-    public void setUsuarioActual(String user) {
-        this.usuarioActual = user;
+    public static void setUsuarioActual(String user) {
+        usuarioActual = user;
     }
 }

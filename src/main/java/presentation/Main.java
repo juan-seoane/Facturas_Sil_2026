@@ -1,13 +1,11 @@
 package presentation;
 
 import app.core.AppContext;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
+
 
 public class Main extends Application {
 

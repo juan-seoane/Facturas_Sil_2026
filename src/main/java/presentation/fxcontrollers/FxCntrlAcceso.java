@@ -5,10 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import app.core.AppContext;
-import app.services.NavService;
-import infraestructure.servicios.AuthService;
 import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -108,13 +105,8 @@ public class FxCntrlAcceso implements Initializable {
 //#region botones de eventos
     private void pulsartecla() throws IOException {
 
-        ventanaAcceso.close();
-        //TODO : 26-03-18 : Desde aquí iniciar la Aplicación, ya autenticado
-        Platform.exit();
+        //ventanaAcceso.close();
 
-        if (!aceptado){
-            System.exit(0);
-        }
     }
 
     @FXML
@@ -192,17 +184,18 @@ public class FxCntrlAcceso implements Initializable {
     }
 
     public void acierto() {
-        usuario=txtUsuario.getText();
-        aceptado = true;
+        FxCntrlAcceso.usuario = txtUsuario.getText();
+        AppContext.setUsuarioActual(FxCntrlAcceso.usuario);
+        FxCntrlAcceso.aceptado = true;
         // TODO : 26-03-16 : La nueva Config no se debería cargar desde el FxController...
         //Config.getConfig(usuario);
         scene2 = AppContext.get().nav().crearEscena("FxAcceso2");
         AppContext.get().nav().cambiarEscena(stage, scene2, handlerTeclas);
         System.out.println("[FxAcceso>acierto] intentos<5 y cred OK]...OK, entrando...pulse una tecla para continuar");
-        imprimir("Ok...Entrando!\nBienvenido a FacturasSIL 24!\nPulse una tecla para continuar o espere...");
+        imprimir("Ok...Entrando!\nBienvenido a FacturasSIL 24!\nPor favor espere...");
         ventanaAcceso.requestFocus();
         // NOTE : 26-03-17 : En vez de un Thread.sleep -> PauseTransition
-        PauseTransition pausa = new PauseTransition(Duration.seconds(3));
+        PauseTransition pausa = new PauseTransition(Duration.seconds(2));
         pausa.setOnFinished(e -> {
             // lo que quieras hacer después de los 3 segundos
             Stage pcStage = new Stage();

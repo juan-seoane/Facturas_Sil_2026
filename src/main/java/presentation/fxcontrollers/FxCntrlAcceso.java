@@ -105,15 +105,24 @@ public class FxCntrlAcceso implements Initializable {
 //#region botones de eventos
     private void pulsartecla() throws IOException {
 
-        //ventanaAcceso.close();
+            Stage pcStage = new Stage();
+            AppContext.get().nav().setStage(pcStage);
+            Scene pc = AppContext.get().nav().crearEscena("FxPanelControl");
+            AppContext.get().nav().cambiarEscena(pcStage, pc);
+            pcStage.show();
+            stage.close();
 
     }
 
     @FXML
     private void pulsarbotonOK() throws InterruptedException, IOException{
-        if (aceptado){
-            pulsartecla();
-            System.out.println("[Acceso] Entrando...????");
+        if (aceptado) {
+            try{
+                pulsartecla();
+                System.out.println("[Acceso] Entrando...????");
+            } catch (IOException ex) {
+                System.out.println("Error " + ex.getClass() + " en FxCntrlAcceso, lin 125");
+            }
         }else{
             probar();
         }
@@ -198,12 +207,12 @@ public class FxCntrlAcceso implements Initializable {
         PauseTransition pausa = new PauseTransition(Duration.seconds(2));
         pausa.setOnFinished(e -> {
             // lo que quieras hacer después de los 3 segundos
-            Stage pcStage = new Stage();
-            AppContext.get().nav().setStage(pcStage);
-            Scene pc = AppContext.get().nav().crearEscena("FxPanelControl");
-            AppContext.get().nav().cambiarEscena(pcStage, pc);
-            pcStage.show();
-            stage.close();
+            try{
+                pulsartecla();
+                System.out.println("[Acceso] Entrando...????");
+            } catch (IOException ex) {
+                System.out.println("Error " + ex.getClass() + " en FxCntrlAcceso, lin 125");
+            }
         });
         pausa.play();
         // TODO : 26-03-17 : A partir de aquí se cierra esta escena, solamente, y por otro lado (AuthService) arranca el Controlador Principal, y con él el programa  en si...

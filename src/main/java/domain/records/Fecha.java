@@ -7,12 +7,12 @@ import java.util.GregorianCalendar;
 public class Fecha implements Comparable<Fecha> {
     private int dia;
     private int mes;
-    private int año;
+    private int anho;
 
-    public Fecha(int dia, int mes, int año) {
+    public Fecha(int dia, int mes, int anho) {
         this.dia = dia;
         this.mes = mes;
-        this.año = año;
+        this.anho = anho;
     }
 
 	public Date getFecha() {
@@ -36,19 +36,19 @@ public class Fecha implements Comparable<Fecha> {
     }
 
     public int getAnho() {
-        return año;
+        return anho;
     }
 
-    public void setAnho(int año) {
-        this.año = año;
+    public void setAnho(int anho) {
+        this.anho = anho;
     }
 
     public static Fecha fromString(String s) {
         String[] p = s.split("-");
-        int año = Integer.parseInt(p[0]);
+        int anho = Integer.parseInt(p[0]);
         int mes = Integer.parseInt(p[1]);
         int dia = Integer.parseInt(p[2]);
-        return new Fecha(dia, mes, año);
+        return new Fecha(dia, mes, anho);
     }
 
     public String format() {

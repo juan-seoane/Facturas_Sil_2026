@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import presentation.helpers.FxmlHelper;
 
 /* CONTROLA LA CREACIÓN DE ESCENAS Y DEMÁS ASPECTOS DE LA NAVEGACIÓN POR VENTANAS */
@@ -47,17 +48,36 @@ public class NavService {
         System.out.println("[NavService>crearEscena] ruta del FXML: " + ruta);
         Parent parent = loader.cargarFXML();
         Scene esc = new Scene(parent);
-        System.out.println("[NavService>crearEscena] escena creada : " + nombreArchivoFxmlSinExt + " : " + esc.hashCode() );
+        //ystem.out.println("[NavService>crearEscena] escena creada : " + nombreArchivoFxmlSinExt + " : " + esc.hashCode() );
         return esc;
+    }
+
+    public Stage crearCambiarEscena(Stage stage, String nombreArchivoFxmlSinExt, StageStyle style) {
+        Scene es = crearEscena(nombreArchivoFxmlSinExt);
+        this.ventana = stage;
+        if (es != null) {
+            cambiarEscena(this.ventana, es);
+            this.ventana.initStyle(style);
+            return this.ventana;
+        } else {
+            System.out.println("[NavService>crearYCambiarEscena] Error al crear la escena: " + nombreArchivoFxmlSinExt);
+            return null;
+        }
     }
 
     public Stage crearStage(Scene sc) {
         Stage st = new Stage();
         st.setScene(sc);
-        return st;
+        this.ventana = st;
+        return this.ventana;
     }
 
     public void setStage(Stage stage) {
         this.ventana = stage;
+    }
+
+    public void mostrarStage(Stage st) {
+        this.ventana = st;
+        this.ventana.show();
     }
 }

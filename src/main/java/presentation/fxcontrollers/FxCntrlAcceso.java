@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import app.core.AppContext;
+import app.core.AppController;
 import javafx.animation.PauseTransition;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -18,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 
@@ -41,6 +43,8 @@ public class FxCntrlAcceso implements Initializable {
     public static TextArea canvasAcceso;
     public static String usuario ="";
     public static int intentos = 1;
+    private static boolean entrando = false;
+
 
     //private boolean credsOK;
     public static boolean aceptado = false;
@@ -105,21 +109,18 @@ public class FxCntrlAcceso implements Initializable {
 //#region botones de eventos
     private void pulsartecla() throws IOException {
 
-            Stage pcStage = new Stage();
-            AppContext.get().nav().setStage(pcStage);
-            Scene pc = AppContext.get().nav().crearEscena("FxPanelControl");
-            AppContext.get().nav().cambiarEscena(pcStage, pc);
-            pcStage.show();
-            stage.close();
+        AppController.loginExitoso(usuario);
+        stage.close();
 
     }
 
     @FXML
     private void pulsarbotonOK() throws InterruptedException, IOException{
-        if (aceptado) {
+        if (aceptado&&!FxCntrlAcceso.entrando) {
+            FxCntrlAcceso.entrando = true;
             try{
                 pulsartecla();
-                System.out.println("[Acceso] Entrando...????");
+                //System.out.println("[Acceso] Tecla Pulsada, entrando...");
             } catch (IOException ex) {
                 System.out.println("Error " + ex.getClass() + " en FxCntrlAcceso, lin 125");
             }
@@ -197,21 +198,24 @@ public class FxCntrlAcceso implements Initializable {
         AppContext.setUsuarioActual(FxCntrlAcceso.usuario);
         FxCntrlAcceso.aceptado = true;
         // TODO : 26-03-16 : La nueva Config no se debería cargar desde el FxController...
-        //Config.getConfig(usuario);
+       
         scene2 = AppContext.get().nav().crearEscena("FxAcceso2");
         AppContext.get().nav().cambiarEscena(stage, scene2, handlerTeclas);
-        System.out.println("[FxAcceso>acierto] intentos<5 y cred OK]...OK, entrando...pulse una tecla para continuar");
+        //System.out.println("[FxAcceso>acierto] intentos<5 y cred OK]...OK, entrando...pulse una tecla para continuar");
         imprimir("Ok...Entrando!\nBienvenido a FacturasSIL 24!\nPor favor espere...");
         ventanaAcceso.requestFocus();
         // NOTE : 26-03-17 : En vez de un Thread.sleep -> PauseTransition
         PauseTransition pausa = new PauseTransition(Duration.seconds(2));
         pausa.setOnFinished(e -> {
             // lo que quieras hacer después de los 3 segundos
-            try{
-                pulsartecla();
-                System.out.println("[Acceso] Entrando...????");
-            } catch (IOException ex) {
-                System.out.println("Error " + ex.getClass() + " en FxCntrlAcceso, lin 125");
+            if (!FxCntrlAcceso.entrando) {
+                FxCntrlAcceso.entrando = true;
+                try{
+                    pulsartecla();
+                    System.out.println("[Acceso] Acierto - Entrando...!!!!");
+                } catch (IOException ex) {
+                    System.out.println("Error " + ex.getClass() + " en FxCntrlAcceso, lin 125");
+                }             
             }
         });
         pausa.play();

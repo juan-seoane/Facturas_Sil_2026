@@ -241,7 +241,7 @@ public class ModeloFacturas {
         if (TablaFacturas.filtrosActivos()){
             if (ControladorFacturas.filtros.getChbFiltroFecha().isSelected())
             {
-            String año = Config.getConfigActual().configData.año().año()+"";
+            String anho = Config.getConfigActual().configData.anho().anho()+"";
             FiltroFecha filtro1 = new FiltroFecha(ControladorFacturas.filtros.getFechaInicio(),ControladorFacturas.filtros.getFechaFinal());
             lista2 = filtro1.filtrar(lista);
             }
@@ -384,13 +384,13 @@ public class ModeloFacturas {
         // REVIEW  - 24-04-11 : - Cambiar los datos de los formularios por datos obtenidos de la GUI JFX
         int dia = form.dia();
         int mes = form.mes();
-        int año = form.año();
+        int anho = form.anho();
         String numeroFactura = form.getNumeroFactura().toUpperCase();
         String tipoGasto = form.getTipoGasto().toUpperCase();
         boolean esDevolucion = form.esDevolucion();
         form.limpiarFormulario();
 
-        Fecha fecha = new Fecha(dia, mes, año);
+        Fecha fecha = new Fecha(dia, mes, anho);
 // Necesito un método (estático, a poder ser) para generar automáticamente el ID de cada Nota
         RazonSocial rs = completarRS(new RazonSocial(1, new NIF(numero, letra, isCIF), razon, new Nota(0,"")));
         // HAY QUE CONSEGUIR INTRODUCIR TODA LA RAZON SOCIAL COMO APARECE EN DISTRIBUIDORES

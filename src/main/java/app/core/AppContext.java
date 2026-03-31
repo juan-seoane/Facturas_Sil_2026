@@ -3,6 +3,7 @@ package app.core;
 import app.services.FacturaService;
 import app.services.NavService;
 import infraestructure.servicios.AuthService;
+import javafx.stage.Stage;
 
 public class AppContext {
 
@@ -33,7 +34,6 @@ public class AppContext {
     public NavService nav() {
         return navService;
     }
-
 
     public static void setUsuarioActual(String user) {
         usuarioActual = user;

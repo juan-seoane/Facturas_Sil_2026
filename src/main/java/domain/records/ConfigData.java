@@ -6,16 +6,16 @@ public class ConfigData{
 
 //#region CAMPOS
 	public String user;
-	public Anho año;
+	public Anho anho;
 	public RutasTrabajo rutas;
 	public ArrayList<Integer> tiposIVA;
 	public ArrayList<String> origenesCaja;
 //#endregion
 
 //#region Constructor
-	public ConfigData(String user, Anho año, RutasTrabajo rutas, ArrayList<Integer> tiposIVA, ArrayList<String> origenesCaja ){
+	public ConfigData(String user, Anho anho, RutasTrabajo rutas, ArrayList<Integer> tiposIVA, ArrayList<String> origenesCaja ){
 			this.user = user;
-			this.año = año;
+			this.anho = anho;
 			this.rutas = rutas;
 			this.tiposIVA = tiposIVA;
 			this.origenesCaja = origenesCaja;
@@ -28,7 +28,7 @@ public class ConfigData{
 	}
 
 	public Anho getAnho(){
-	return año;
+	return anho;
 	}
 
 	public RutasTrabajo getRutas(){
@@ -49,8 +49,8 @@ public class ConfigData{
         this.user = user;
     }
 
-    public void setAnho(Anho año) {
-        this.año = año;
+    public void setAnho(Anho anho) {
+        this.anho = anho;
     }
 
     public void setRutas(RutasTrabajo rutas) {
@@ -70,8 +70,9 @@ public class ConfigData{
 	public String toJSON() {
 		// REVIEW - 2024-04-28 : Falta el objeto 'TiposGasto' (clase 'Concepto') antes de 'tiposIVA'
 		// REVIEW - 2024-05-03 : El campo 'origenesCaja' falta por serializar (no salen con comillas)
-		// REVIEW - 2024-05-03 : El archivo RS.rs debería copiarse y renovarse cada año...
-		String cadenaResp = "{\n\t\"user\": \"" + this.user +  "\",\n\t\"año\": { \"año\": 2024, \"trimestre\": 2 },\n\t\"rutas\": {\n\t\t\"FCT\": \"./datos/" + this.user.toUpperCase() + "/FCT" + this.año.getAnho() + this.año.getTrimestre() + ".fct\",\n\t\t\"RS\":  \"./datos/" + this.user.toUpperCase() + "/RS.rs\",\n\t\t\"CJA\": \"./datos/" + this.user.toUpperCase() + "/CJA" + this.año.getAnho() + this.año.getTrimestre() + ".cja\"\n\t\t},\n\t\"tiposIVA\": " + this.tiposIVA + ",\n\t\"origenesCaja\": [ \"caja\", \"otros\" ]\n}";
+		// REVIEW - 2024-05-03 : El archivo RS.rs debería copiarse y renovarse cada anho...
+		// STUB   - 2026-03-31 : Falta completar las rutas desde el objeto 'rutas' (clase 'RutasTrabajo') y origenesCaja
+		String cadenaResp = "{\n\t\"user\": \"" + this.user +  "\",\n\t\"anho\": { \"anho\": " + this.anho.getAnho() + ", \"trimestre\": " + this.anho.getTrimestre() + " },\n\t\"rutas\": {\n\t\t\"FCT\": \"" + this.rutas.getFCT() + "\",\n\t\t\"RS\": \"" + this.rutas.getRS() + "\",\n\t\t\"CJA\": \"" + this.rutas.getCJA() + "\"\n\t},\n\t\"origenesCaja\":\t" + this.origenesCaja.toString() + "\n}";
 		System.out.println("[ConfigData.java]->\n"+cadenaResp);
 		return cadenaResp;
 	}

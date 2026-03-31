@@ -1,4 +1,4 @@
 {
 	"nombreColsFCT": [	"ID", "#fact","fecha","#RS","NifRS","nombre Empresa","Concepto","esDev","#extr","base","variosIVA","tipo","IVA","SubTotal","baseNI","tRet","Retenc","Total","#nota","Nota"	],
-	"anchoColsFCT":  [	 10, 20, 40,             10,  40, 60,                        50,10,10,              80, 10, 20, 50, 60,                          60, 10, 30, 		     80,     10,  50	]
+	"anchoColsFCT":  [	 10, 20, 40,             10,  40, 60,                        50,10,      10,        80, 10, 20, 50,                     60,      60, 10, 30, 		     80,     10,  50	]
 }

@@ -82,7 +82,7 @@ src/main/resources/
         modelos_informes/               <!-- plantillas JRXML -->
 data/                   
     config/								<!-- archivos de configurac. para todos los usuarios (creds, etc...) -->
-		$USERNAME/						<!-- archivos de configurac. para cada usuario (rutas, año, etc...) -->
+		$USERNAME/						<!-- archivos de configurac. para cada usuario (rutas, anho, etc...) -->
     datos/
         $USERNAME/
 			csv							<!-- csv generados con los datos introducidos por cada usuario -->
@@ -220,7 +220,7 @@ Proyecto/
 │   │     ├── global.json
 │   │     └── $USERNAME/
 │   │           ├── rutas.json
-│   │           └── año.json
+│   │           └── anho.json
 │   │
 │   └── datos/
 │         └── $USERNAME/

@@ -51,7 +51,7 @@ public class FxCntrlSplash {
             
         // Abrir el Stage de Acceso sin marco
         Stage stageAcceso = new Stage();
-        stageAcceso.initStyle(StageStyle.UNDECORATED); // ← con marco
+        stageAcceso.initStyle(StageStyle.UNDECORATED); // ← sin marco
         AppContext.get().nav().setStage(stageAcceso);
         Scene acceso = AppContext.get().nav().crearEscena("FxAcceso");
         AppContext.get().nav().cambiarEscena(stageAcceso, acceso);

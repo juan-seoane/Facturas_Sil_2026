@@ -15,10 +15,8 @@ public void start(Stage stageSplash) {
     stageSplash.initStyle(StageStyle.UNDECORATED);
     AppContext.get().nav().setStage(stageSplash);
     Scene splash = AppContext.get().nav().crearEscena("FxSplash");
-
     AppContext.get().nav().cambiarEscena(splash);
-
-    stageSplash.show();
+    AppContext.get().nav().mostrarStage(stageSplash);
 }
 
     public static void main(String[] args) {

@@ -45,10 +45,10 @@ public class NavService {
     public Scene crearEscena(String nombreArchivoFxmlSinExt) {
         String ruta = _Ruta.FXML.getRuta() + "/" + nombreArchivoFxmlSinExt + ".fxml";
         FxmlHelper loader = new FxmlHelper(ruta);
-        System.out.println("[NavService>crearEscena] ruta del FXML: " + ruta);
+        //System.out.println("[NavService>crearEscena] ruta del FXML: " + ruta);
         Parent parent = loader.cargarFXML();
         Scene esc = new Scene(parent);
-        //ystem.out.println("[NavService>crearEscena] escena creada : " + nombreArchivoFxmlSinExt + " : " + esc.hashCode() );
+        //System.out.println("[NavService>crearEscena] escena creada : " + nombreArchivoFxmlSinExt + " : " + esc.hashCode() );
         return esc;
     }
 

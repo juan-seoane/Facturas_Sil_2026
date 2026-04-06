@@ -54,7 +54,7 @@ public class FxCntrlAcceso implements Initializable {
     public EventHandler<KeyEvent> handlerTeclas = (KeyEvent ke) -> {
         if (ke.getCode() == KeyCode.ENTER || ke.getCode().isLetterKey() || ke.getCode().isDigitKey()) {
 
-            System.out.println("[FxAcceso>HandlerTeclas] Key Pressed: " + ke.getCode());
+            //System.out.println("[FxAcceso>HandlerTeclas] Key Pressed: " + ke.getCode());
 
             // 1. Si el nodo ya no está en escena → salir
             if (txtUsuario.getScene() == null)

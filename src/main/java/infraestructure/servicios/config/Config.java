@@ -49,13 +49,13 @@ public class Config {
         this.rutaMisDatos = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase() + "/misdatos.json";
         this.rutaUIData = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase() + "/uidata.json";
         this.dirPers = _Ruta.DATOS.getRuta() + "/" + usuario.toUpperCase();
-        System.out.println("Rutas de Configuración para el usuario " + Config.usuario + " : \n" +
-                "Directorio Configuración Personal: " + this.dirCFGpers + "\n" +
-                "Ruta configdata.json: " + this.rutaConfigData + "\n" +
-                "Ruta misdatos.json: " + this.rutaMisDatos + "\n" +
-                "Ruta uidata.json: " + this.rutaUIData + "\n" +
-                "Ruta rutasconfig.json: " + this.rutaRutasConfig + "\n" +
-                "Ruta Directorio de Trabajo: " + this.dirPers);
+        // System.out.println("Rutas de Configuración para el usuario " + Config.usuario + " : \n" +
+        //         "Directorio Configuración Personal: " + this.dirCFGpers + "\n" +
+        //         "Ruta configdata.json: " + this.rutaConfigData + "\n" +
+        //         "Ruta misdatos.json: " + this.rutaMisDatos + "\n" +
+        //         "Ruta uidata.json: " + this.rutaUIData + "\n" +
+        //         "Ruta rutasconfig.json: " + this.rutaRutasConfig + "\n" +
+        //         "Ruta Directorio de Trabajo: " + this.dirPers);
 
         // Cargar objetos
         this.configData = JsonParser.leerJson(this.rutaConfigData, ConfigData.class);
@@ -65,8 +65,8 @@ public class Config {
 
 
 // STUB: 26-03-30 : Escribir el código para cargar cada uno de estos archivos JSON en sus respectivos objetos ConfigData, MisDatos, UIData, RutasConfig
-        System.out.println("[Config>Config(user)] Creada la Configuracion del Usuario " + usuario);
-        System.out.println("[Config>Config(user)] Config de usuario " + usuario + " : \n" + this.toString());
+        // System.out.println("[Config>Config(user)] Creada la Configuracion del Usuario " + usuario);
+        // System.out.println("[Config>Config(user)] Config de usuario " + usuario + " : \n" + this.toString());
 
     }
 

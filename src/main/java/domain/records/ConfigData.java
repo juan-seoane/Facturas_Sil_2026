@@ -73,7 +73,7 @@ public class ConfigData{
 		// REVIEW - 2024-05-03 : El archivo RS.rs debería copiarse y renovarse cada anho...
 		// STUB   - 2026-03-31 : Falta completar las rutas desde el objeto 'rutas' (clase 'RutasTrabajo') y origenesCaja
 		String cadenaResp = "{\n\t\"user\": \"" + this.user +  "\",\n\t\"anho\": { \"anho\": " + this.anho.getAnho() + ", \"trimestre\": " + this.anho.getTrimestre() + " },\n\t\"rutas\": {\n\t\t\"FCT\": \"" + this.rutas.getFCT() + "\",\n\t\t\"RS\": \"" + this.rutas.getRS() + "\",\n\t\t\"CJA\": \"" + this.rutas.getCJA() + "\"\n\t},\n\t\"origenesCaja\":\t" + this.origenesCaja.toString() + "\n}";
-		System.out.println("[ConfigData.java]->\n"+cadenaResp);
+		//System.out.println("[ConfigData.java]->\n"+cadenaResp);
 		return cadenaResp;
 	}
 //#endregion

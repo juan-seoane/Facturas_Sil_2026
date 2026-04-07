@@ -488,8 +488,8 @@ public class FxCntrlVisorFCT implements Initializable{
 		String[] fechaArr = fechaStr.split("/");
 		int dia = Integer.parseInt(fechaArr[0]);
 		int mes = Integer.parseInt(fechaArr[1]);
-		int año = Integer.parseInt(fechaArr[2]);
-		f.setFecha(new Fecha(dia, mes, año));
+		int anho = Integer.parseInt(fechaArr[2]);
+		f.setFecha(new Fecha(dia, mes, anho));
 		f.esDevolucion = ((tfVTotal.getText().contains("-"))?true:false);
 		//leer RS
 		int idrs = Integer.parseInt(lblVIDRS.getText());

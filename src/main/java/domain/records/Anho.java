@@ -1,20 +1,20 @@
 package domain.records;
 
 public class Anho {
-    private int año;
+    private int anho;
     private int trimestre;
 
-    public Anho(int año, int trimestre) {
-        this.año = año;
+    public Anho(int anho, int trimestre) {
+        this.anho = anho;
         this.trimestre = trimestre;
     }
 
     public int getAnho() {
-        return año;
+        return anho;
     }
 
-    public void setAnho(int año) {
-        this.año = año;
+    public void setAnho(int anho) {
+        this.anho = anho;
     }
 
     public int getTrimestre() {

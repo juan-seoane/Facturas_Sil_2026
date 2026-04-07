@@ -1,4 +1,8 @@
 package app.services;
+
+import domain.records.ConfigData;
+import infraestructure.csv.FacturaCSVRepo;
+
 /* CONTROLA TODAS LAS OPERACIONES SOBRE UNA FACTURA */
 
 // import java.io.IOException;
@@ -22,16 +26,28 @@ package app.services;
 // import modeloNegocio.Infraestructura.csv.FacturaCSVRepo;
 
 
-public class FacturaService {
-/*
-    private final FacturaCSVRepo repo;
+public class FacturasService {
 
-    public FacturaService(FacturaCSVRepo repo) {
-        this.repo = repo;
+    public static FacturaCSVRepo repo;
+    public static ConfigData configdata;
+    
+
+    public FacturasService() {
+        System.out.println("[FacturasService] Inicializando servicio de facturas...");
     }
 
-    public static int getUltimaID() {
+    public static ConfigData getConfigdata() {
+        return configdata;
+    }
 
+    public void setConfigdata(ConfigData configdata) {
+        FacturasService.configdata = configdata;
+        System.out.println("[FacturasService] Configuración de datos actualizada.");
+
+    }
+
+}
+/*
     }
 
     //#region fct_ops (prov del ModeloFacturas)
@@ -189,4 +205,4 @@ public class FacturaService {
 
     //#endregion
     */
-}
+

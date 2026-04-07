@@ -25,7 +25,7 @@ public class ResourcesService {
     }
 
     public static Parent ImagenARoot(Image image) {
-        // Crea un ImageView y ajusta la imagen al tamaño de la escena
+        // Crea un ImageView y ajusta la imagen al tamanho de la escena
         ImageView imageView = new ImageView(image);
         imageView.setPreserveRatio(true);
 

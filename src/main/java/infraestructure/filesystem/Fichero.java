@@ -72,7 +72,7 @@ public class Fichero<T> {
                     ////System.out.println("objeto leido: " + entrada.toString());
                     entradas.add(entrada);
                 }
-                ////System.out.println("[Fichero>leer] tamaño del vector de lectura: " + entradas.size());
+                ////System.out.println("[Fichero>leer] tamanho del vector de lectura: " + entradas.size());
 //                ////System.out.println("tipo de archivo : " + entradas.getClass().getName());
             } catch (NullPointerException | IOException | ClassNotFoundException e) {
                 ////System.out.println("[Fichero.java>leer()] Error en la lectura del tipo " + e + " al leer el fichero "+ this.rutaArchivo);
@@ -89,7 +89,7 @@ public class Fichero<T> {
         ////System.out.println("Escribiendo fichero".toUpperCase()+" "+ this.rutaArchivo);
         abrirOutputStream();
         try {
-            ////System.out.println("tamaño del vector de escritura: " + entradas.size());
+            ////System.out.println("tamanho del vector de escritura: " + entradas.size());
             for (int i = 0; i < entradas.size(); i++) {
                 oos.writeObject((T)(entradas.get(i)));
                 ////System.out.println("escribiendo objeto numero " + i + " del tipo " + entradas.get(i).getClass().getName());

@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.BrokenBarrierException;
 
 import app.core.AppContext;
+import infraestructure.servicios.config.Config;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -55,7 +56,8 @@ public class FxCntrlPanelControl implements Initializable{
     // Config configActual;
     // Controlador_prev ctrlPpal;
     // ControladorFacturas ctrlFct;
-    String usuarioActual;
+    // NOTE : 26-03-30 : El usuario actual se establece en el AppContext, no aquí...
+    // String usuarioActual;
 //#endregion
 
 // REVIEW - 24-04-12 : ¿Porqué no puede seguir siendo un Singleton?
@@ -63,54 +65,52 @@ public class FxCntrlPanelControl implements Initializable{
 
 //#region CONSTR
     public FxCntrlPanelControl() {
-        this.usuarioActual = AppContext.usuarioActual.toLowerCase();
-        System.out.println(
-                "[FxCntrlPanelControl] En el constructor, estableciendo el usuario actual en : " + this.usuarioActual);
+        //this.usuarioActual = AppContext.usuarioActual.toLowerCase();
+        //System.out.println("[FxCntrlPanelControl] En el constructor del FxCntrlPanelControl, estableciendo el usuario actual en : " + AppContext.usuarioActual);
 // Luego habrá que cambiar esto de abajo a modo NAV por defecto...
-//         PanelControl.modo = Controlador_prev.INGR;
-//         this.configActual = Config.getConfig(this.usuarioActual);
-// // REVIEW - 24-06-21 : Estas asignaciones me hacen falta
-//         this.ctrlPpal = Controlador_prev.getControlador();
-//         this.ctrlFct = Controlador_prev.getControladorFacturas();
-
+        //PanelControl.modo = Controlador_prev.INGR;
+        //this.configActual = Config.getConfig(this.usuarioActual);
+// REVIEW - 24-06-21 : Estas asignaciones me hacen falta
+        //this.ctrlPpal = Controlador_prev.getControlador();
+        //this.ctrlFct = Controlador_prev.getControladorFacturas();
     }
-//#endregion
-
-//#region INITIALIZE
+    //#endregion
+    
+    //#region INITIALIZE
     @FXML
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
+        setUsuario(AppContext.usuarioActual);
         // REVIEW - 24-04-09 : Crear un Controlador general, y decidir cómo abrirá las tablas, etc...
         // REVIEW : Cambiar el diseño de los ToggleButton al pulsarse y el mensaje que arrojan
         // REVIEW : Arreglar la inicialización de la GUI del PanelControl... No funciona
-        // setAnho((Integer)this.configActual.configData.getAnho().getAnho());
-        // setTrimestre(this.configActual.configData.getAnho().getTrimestre());
-        this.usuarioActual = AppContext.usuarioActual.toLowerCase();
-        setUsuario(this.usuarioActual);
-        System.out.println(
-                "[FxCntrlPanelControl] Inicializando, estableciendo la etiqueta de usuario en : " + this.usuarioActual);
+        setAnho((Integer)Config.configActual.getConfigData().getAnho().getAnho());
+        setTrimestre(((Integer) (Config.configActual.getConfigData().getAnho().getTrimestre())));
+        System.out.println("[FxCntrlPanelControl] Inicializando, estableciendo la etiqueta de usuario en : " + AppContext.usuarioActual);
+        System.out.println("[FxCnytrlPanelControl] Anho y trimestre establecidos en : " + Config.configActual.getConfigData().getAnho().getAnho() + " - " + Config.configActual.getConfigData().getAnho().getTrimestre());
         // //sólo cargar tablas, no mostrarlas...
         // try {
-        //     boolean ok1 = this.ctrlFct.cargarTablaFacturas();
-
-        //     //Esto sería mostrarla
-        //     //this.ctrlFct.mostrarTablaFacturas();
-        //     if (ok1){
-        //         System.out.println("[PanelControl>Constructor] Tabla Facturas cargada!!");
-        //         fxTablaFCTcontr = this.ctrlFct.getFXcontrlTablaFCT();
-        //         // REVIEW - 24-07-13 : Aquí el valor de la tableView de Fact y del visorFCT es null!!
-        //         System.out.println("[PanelControl>Constructor] Tabla Facturas asignada!!");
-        //     }
-        // } catch (InterruptedException | BrokenBarrierException e) {
-        //     System.out.println("[PanelControl>Constructor] Tabla y Visor Facturas NO cargados!!" + e.getMessage());
-        // }
-        // setNumfacturas(ModeloFacturas.getNumeroFacturas());
+            //     boolean ok1 = this.ctrlFct.cargarTablaFacturas();
+            
+            //     //Esto sería mostrarla
+            //     //this.ctrlFct.mostrarTablaFacturas();
+            //     if (ok1){
+                //         System.out.println("[PanelControl>Constructor] Tabla Facturas cargada!!");
+                //         fxTablaFCTcontr = this.ctrlFct.getFXcontrlTablaFCT();
+                //         // REVIEW - 24-07-13 : Aquí el valor de la tableView de Fact y del visorFCT es null!!
+                //         System.out.println("[PanelControl>Constructor] Tabla Facturas asignada!!");
+                //     }
+                // } catch (InterruptedException | BrokenBarrierException e) {
+                    //     System.out.println("[PanelControl>Constructor] Tabla y Visor Facturas NO cargados!!" + e.getMessage());
+                    // }
+                    // setNumfacturas(ModeloFacturas.getNumeroFacturas());
+        FxCntrlPanelControl.instancia_pc=this;
     }
 //#endregion
 
 //#region GETTERS/SETTERS
     public void setAnho(int i){
-        // Platform.runLater(() -> Controlador_prev.getPanelControl().lblAnho.setText(i+""));
+        Platform.runLater(() -> this.lblAnho.setText(i+""));
     }
 
     public void setNumfacturas(int i){
@@ -119,11 +119,11 @@ public class FxCntrlPanelControl implements Initializable{
     }
 
     public void setTrimestre(int i){
-        // if (i==0){
-        //     Platform.runLater(() -> Controlador_prev.getPanelControl().lblTrimestre.setText("TODOS"));
-        // }else{
-        //     Platform.runLater(() -> Controlador_prev.getPanelControl().lblTrimestre.setText(i+""));
-        // }
+        if (i==0){
+            Platform.runLater(() -> FxCntrlPanelControl.getPanelControl().lblTrimestre.setText("TODOS"));
+        }else{
+            Platform.runLater(() -> FxCntrlPanelControl.getPanelControl().lblTrimestre.setText(i+""));
+        }
     }
 
     public void setUsuario(String user){

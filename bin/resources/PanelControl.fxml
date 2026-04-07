@@ -86,7 +86,7 @@
                   <Insets top="10.0" />
                </GridPane.margin>
             </Label>
-            <Label text="AÑO" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+            <Label text="anho" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.valignment="TOP">
                <font>
                   <Font name="Arial" size="27.0" />
                </font>

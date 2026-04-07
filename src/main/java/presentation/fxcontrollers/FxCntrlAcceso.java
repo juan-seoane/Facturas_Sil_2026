@@ -19,7 +19,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 
@@ -199,8 +198,8 @@ public class FxCntrlAcceso implements Initializable {
         FxCntrlAcceso.aceptado = true;
         // TODO : 26-03-16 : La nueva Config no se debería cargar desde el FxController...
 
-        scene2 = AppContext.get().nav().crearEscena("FxAcceso2");
-        AppContext.get().nav().cambiarEscena(stage, scene2, handlerTeclas);
+        scene_acceso2 = AppContext.get().nav().crearEscena("FxAcceso2");
+        AppContext.get().nav().cambiarEscena(stage, scene_acceso2, handlerTeclas);
         //System.out.println("[FxAcceso>acierto] intentos<5 y cred OK]...OK, entrando...pulse una tecla para continuar");
         imprimir("Ok...Entrando!\nBienvenido a FacturasSIL 24!\nPor favor espere...");
         ventanaAcceso.requestFocus();

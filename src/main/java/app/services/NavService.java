@@ -13,7 +13,7 @@ import presentation.helpers.FxmlHelper;
 public class NavService {
 
     private Stage ventana;
-    
+
     public void cambiarEscena( Scene es) {
 
         this.ventana.setScene(es);

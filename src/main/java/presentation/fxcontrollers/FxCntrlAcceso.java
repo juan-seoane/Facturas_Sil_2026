@@ -18,6 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 
@@ -36,7 +37,7 @@ public class FxCntrlAcceso implements Initializable {
 //#region otros campos
     public static Stage ventanaAcceso;
 
-    public static Scene scene2;
+    public static Scene scene_acceso2;
     public Stage stage;
     public static TextArea canvasAcceso;
     public static String usuario ="";
@@ -107,6 +108,7 @@ public class FxCntrlAcceso implements Initializable {
 
             Stage pcStage = new Stage();
             AppContext.get().nav().setStage(pcStage);
+            pcStage.initStyle(StageStyle.UNDECORATED);
             Scene pc = AppContext.get().nav().crearEscena("FxPanelControl");
             AppContext.get().nav().cambiarEscena(pcStage, pc);
             pcStage.show();
@@ -182,8 +184,8 @@ public class FxCntrlAcceso implements Initializable {
 
 //#region post-auth
     public void fallo() {
-        scene2 = AppContext.get().nav().crearEscena("FxAcceso2");
-        AppContext.get().nav().cambiarEscena(stage, scene2, handlerTeclas);
+        scene_acceso2 = AppContext.get().nav().crearEscena("FxAcceso2");
+        AppContext.get().nav().cambiarEscena(stage, scene_acceso2, handlerTeclas);
         System.out.println("[Acceso>fallo] intentos>=5 y AUTH_FAIL] El proceso de Autenticación ha fallado!");
         System.out.println("[Acceso>fallo] El programa se cerrará!");
         imprimir("\nEl proceso de Autenticación ha fallado!");
@@ -198,8 +200,8 @@ public class FxCntrlAcceso implements Initializable {
         FxCntrlAcceso.aceptado = true;
         // TODO : 26-03-16 : La nueva Config no se debería cargar desde el FxController...
         //Config.getConfig(usuario);
-        scene2 = AppContext.get().nav().crearEscena("FxAcceso2");
-        AppContext.get().nav().cambiarEscena(stage, scene2, handlerTeclas);
+        scene_acceso2 = AppContext.get().nav().crearEscena("FxAcceso2");
+        AppContext.get().nav().cambiarEscena(stage, scene_acceso2, handlerTeclas);
         System.out.println("[FxAcceso>acierto] intentos<5 y cred OK]...OK, entrando...pulse una tecla para continuar");
         imprimir("Ok...Entrando!\nBienvenido a FacturasSIL 24!\nPor favor espere...");
         ventanaAcceso.requestFocus();

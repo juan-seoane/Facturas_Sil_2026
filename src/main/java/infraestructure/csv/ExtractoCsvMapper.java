@@ -6,13 +6,13 @@ public class ExtractoCsvMapper {
 
     public static Extracto fromLineaExtracto(LineaCsvDTO l) {
 
-        double base = parseDoubleSafe(l.get(10));
+        double base = parseDoubleSafe(l.get(9));
 
         // tipo IVA puede venir como "10" o "10.0"
-        int tipoIVA = (int) parseDoubleSafe(l.get(12));
+        int tipoIVA = (int) parseDoubleSafe(l.get(11));
 
-        double iva = parseDoubleSafe(l.get(13));
-        double subtotal = parseDoubleSafe(l.get(14));
+        double iva = parseDoubleSafe(l.get(12));
+        double subtotal = parseDoubleSafe(l.get(13));
         String concepto = l.get(6);
 
         return new Extracto(base, tipoIVA, iva, subtotal, concepto);

@@ -81,7 +81,7 @@ public void saveToJson(Path path) throws IOException {
 }
 
 public void updateAncho(String colId, double nuevoAncho) {
-    System.out.println("[UIDataConfig>updateAncho] en col: " + colId + " : " + nuevoAncho);
+    //System.out.println("[UIDataConfig>updateAncho] en col: " + colId + " : " + nuevoAncho);
     if (colId == null) return;
     anchoColsFCT.put(colId, nuevoAncho);
   }

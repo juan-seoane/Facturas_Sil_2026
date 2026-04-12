@@ -2,6 +2,7 @@ package presentation.fxcontrollers;
 
 import app.core.AppContext;
 import app.core.AppController;
+import app.helpers.VentanaID;
 import infraestructure.filesystem._Ruta;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
@@ -25,14 +26,14 @@ public class FxCntrlSplash {
     }
 
     private void iniciarSplash() {
-        
+
         System.out.println("[FxCntrlSplash.initialize()] → INICIO");
 
         int i = (int) (Math.floor(Math.random() * 4) + 1);
         String ruta = _Ruta.IMG.getRuta() + "/splash" + i + ".jpg";
 
         this.imgSplash.setImage(new Image(getClass().getResourceAsStream(ruta)));
-        
+
         System.out.println("[FxCntrlSplash.initialize()] - imgSplash = " + this.imgSplash);
         System.out.println("[FxCntrlSplash.initialize()] - Ruta calculada = " + ruta);
         System.out.println("[FxCntrlSplash.initialize()] - Stream = " + getClass().getResourceAsStream(ruta));
@@ -48,16 +49,16 @@ public class FxCntrlSplash {
         // Cerrar el Stage del Splash
         Stage splashStage = (Stage) imgSplash.getScene().getWindow();
         splashStage.close();
-            
-        // Abrir el Stage de Acceso sin marco
-        Stage stageAcceso = new Stage();
-        stageAcceso.initStyle(StageStyle.UNDECORATED); // ← sin marco
-        AppContext.get().nav().setStage(stageAcceso);
-        Scene acceso = AppContext.get().nav().crearEscena("FxAcceso");
-        AppContext.get().nav().cambiarEscena(stageAcceso, acceso);
-        stageAcceso.show();
-        });
 
-        ft.play();   
+        // Abrir el Stage de Acceso sin marco
+        Stage acceso = AppContext.get().nav().crearVentana(
+            VentanaID.LOGIN,
+            controller -> {} // si no necesitas inicializar nada
+        );
+
+        acceso.initStyle(StageStyle.UNDECORATED);
+        acceso.show();
+    });
+    ft.play();
     }
 }

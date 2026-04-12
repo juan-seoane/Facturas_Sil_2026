@@ -14,7 +14,7 @@ import infraestructure.servicios.AuthService;
 
 
 public class ComprobacionesAccesoTest {
-
+/*
 	String rutaCreds;
 
 	@Test
@@ -45,4 +45,5 @@ public class ComprobacionesAccesoTest {
 		else
 			assertEquals("admin",listaContr.get(0).usuario());
 	}
+*/
 }

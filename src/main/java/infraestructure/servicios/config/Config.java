@@ -1,17 +1,13 @@
 package infraestructure.servicios.config;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Optional;
 
 import domain.records.ConfigData;
-import domain.records.MisDatos;
 import domain.records.RutasConfig;
-import domain.records.UIData;
 import infraestructure.filesystem._Ruta;
 import infraestructure.json.JsonParser;
 import javafx.scene.control.Alert;
@@ -32,9 +28,8 @@ public class Config {
     public String dirPers;
     public static Config configActual;
     private ConfigData configData;
-    private MisDatos misDatos;
-    private UIData uiData;
     private RutasConfig rutasconfig;
+
 // TODO : 26-03-15 : El plan era guardar un ArrayList<Config> con todas las configuraciones guardadas, para hacerlas intercambiables
     public static ArrayList<Config> configuraciones;
     //#endregion
@@ -59,8 +54,9 @@ public class Config {
 
         // Cargar objetos
         this.configData = JsonParser.leerJson(this.rutaConfigData, ConfigData.class);
-        this.misDatos = JsonParser.leerJson(this.rutaMisDatos, MisDatos.class);
-        this.uiData = JsonParser.leerJson(this.rutaUIData, UIData.class);
+        // NOTE : 26-04-10 : Estos objetos, por ahora, no los cargo en memoria...
+        // this.misDatos = JsonParser.leerJson(this.rutaMisDatos, MisDatos.class);
+        // this.uiData = JsonParser.leerJson(this.rutaUIData, UIData.class);
         this.rutasconfig = JsonParser.leerJson(this.rutaRutasConfig, RutasConfig.class);
 
 
@@ -119,7 +115,7 @@ public class Config {
         crearArchivoSiNoExiste(fRutasConfig);
 
         System.out.println("[Config] Rutas creadas correctamente para " + usuario);
-        
+
 
             return true;
     }
@@ -133,23 +129,10 @@ public class Config {
                 }
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            ex.getMessage();
         }
     }
-/*
-    private boolean confirmarCreacion(String usuario) {
-        System.out.println("Las rutas de configuración para '" + usuario + "' no existen.");
-        System.out.println("¿Desea crearlas? (s/n)");
 
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            String resp = br.readLine().trim().toLowerCase();
-            return resp.equals("s") || resp.equals("si");
-        } catch (IOException e) {
-            return false;
-        }
-    }
-*/
     private boolean confirmarCreacion(String usuario) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Crear configuración");
@@ -169,14 +152,14 @@ public class Config {
                 usuario +
                 " :\n ConfigData:\n" +
                 this.configData.toJSON() +
-                "\nmisDatos:\n" +
-                ((this.misDatos != null) ? this.misDatos.toJSON() : " - NULL -") +
-                "\nuiData:\n" +
-                this.uiData.toJSON() +
-                "\nrutasConfig:\n" +
-                this.rutasconfig.toJSON() +
-                /*"\nElementos en Lista static de configuraciones: " +
-                ((Config.configuraciones != null) ? Config.configuraciones.size() : " - NULL -") + */
+                // "\nmisDatos:\n" +
+                // ((this.misDatos != null) ? this.misDatos.toJSON() : " - NULL -") +
+                // "\nuiData:\n" +
+                // this.uiData.toJSON() +
+                // "\nrutasConfig:\n" +
+                // this.rutasconfig.toJSON() +
+                // "\nElementos en Lista static de configuraciones: " +
+                // ((Config.configuraciones != null) ? Config.configuraciones.size() : " - NULL -") +
                 "\nconfigActual not NULL: " +
                 ((Config.configActual != null) ? "S" : "N");
         return resp;
@@ -187,5 +170,29 @@ public class Config {
     public ConfigData getConfigData() {
 
         return this.configData;
+    }
+
+    // public MisDatos getMisDatos() {
+    //     return misDatos;
+    // }
+
+    // public void setMisDatos(MisDatos misDatos) {
+    //     this.misDatos = misDatos;
+    // }
+
+    // public UIData getUiData() {
+    //     return uiData;
+    // }
+
+    // public void setUiData(UIData uiData) {
+    //     this.uiData = uiData;
+    // }
+
+    public RutasConfig getRutasconfig() {
+        return rutasconfig;
+    }
+
+    public void setRutasconfig(RutasConfig rutasconfig) {
+        this.rutasconfig = rutasconfig;
     }
 }

@@ -1,7 +1,12 @@
 package app.services;
 
+import app.helpers.VentanaID;
 import infraestructure.filesystem._Ruta;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
@@ -12,35 +17,43 @@ import presentation.helpers.FxmlHelper;
 /* CONTROLA LA CREACIÓN DE ESCENAS Y DEMÁS ASPECTOS DE LA NAVEGACIÓN POR VENTANAS */
 public class NavService {
 
-    private Stage ventana;
+    private final Map<VentanaID, Stage> ventanas = new HashMap<>();
 
-    public void cambiarEscena( Scene es) {
+    public void cambiarEscena(Stage stage, Scene scene, EventHandler<KeyEvent> handlerTeclas) {
 
-        this.ventana.setScene(es);
+        stage.setScene(scene);
 
+        if (handlerTeclas != null) {
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, handlerTeclas);
+
+        stage.setOnHidden(
+            e -> {
+                scene.removeEventFilter(KeyEvent.KEY_PRESSED, handlerTeclas);
+            });
+        }
     }
 
-    public void cambiarEscena(Stage stage, Scene es) {
+  public void crearCambiarEscena(Stage stage, String fxml, StageStyle style, Consumer<Object> initController) {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + fxml + ".fxml"));
+      Parent root = loader.load();
 
-        this.ventana = stage;
-        this.ventana.setScene(es);
+      Object controller = loader.getController();
+      if (initController != null) {
+        initController.accept(controller);
+      }
 
+      Scene scene = new Scene(root);
+      stage.setScene(scene);
+      stage.initStyle(style);
+
+    } catch (Exception e) {
+      System.out.println(
+          "[NavService>crearCambiarEscena] Excepcion "
+              + e.getClass()
+              + " al crear y cambiar de escena");
     }
-
-    public void cambiarEscena(Stage stage, Scene es, EventHandler<KeyEvent> handlerTeclas) {
-
-        this.ventana = stage;
-        this.ventana.setScene(es);
-
-        this.ventana.getScene().addEventFilter(KeyEvent.KEY_PRESSED, handlerTeclas);
-
-        // --- ELIMINAR EL LISTENER AL CERRAR LA VENTANA ---
-        this.ventana.setOnHidden(e -> {
-            if (handlerTeclas != null) {
-                this.ventana.getScene().removeEventFilter(KeyEvent.KEY_PRESSED, handlerTeclas);
-            }
-        });
-    }
+  }
 
     public Scene crearEscena(String nombreArchivoFxmlSinExt) {
         String ruta = _Ruta.FXML.getRuta() + "/" + nombreArchivoFxmlSinExt + ".fxml";
@@ -52,32 +65,61 @@ public class NavService {
         return esc;
     }
 
-    public Stage crearCambiarEscena(Stage stage, String nombreArchivoFxmlSinExt, StageStyle style) {
-        Scene es = crearEscena(nombreArchivoFxmlSinExt);
-        this.ventana = stage;
-        if (es != null) {
-            cambiarEscena(this.ventana, es);
-            this.ventana.initStyle(style);
-            return this.ventana;
-        } else {
-            System.out.println("[NavService>crearYCambiarEscena] Error al crear la escena: " + nombreArchivoFxmlSinExt);
-            return null;
-        }
-    }
-
     public Stage crearStage(Scene sc) {
         Stage st = new Stage();
         st.setScene(sc);
-        this.ventana = st;
-        return this.ventana;
+        return st;
     }
 
-    public void setStage(Stage stage) {
-        this.ventana = stage;
+    public Stage cambiarEscena(Stage st, Scene es) {
+        st.setScene(es);
+        return st;
+
     }
 
-    public void mostrarStage(Stage st) {
-        this.ventana = st;
-        this.ventana.show();
+  public Stage crearVentana(VentanaID id, Consumer<Object> initController) {
+    try {
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("/fxml/" + id.fxml() + ".fxml")
+        );
+        Parent root = loader.load();
+
+        Object controller = loader.getController();
+        if (initController != null) {
+            initController.accept(controller);
+        }
+
+        Stage stage = new Stage();
+        stage.setTitle(id.titulo());
+        stage.setScene(new Scene(root));
+
+        ventanas.put(id, stage);
+        return stage;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
     }
+}
+
+
+
+  public Stage getVentana(VentanaID id) {
+    return ventanas.get(id);
+  }
+
+  public void mostrar(VentanaID id) {
+    Stage s = ventanas.get(id);
+    if (s != null) s.show();
+  }
+
+  public void ocultar(VentanaID id) {
+    Stage s = ventanas.get(id);
+    if (s != null) s.hide();
+  }
+
+  public void cerrar(VentanaID id) {
+    Stage s = ventanas.remove(id);
+    if (s != null) s.close();
+  }
 }

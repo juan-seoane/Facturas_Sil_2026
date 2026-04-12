@@ -1,14 +1,20 @@
 package infraestructure.csv;
 
+import domain.interfaces.IfacturasRepo;
+import domain.records.Extracto;
+import domain.records.Factura;
+import infraestructure.servicios.config.Config;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import domain.interfaces.IfacturasRepo;
-import domain.records.Extracto;
-import domain.records.Factura;
-
 public class FacturaCSVRepo implements IfacturasRepo {
+
+    private String rutaCSV;
+
+    public FacturaCSVRepo(String rutaCSV) {
+    this.rutaCSV = rutaCSV;
+  }
 
     public static Factura leerFactura(List<String[]> lineas, int indexInicial) {
         LineaCsvDTO lineaFactura = CsvReader.fromCsvArray(lineas.get(indexInicial));
@@ -18,7 +24,7 @@ public class FacturaCSVRepo implements IfacturasRepo {
 
         for (int j = 0; j < numExtractos; j++) {
             LineaCsvDTO lineaExtracto = CsvReader.fromCsvArray(lineas.get(indexInicial + 1 + j));
-            Extracto ex = ExtractoCsvMapper.fromLinea(lineaExtracto);
+            Extracto ex = ExtractoCsvMapper.fromLineaExtracto(lineaExtracto);
             factura.extractos.add(ex);
         }
 
@@ -54,13 +60,18 @@ public class FacturaCSVRepo implements IfacturasRepo {
 
     public static List<Factura> leerTodasLasFacturas() {
         // STUB : 26-03-18
-        String ruta = ""; //Config.getConfig(Config.usuario).getConfigData().getRutas().getFCT();
+        String ruta = Config.getConfig(Config.usuario).getConfigData().getRutas().getFCT();
+    System.out.println(
+        "[FacturaCSVRepo>leerTodasLasFacturas()] Leyendo facturas del archivo " + ruta);
         try {
             List<Factura> listaFCT;
             listaFCT = CsvReader.leerFacturas(ruta);
+            System.out.println(
+                "[FacturaCSVRepo>leerTodasLasFacturas()] Facturas leídas = " + listaFCT.size());
             return listaFCT;
         } catch (IOException e) {
-            System.out.println("Error " + e.getClass() + " leyendo listaFCT de " + ruta + " : " + e.getMessage());
+      System.out.println(
+          "Error " + e.getClass() + " leyendo listaFCT de " + ruta + " : " + e.getMessage());
             System.exit(1);
         }
         return null;

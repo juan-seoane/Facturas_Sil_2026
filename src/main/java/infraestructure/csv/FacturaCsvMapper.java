@@ -1,8 +1,5 @@
 package infraestructure.csv;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import domain.records.Factura;
 import domain.records.Fecha;
 import domain.records.NIF;
@@ -10,23 +7,25 @@ import domain.records.Nota;
 import domain.records.RazonSocial;
 import domain.records.TipoGasto;
 import domain.records.Totales;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FacturaCsvMapper {
 
     public static Factura fromLinea(LineaCsvDTO l) {
-        // 1) Totales
-        Totales totales = new Totales(
-            Double.parseDouble(l.get(9)), // base
-            Boolean.parseBoolean(l.get(10)), // variosIVAs
-            Integer.parseInt(l.get(11)), // tipoIVA
-            Double.parseDouble(l.get(12)), // iva
-            Double.parseDouble(l.get(13)), // subtotal
-            Double.parseDouble(l.get(14)), // baseNI
-            Integer.parseInt(l.get(15)), // ret
-            Double.parseDouble(l.get(16)), // retenciones
-            Double.parseDouble(l.get(17)), // total
-            l.get(6) // categoria (String → TipoGasto más abajo)
-        );
+    // 1) Totales
+    Totales totales =
+        new Totales(
+            parseDoubleSafe(l.get(9)),
+            Boolean.parseBoolean(l.get(10)),
+            parseIntSafe(l.get(11)),
+            parseDoubleSafe(l.get(12)),
+            parseDoubleSafe(l.get(13)),
+            parseDoubleSafe(l.get(14)),
+            parseIntSafe(l.get(15)),
+            parseDoubleSafe(l.get(16)),
+            parseDoubleSafe(l.get(17)),
+            l.get(6));
 
         // 2) Nota
         Nota nota = new Nota(l.get(18)); // SOLO texto
@@ -87,18 +86,28 @@ public class FacturaCsvMapper {
 
     public static List<String[]> toLineas(Factura factura) {
 
-    List<String[]> resultado = new ArrayList<>();
+        List<String[]> resultado = new ArrayList<>();
 
-    // 1) Línea principal
-    LineaCsvDTO dtoFactura = toLinea(factura);
-    resultado.add(dtoFactura.columnas());
+        // 1) Línea principal
+        LineaCsvDTO dtoFactura = toLinea(factura);
+        resultado.add(dtoFactura.columnas());
 
-    // 2) Líneas de extractos
-    factura.extractos.forEach(extracto -> {
-        LineaCsvDTO dtoExt = ExtractoCsvMapper.toLineaExtracto(extracto);
-        resultado.add(dtoExt.columnas());
-    });
+        // 2) Líneas de extractos
+        factura.extractos.forEach(extracto -> {
+            LineaCsvDTO dtoExt = ExtractoCsvMapper.toLineaExtracto(extracto);
+            resultado.add(dtoExt.columnas());
+        });
 
-    return resultado;
-}
+        return resultado;
+    }
+
+  private static double parseDoubleSafe(String s) {
+    if (s == null || s.isBlank()) return 0.0;
+    return Double.parseDouble(s);
+  }
+
+  private static int parseIntSafe(String s) {
+    if (s == null || s.isBlank()) return 0;
+    return Integer.parseInt(s);
+  }
 }

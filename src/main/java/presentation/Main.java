@@ -1,8 +1,9 @@
 package presentation;
 
+
 import app.core.AppContext;
+import app.helpers.VentanaID;
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -12,11 +13,17 @@ public class Main extends Application {
    @Override
 public void start(Stage stageSplash) {
 
-    stageSplash.initStyle(StageStyle.UNDECORATED);
-    AppContext.get().nav().setStage(stageSplash);
-    Scene splash = AppContext.get().nav().crearEscena("FxSplash");
-    AppContext.get().nav().cambiarEscena(splash);
-    AppContext.get().nav().mostrarStage(stageSplash);
+    Stage splash = AppContext.get().nav().crearVentana(
+        VentanaID.SPLASH,
+            controller -> {
+            } // no necesita init
+
+    );
+    
+    splash.initStyle(StageStyle.UNDECORATED);
+    splash.show();
+
+
 }
 
     public static void main(String[] args) {

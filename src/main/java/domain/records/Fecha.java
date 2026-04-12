@@ -44,10 +44,10 @@ public class Fecha implements Comparable<Fecha> {
     }
 
     public static Fecha fromString(String s) {
-        String[] p = s.split("-");
-        int anho = Integer.parseInt(p[0]);
+        String[] p = s.split("/");
+        int anho = Integer.parseInt(p[2]);
         int mes = Integer.parseInt(p[1]);
-        int dia = Integer.parseInt(p[2]);
+        int dia = Integer.parseInt(p[0]);
         return new Fecha(dia, mes, anho);
     }
 

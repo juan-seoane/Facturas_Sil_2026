@@ -1,1 +1,1 @@
-{	"user": "admin",	"rutaconfigdata": "config/ADMIN/configdata.json",	"rutamisdatos": "config/ADMIN/misdatos.json",	"rutauidata": "config/ADMIN/uidata.json"	}
+{	"user": "admin",	"rutaconfigdata": "data/config/ADMIN/configdata.json",	"rutamisdatos": "data/config/ADMIN/misdatos.json",	"rutauidata": "data/config/ADMIN/uidata.json"	}

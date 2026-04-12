@@ -80,7 +80,8 @@ public void saveToJson(Path path) throws IOException {
     Files.writeString(path, gson.toJson(root));
 }
 
-  public void updateAncho(String colId, double nuevoAncho) {
+public void updateAncho(String colId, double nuevoAncho) {
+    System.out.println("[UIDataConfig>updateAncho] en col: " + colId + " : " + nuevoAncho);
     if (colId == null) return;
     anchoColsFCT.put(colId, nuevoAncho);
   }

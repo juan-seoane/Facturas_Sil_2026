@@ -2,406 +2,340 @@ package presentation.fxcontrollers;
 
 import app.core.AppContext;
 import infraestructure.servicios.config.Config;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.Event;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import presentation.config.UIDataConfig;
 import presentation.helpers.TableScaler;
+import presentation.viewmodels.ExtractoFX;
 import presentation.viewmodels.FacturaFX;
 
 public class FxCntrlTablaFCT implements Initializable {
 
-  // #region CAMPOS_FXML
-  @FXML private TableView<FacturaFX> tblvwfct;
+    @FXML private TreeTableView<Object> treeFct;
 
-  @FXML private TableColumn<FacturaFX, Number> colID;
-  @FXML private TableColumn<FacturaFX, Number> colNumExtr;
-  @FXML private TableColumn<FacturaFX, Number> colBase;
-  @FXML private TableColumn<FacturaFX, Number> colTipoIVA;
-  @FXML private TableColumn<FacturaFX, Number> colIVA;
-  @FXML private TableColumn<FacturaFX, Number> colST;
-  @FXML private TableColumn<FacturaFX, Number> colBaseNI;
-  @FXML private TableColumn<FacturaFX, Number> colTipoRet;
-  @FXML private TableColumn<FacturaFX, Number> colRetenc;
-  @FXML private TableColumn<FacturaFX, Number> colTotal;
+    @FXML private TreeTableColumn<FacturaFX, Number> colID;
+    @FXML private TreeTableColumn<FacturaFX, String> colNumFact;
+    @FXML private TreeTableColumn<FacturaFX, String> colFecha;
+    @FXML private TreeTableColumn<FacturaFX, String> colRS;
+    @FXML private TreeTableColumn<Object, String> colCat;
+    @FXML private TreeTableColumn<FacturaFX, Boolean> colDev;
+    @FXML private TreeTableColumn<FacturaFX, Number> colNumExtr;
 
-  @FXML private TableColumn<FacturaFX, Boolean> colDev;
+    @FXML private TreeTableColumn<Object, Number> colBase;
+    @FXML private TreeTableColumn<Object, Number> colTipoIVA;
+    @FXML private TreeTableColumn<Object, Number> colIVA;
+    @FXML private TreeTableColumn<Object, Number> colST;
+    @FXML private TreeTableColumn<FacturaFX, Number> colBaseNI;
+    @FXML private TreeTableColumn<FacturaFX, Number> colTipoRet;
+    @FXML private TreeTableColumn<FacturaFX, Number> colRetenc;
+    @FXML private TreeTableColumn<FacturaFX, Number> colTotal;
 
-  @FXML private TableColumn<FacturaFX, String> colNumFact;
-  @FXML private TableColumn<FacturaFX, String> colFecha;
-  @FXML private TableColumn<FacturaFX, String> colRS;
-  @FXML private TableColumn<FacturaFX, String> colCat;
-  @FXML private TableColumn<FacturaFX, String> colNota;
+    @FXML private TreeTableColumn<FacturaFX, String> colNota;
 
-  @FXML private Button btnImprimirFct;
-  @FXML private Button btnVisorFct;
-  @FXML private Button btnScanFct;
-  @FXML private Button btnNuevaFct;
-  @FXML private Button btnBorrarFct;
-  @FXML private Button btnEditarFct;
-  @FXML private Button btnFiltrosFct;
-  @FXML private CheckBox chkbxFiltrosActivosFct;
+    @FXML
+    private TreeTableColumn<FacturaFX, Void> colAcciones;
 
-  @FXML Label lblInfoTblVw;
-  @FXML Label lblInfoStage;
-  @FXML Label lblInfoListaFXfacturas;
-  @FXML Label lblInfoCntrFXtabla;
+    @FXML private Label lblBase;
+    @FXML private Label lblIVA;
+    @FXML private Label lblST;
+    @FXML private Label lblBaseNI;
+    @FXML private Label lblRetenc;
+    @FXML private Label lblTotal;
+    @FXML private Label lblNumFact;
+    @FXML
+    private Label lblIndexFCT;
 
-  @FXML Label lblIndexFCT;
-  @FXML Label lblNumFact;
-  @FXML Label lblBase;
-  @FXML Label lblIVA;
-  @FXML Label lblST;
-  @FXML Label lblBaseNI;
-  @FXML Label lblRetenc;
-  @FXML Label lblTotal;
-  // #endregion
+    private UIDataConfig uiCfg;
+    private Path cfgPath;
 
-  // #region OTROS_CAMPOS
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
 
-  static int indiceActual;
-  private UIDataConfig uiCfg;
-  public ObservableList<FacturaFX> listaFxFacturas;
-  private Path cfgPath;
+        cfgPath = Path.of(Config.getConfig(Config.usuario).getRutasconfig().getRutaUIData());
+        try {
+            uiCfg = UIDataConfig.fromJson(cfgPath);
+        } catch (IOException e) {
+      // TODO Auto-generated catch block
+      System.out.println(
+          "[FxCntrlTablaFCT>initialize] Error " + e.getClass() + " al cargar la UIDataConfig");
+        }
 
-  // #endregion
+        configurarColumnas();
+        cargarDatos();
+        configurarAcciones();
+        configurarEscalado();
 
-  // #region CONSTR
-  // REVIEW - 24-06-22 : - En el constructor inicializamos los campos que necesitamos listos antes
-  // de nada...
-  public FxCntrlTablaFCT() {}
+    treeFct
+        .sceneProperty()
+        .addListener(
+            (obs, oldScene, newScene) -> {
+                        if (newScene != null) {
 
-  // #endregion
-
-  @Override
-  @FXML
-  public void initialize(URL location, ResourceBundle resources) {
-    System.out.println("[FxCntrlTablaFCT>initialize] Controlador FCT hash = " + this.hashCode());
-    System.out.println("[FxCntrlTablaFCT>initialize] TableView inyectada = " + tblvwfct.hashCode());
-
-    cfgPath = Path.of(Config.getConfig(Config.usuario).getRutasconfig().getRutaUIData());
-
-    try {
-      uiCfg = UIDataConfig.fromJson(cfgPath);
-    } catch (Exception e) {
-      System.out.println("Error leyendo UIDataConfig: " + e);
+                            // 1) Llamada inicial cuando el control ya tiene tamaño real
+                            Platform.runLater(() -> recalcularColumnas());
+                        }
+              });
+                // 2) Listener real de responsividad
+    treeFct
+        .widthProperty()
+        .addListener(
+            (o, ov, nv) -> {
+                System.out.println("WIDTH TREE: " + nv);
+                Platform.runLater(() -> recalcularColumnas());
+            });
     }
 
-    Platform.runLater(
-        () -> {
+    private void recalcularColumnas() {
+        Map<String, Double> nuevos = TableScaler.resizeColumns(treeFct, uiCfg);
+        nuevos.forEach((colId, ancho) -> uiCfg.updateAncho(colId, ancho));
+    }
 
-          // columnas ya inyectadas
-          tblvwfct.getColumns().forEach(col -> col.setSortable(false));
+    private void configurarColumnas() {
 
-          // escalado inicial
-          TableScaler.resizeColumns(tblvwfct, uiCfg);
+        // =========================
+        // COLUMNAS SOLO FACTURA
+        // =========================
 
-          // listener único
-          tblvwfct
-              .widthProperty()
-              .addListener(
-                  (obs, o, n) -> {
-                    Platform.runLater(
-                        () -> {
-                          if (uiCfg == null) return;
+        colID.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.idProperty();
+            return null;
+            });
 
-                          Map<String, Double> nuevos = TableScaler.resizeColumns(tblvwfct, uiCfg);
+        colNumFact.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.numeroProperty();
+            return null;
+            });
 
-                          nuevos.forEach((colId, ancho) -> uiCfg.updateAncho(colId, ancho));
-                          TableScaler.resizeColumns(tblvwfct, uiCfg);
-                          System.out.println(
-                              "[FxCntrlTablaFCT>initialize>RunLater] En teoría está actualizando"
-                                  + " tamaños de columna...");
+        colFecha.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return new SimpleStringProperty(f.getFecha().toString());
+            return null;
+            });
 
-                          try {
-                            // uiCfg.saveToJson(cfgPath);
-                            System.out.println(
-                                "[FxCntrlTablaFCT>initialize>RunLater] Aquí debería guardar el JSON"
-                                    + " uiCfg");
-                          } catch (Exception e) {
-                            System.out.println(
-                                "[FxCntrlTablaFCT>initialize>RunLater] Error guardando JSON: " + e);
-                          }
+        colRS.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.razonSocialProperty();
+            return null;
+            });
+
+        colCat.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.categoriaProperty();
+            return null;
+            });
+
+        colDev.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.devolucionProperty().asObject();
+            return null;
+            });
+
+        colNumExtr.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.numExtractosProperty();
+            return null;
+            });
+
+        colBaseNI.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.baseNIProperty();
+            return null;
+            });
+
+        colTipoRet.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.retProperty();
+            return null;
+            });
+
+        colRetenc.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.retencionesProperty();
+            return null;
+            });
+
+        colTotal.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.totalProperty();
+            return null;
+            });
+
+        colNota.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.notaProperty();
+            return null;
+            });
+
+        // =========================
+        // COLUMNAS COMPARTIDAS (FacturaFX + ExtractoFX)
+        // =========================
+
+        colBase.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.baseProperty();
+            if (v instanceof ExtractoFX e) return e.baseProperty();
+            return null;
+            });
+
+        colTipoIVA.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.tipoIVAProperty();
+            if (v instanceof ExtractoFX e) return e.tipoIVAProperty();
+            return null;
+            });
+
+        colIVA.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.ivaProperty();
+            if (v instanceof ExtractoFX e) return e.ivaProperty();
+            return null;
+            });
+
+        colST.setCellValueFactory(
+            c -> {
+            Object v = c.getValue().getValue();
+            if (v instanceof FacturaFX f) return f.subtotalProperty();
+            if (v instanceof ExtractoFX e) return e.subtotalProperty();
+            return null;
+            });
+    }
+
+    public void cargarDatos() {
+
+        List<FacturaFX> facturas = AppContext.get().fact().leerFacturasFX();
+
+        TreeItem<Object> root = new TreeItem<>();
+        root.setExpanded(true);
+
+        for (FacturaFX f : facturas) {
+
+        TreeItem<Object> nodoFactura = new TreeItem<>(f);
+
+        for (ExtractoFX extr : f.getExtractos()) {
+            nodoFactura.getChildren().add(new TreeItem<>(extr));
+        }
+
+        root.getChildren().add(nodoFactura);
+        }
+
+        treeFct.setRoot(root);
+        treeFct.setShowRoot(false);
+
+        actualizarTotales(facturas);
+    }
+
+    private void configurarAcciones() {
+
+        colAcciones.setCellFactory(
+            col ->
+                new TreeTableCell<>() {
+
+                private final Button btn = new Button("Borrar");
+
+                {
+                    btn.setOnAction(
+                        e -> {
+                        FacturaFX f = getTreeTableRow().getItem();
+                        // TODO: aquí llamas a tu servicio real de borrado
+                        // AppContext.get().fact().borrarFacturaFX(f);
+                        cargarDatos();
                         });
-                  });
-        });
-  }
+                }
 
-  public void cargarDatos() {
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setGraphic(empty ? null : btn);
+                }
+                });
+    }
 
-    // Configurar columnas SOLO UNA VEZ
-    colID.setCellValueFactory(c -> c.getValue().idProperty());
-    colNumFact.setCellValueFactory(c -> c.getValue().numeroProperty());
-    colFecha.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFecha().toString()));
-    colRS.setCellValueFactory(c -> c.getValue().razonSocialProperty());
-    colCat.setCellValueFactory(c -> c.getValue().categoriaProperty());
-    colDev.setCellValueFactory(c -> c.getValue().devolucionProperty());
-    colNumExtr.setCellValueFactory(c -> c.getValue().numExtractosProperty());
+    private void configurarEscalado() {
+        Platform.runLater(
+            () -> {
+            treeFct.getColumns().forEach(col -> col.setSortable(false));
+            TableScaler.resizeColumns(treeFct, uiCfg);
+            });
+    }
 
-    colBase.setCellValueFactory(c -> c.getValue().baseProperty());
-    colTipoIVA.setCellValueFactory(c -> c.getValue().tipoIVAProperty());
-    colIVA.setCellValueFactory(c -> c.getValue().ivaProperty());
-    colST.setCellValueFactory(c -> c.getValue().subtotalProperty());
-    colBaseNI.setCellValueFactory(c -> c.getValue().baseNIProperty());
-    colTipoRet.setCellValueFactory(c -> c.getValue().retProperty());
-    colRetenc.setCellValueFactory(c -> c.getValue().retencionesProperty());
-    colTotal.setCellValueFactory(c -> c.getValue().totalProperty());
+    private void actualizarTotales(List<FacturaFX> facturas) {
 
-    colNota.setCellValueFactory(c -> c.getValue().notaProperty());
+        double totalBase = facturas.stream().mapToDouble(FacturaFX::getBase).sum();
+        double totalIVA = facturas.stream().mapToDouble(FacturaFX::getIVA).sum();
+        double totalST = facturas.stream().mapToDouble(FacturaFX::getSubtotal).sum();
+        double totalNI = facturas.stream().mapToDouble(FacturaFX::getBaseNI).sum();
+        double totalRet = facturas.stream().mapToDouble(FacturaFX::getRetenciones).sum();
+        double totalTot = facturas.stream().mapToDouble(FacturaFX::getTotal).sum();
 
-    // Cargar lista inicial
-    listaFxFacturas = FXCollections.observableArrayList(AppContext.get().fact().leerFacturasFX());
-    tblvwfct.setItems(listaFxFacturas);
+        lblBase.setText(String.format("%.2f", totalBase));
+        lblIVA.setText(String.format("%.2f", totalIVA));
+        lblST.setText(String.format("%.2f", totalST));
+        lblBaseNI.setText(String.format("%.2f", totalNI));
+        lblRetenc.setText(String.format("%.2f", totalRet));
+        lblTotal.setText(String.format("%.2f", totalTot));
+        lblNumFact.setText(String.valueOf(facturas.size()));
+    }
+    @FXML
+    private void btnVisorFctPulsado(ActionEvent ev) {
+        System.out.println("[FxCntrlTablaFCT] VISOR pulsado");
+    }
 
-    // Calcular totales iniciales
-    actualizarDatos();
-  }
+    @FXML
+    private void btnNuevaFctPulsado(ActionEvent ev) {
+        System.out.println("[FxCntrlTablaFCT] NUEVA FCT pulsado");
+    }
 
-  // #endregion
+    @FXML
+    private void btnEditarFctPulsado(ActionEvent ev) {
+        System.out.println("[FxCntrlTablaFCT] EDITAR pulsado");
+    }
 
-  // #region ACT_TABLA
-  public void actualizarDatos() {
+    @FXML
+    private void btnFiltrosFctPulsado(ActionEvent ev) {
+        System.out.println("[FxCntrlTablaFCT] FILTROS pulsado");
+    }
 
-    // Releer datos
-    listaFxFacturas.setAll(AppContext.get().fact().leerFacturasFX());
+    @FXML
+    private void btnBorrarFctPulsado(ActionEvent ev) {
+        System.out.println("[FxCntrlTablaFCT] BORRAR pulsado");
+    }
 
-    // Calcular totales
-    double totalBase = listaFxFacturas.stream().mapToDouble(FacturaFX::getBase).sum();
-    double totalIVA = listaFxFacturas.stream().mapToDouble(FacturaFX::getIVA).sum();
-    double totalST = listaFxFacturas.stream().mapToDouble(FacturaFX::getSubtotal).sum();
-    double totalNI = listaFxFacturas.stream().mapToDouble(FacturaFX::getBaseNI).sum();
-    double totalRet = listaFxFacturas.stream().mapToDouble(FacturaFX::getRetenciones).sum();
-    double totalTot = listaFxFacturas.stream().mapToDouble(FacturaFX::getTotal).sum();
+    @FXML
+    private void btnScanFctPulsado(ActionEvent ev) {
+        System.out.println("[FxCntrlTablaFCT] SCAN pulsado");
+    }
 
-    String[] datosResumen = {
-      String.format("%.2f", totalBase),
-      String.format("%.2f", totalIVA),
-      String.format("%.2f", totalST),
-      String.format("%.2f", totalNI),
-      String.format("%.2f", totalRet),
-      String.format("%.2f", totalTot),
-      String.valueOf(listaFxFacturas.size())
-    };
+    @FXML
+    private void btnImprimirFctPulsado(ActionEvent ev) {
+        System.out.println("[FxCntrlTablaFCT] IMPRIMIR pulsado");
+    }
 
-    actualizarTotales(datosResumen);
-    actualizarInfoTabla();
-  }
 
-  public void actualizarInfoTabla() {
-
-    lblInfoCntrFXtabla.setText("" + this.hashCode());
-  }
-
-  public void actualizarTotales(String[] datos) throws NullPointerException {
-    lblIndexFCT.setText("" + (indiceActual + 1));
-    lblBase.setText(datos[0]);
-    lblIVA.setText(datos[1]);
-    lblST.setText(datos[2]);
-    lblBaseNI.setText(datos[3]);
-    lblRetenc.setText(datos[4]);
-    lblTotal.setText(datos[5]);
-    lblNumFact.setText(datos[6]);
-  }
-
-  // #endregion
-
-  // #region EVT_BTN
-  @FXML
-  public void btnVisorFctPulsado(Event ev) {
-    // this.haCambiado = true;
-    // this.pulsado = 1;
-  }
-
-  @FXML
-  public void btnNuevaFctPulsado(Event ev) {
-    // this.haCambiado = true;
-    // this.pulsado = 2;
-  }
-
-  @FXML
-  public void btnEditarFctPulsado(Event ev) {
-    // this.haCambiado = true;
-    // this.pulsado = 3;
-  }
-
-  @FXML
-  public void btnBorrarFctPulsado(Event ev) {
-    // this.haCambiado = true;
-    // this.pulsado = 4;
-  }
-
-  @FXML
-  public void btnFiltrosFctPulsado(Event ev) {
-    // this.haCambiado = true;
-    // this.pulsado = 5;
-  }
-
-  @FXML
-  public void btnImprimirFctPulsado() {
-    // this.haCambiado = true;
-    // this.pulsado = 6;
-  }
-
-  @FXML
-  public void btnScanFctPulsado() {
-    //    this.haCambiado = true;
-    //    this.pulsado = 7;
-  }
-
-  /*
-     public boolean HaCambiado(){
-     	return this.haCambiado;
-     }
-
-     public int getPulsado(){
-     	this.haCambiado = false;
-     	return this.pulsado;
-     }
-
-     public void reset(){
-     	//System.out.println("[FxCntrlTablaFCT>reset] En el reset de contrFX de tablaFCT con hashCode (del contrFX " + this.hashCode());
-     	this.haCambiado = false;
-     	this.pulsado = 0;
-     }
-     //#endregion
-
-     //#region GET/SET
-     public static FxCntrlTablaFCT getFxController(){
-     	if (instancia==null){
-     		instancia = new FxCntrlTablaFCT();
-     	}
-     	return instancia;
-     }
-
-     public static void setFXcontr(FxCntrlTablaFCT contr){
-     	instancia = contr;
-     }
-
-     public Stage getTablaFCT(){
-     	return instancia.getTablaFCT();
-     }
-
-     //ANCHOR - tableView
-     public synchronized TableView<FacturaFX> getTableView(){
-     	//System.out.println("[FxCntrlTablaFCT>getTableView] la tabla no es NULL - devolviendo su valor hashCode de tablaFCT: " + this.tblvwfct .hashCode());
-     	this.tblvwfct  = cfct.getFXcontrlTablaFCT().tblvwfct ;
-     	return this.tblvwfct ;
-     }
-
-     public int getIndiceSeleccionadoTabla() {
-      System.out.println(
-          "[FxCntrlTablaFCT>getIndiceSeleccionadoTabla] Devolviendo indiceActual desde contrFxtabla->"
-              + this.hashCode());
-     	return  indiceActual;
-     }
-
-     public Factura getFacturaSeleccionadaTabla(){
-     	if (this.tblvwfct.isVisible()){
-     		Factura selectedItem = this.tblvwfct .getSelectionModel().getSelectedItem();
-     		//System.out.println("[FxCntrlTablaFCT>getFacturaSeleccionadaTabla] Como this.tblvwfct .isVisible(): " + this.tblvwfct .isVisible() + " se muestra la factura seleccionada:\n"+ selectedItem.toString());
-     		return selectedItem;
-     	}
-     	else{
-     		//OJO : Estoy enviando la segunda factura al Visor, al arrancar...
-     		Factura f = null;
-     		try {
-     			f = cfct.m.getFactura(1);
-     		} catch (NullPointerException | IOException e) {
-          System.out.println(
-              "[FxCntrlTablaFCT>getFacturaSeleccionadaTabla] Error al obtener la factura seleccionada"
-                  + " de la tabla (posiblemente por falta de datos o porque la tabla no es visible) -"
-                  + " "
-                  + e);
-     			System.exit(0);
-     		}
-        System.out.println(
-            "[FxCntrlTablaFCT>getFacturaSeleccionadaTabla] Como this.tblvwfct.isVisible(): "
-                + this.tblvwfct.isVisible()
-                + " se muestra la *(segunda) factura:"
-                + f.toString());
-     		return f;
-     	}
-     }
-     // REVIEW - 24-07-29 : Aquí fallaba y no cogía el index 0 (primera factura)
-     public void seleccionarIndiceTabla(int nuevoindice){
-     	if (this.tblvwfct.isVisible()){
-     		this.tblvwfct.getSelectionModel().select(nuevoindice);
-     		indiceActual = nuevoindice;
-     		this.lblIndexFCT.setText(""+(indiceActual+1));
-     		ControladorFacturas.facturaActual = getFacturaSeleccionadaTabla();
-     	}
-     		setIndiceActual(nuevoindice);
-     }
-
-     public static int getIndiceActual() {
-     	return indiceActual;
-     }
-
-     public void setIndiceActual(int index) {
-     	this.lblIndexFCT.setText(""+(index+1));
-     	// ¿¿Refrescar tabla después de actualizar etiqueta??
-     	indiceActual = index;
-     }
-
-     public void setListaFXFacturas(ObservableList<FacturaFX> lista) {
-     	this.listaFxFacturas = lista;
-     }
-
-     //#endregion
-  */
-  /*
-     //region HELPERS
-     public void imprimirInfoTabla() {
-     	System.out.println("[FxCntrlTablaFCT]   ----info tabla----");
-      System.out.println(
-          "[FxCntrlTablaFCT]      tableview->"
-              + ((this.tblvwfct == null) ? "NULL" : this.tblvwfct.hashCode()));
-      System.out.println(
-          "[FxCntrlTablaFCT]     Stagetabla->"
-              + ((ControladorFacturas.tablaFCT == null)
-                  ? "NULL"
-                  : ControladorFacturas.tablaFCT.hashCode()));
-     	System.out.println("[FxCntrlTablaFCT]    cntrFXtabla->"+this.hashCode());
-      System.out.println(
-          "[FxCntrlTablaFCT]    listaFXfact->"
-              + ((this.listaFxFacturas == null) ? "NULL" : this.listaFxFacturas.hashCode()));
-     	System.out.println("[FxCntrlTablaFCT]   -----Fin info-----");
-     }
-     //#endregion
-
-  //    public ObservableList<Factura> getListaFXFacturas() {
-  //        List<Factura> fact_prev = null;
-  //        try {
-  //            fact_prev = FacturaCSVRepo.leerTodasLasFacturas();
-  //        } catch (NullPointerException e) {
-  //       System.out.println(
-  //           "[ModeloFacturas>getListaFXFacturas] Error al recoger la lista observable (para JFX) de"
-  //               + " facturas : "
-  //               + e.getMessage());
-  //        }
-  //        var facturasFX = FXCollections.observableList(fact_prev);
-  //        return facturasFX;
-     }
-
-  private void cargarFacturas() {
-      List<Factura> lista = FacturaCSVRepo.leerTodasLasFacturas();
-
-      listaFxFacturas = FXCollections.observableArrayList(lista.stream().map(FacturaFX::fromDomain).toList());
-
-      tblvwfct.setItems(listaFxFacturas);
-  }
-  */
 }

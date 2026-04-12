@@ -164,6 +164,13 @@ public class FxCntrlPanelControl implements Initializable {
   }
 
   @FXML
+  private void btnVisorFctPulsado(Event evt) {
+    System.out.println(" [PanelControl] Boton VisorFCT pulsado!");
+    //botonactivo = 2;
+    botonpulsado = true;
+  }
+
+  @FXML
   private void btnFCTpulsado(Event evt) throws InterruptedException, BrokenBarrierException {
     // System.out.println(" [PanelControl] Boton FCT pulsado!");
     // this.ctrlFct = Controlador_prev.getControladorFacturas();
@@ -179,7 +186,8 @@ public class FxCntrlPanelControl implements Initializable {
       tabla.show();
       tabla.toFront();
       System.out.println(
-          "[FxcntrlPanelControl>btnFCTpulsado] TablaFCT desde AppContext = " + AppContext.getTablaFCT().hashCode());
+          "[FxcntrlPanelControl>btnFCTpulsado] TablaFCT desde AppContext = "
+              + AppContext.getTablaFCT().hashCode());
 
     } else if (!((ToggleButton) (evt.getSource())).isSelected()) {
       btnFCT.setStyle(

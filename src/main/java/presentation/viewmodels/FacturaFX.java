@@ -1,9 +1,6 @@
 package presentation.viewmodels;
 
-import domain.records.Factura;
-import domain.records.Fecha;
-import domain.records.Nota;
-import domain.records.TipoGasto;
+import domain.records.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -14,6 +11,8 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class FacturaFX {
 
@@ -43,6 +42,9 @@ public class FacturaFX {
     private final IntegerProperty ret = new SimpleIntegerProperty();
     private final DoubleProperty retenciones = new SimpleDoubleProperty();
     private final DoubleProperty total = new SimpleDoubleProperty();
+
+    private final ObservableList<ExtractoFX> extractos = FXCollections.observableArrayList();
+
 
     // -------------------------
     // GETTERS / SETTERS FX
@@ -254,6 +256,10 @@ public class FacturaFX {
         return total;
     }
 
+    public ObservableList<ExtractoFX> getExtractos() {
+        return extractos;
+    }
+
     // -------------------------
     // DOMINIO → FX
     // -------------------------
@@ -269,6 +275,12 @@ public class FacturaFX {
         fx.setDevolucion(f.esDevolucion);
         fx.setNumExtractos(f.extractos.size());
         fx.setNota(f.nota != null ? f.nota.getTexto() : "");
+
+
+        for (Extracto e : f.extractos) {
+            fx.addExtracto(ExtractoFX.fromDomain(e)); // o ExtractoFX si lo tienes separado
+        }
+
 
         // Totales
         fx.setBase(f.totales.getBase());
@@ -287,7 +299,7 @@ public class FacturaFX {
     // -------------------------
     // FX → DOMINIO
     // -------------------------
-/*
+    /*
     public Factura toDomain(FacturasService service) {
         RazonSocial rs = service.buscarRazonSocialPorNombre(getRazonSocial());
 
@@ -314,29 +326,33 @@ public class FacturaFX {
                 t,
                 getNota().isEmpty() ? null : new Nota(getNota()));
     }
-*/
-  public void actualizarFactura(Factura original) {
+    */
+    public void actualizarFactura(Factura original) {
 
-    // Campos principales
-    original.numeroFactura = getNumero();
-    original.fecha = getFecha();
-    original.categoria = new TipoGasto(getCategoria(), "");
-    original.esDevolucion = isDevolucion();
+        // Campos principales
+        original.numeroFactura = getNumero();
+        original.fecha = getFecha();
+        original.categoria = new TipoGasto(getCategoria(), "");
+        original.esDevolucion = isDevolucion();
 
-    // Totales
-    original.totales.setBase(getBase());
-    original.totales.setTipoIVA(getTipoIVA());
-    original.totales.setIVA(getIVA());
-    original.totales.setVariosIVAs(isVariosIVAs());
-    original.totales.setBaseNI(getBaseNI());
-    original.totales.setRet(getRet());
-    original.totales.setRetenciones(getRetenciones());
-    original.totales.setTotal(getTotal());
+        // Totales
+        original.totales.setBase(getBase());
+        original.totales.setTipoIVA(getTipoIVA());
+        original.totales.setIVA(getIVA());
+        original.totales.setVariosIVAs(isVariosIVAs());
+        original.totales.setBaseNI(getBaseNI());
+        original.totales.setRet(getRet());
+        original.totales.setRetenciones(getRetenciones());
+        original.totales.setTotal(getTotal());
 
-    // Nota
-    if (!getNota().isEmpty()) {
-      original.nota = new Nota(getNota());
+        // Nota
+        if (!getNota().isEmpty()) {
+            original.nota = new Nota(getNota());
+        }
     }
-  }
+
+    public void addExtracto(ExtractoFX e) {
+        extractos.add(e);
+    }
 }
 

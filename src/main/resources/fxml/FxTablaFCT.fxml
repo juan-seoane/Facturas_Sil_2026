@@ -4,12 +4,12 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.control.TreeTableColumn?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentation.fxcontrollers.FxCntrlTablaFCT">
    <children>
@@ -17,26 +17,33 @@
          <children>
             <AnchorPane VBox.vgrow="ALWAYS">
                <children>
-                  <TableView fx:id="tblvwfct" layoutY="12.0" prefHeight="527.0" prefWidth="1066.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <columns>
-                        <TableColumn id="ID" fx:id="colID" text="ID" />
-                        <TableColumn id="#fact" fx:id="colNumFact" text="#fact" />
-                        <TableColumn id="fecha" fx:id="colFecha" text="Fecha" />
-                        <TableColumn id="#RS" fx:id="colRS" text="RS" />
-                        <TableColumn id="Concepto" fx:id="colCat" text="Concepto" />
-                        <TableColumn id="esDev" fx:id="colDev" text="Dev" />
-                        <TableColumn id="#extr" fx:id="colNumExtr" text="Extr" />
-                        <TableColumn id="base" fx:id="colBase" text="Base" />
-                        <TableColumn id="tipo" fx:id="colTipoIVA" text="Tipo IVA" />
-                        <TableColumn id="IVA" fx:id="colIVA" text="IVA" />
-                        <TableColumn id="SubTotal" fx:id="colST" text="ST" />
-                        <TableColumn id="baseNI" fx:id="colBaseNI" text="Base NI" />
-                        <TableColumn id="tRet" fx:id="colTipoRet" text="tRet" />
-                        <TableColumn id="Retenc" fx:id="colRetenc" text="Ret" />
-                        <TableColumn id="Total" fx:id="colTotal" text="Total" />
-                        <TableColumn id="Nota" fx:id="colNota" text="Nota" />
-                    </columns>
-                  </TableView>
+                    <TreeTableView fx:id="treeFct"
+                                layoutY="12.0"
+                                showRoot="false"
+                                AnchorPane.bottomAnchor="0.0"
+                                AnchorPane.leftAnchor="0.0"
+                                AnchorPane.rightAnchor="0.0"
+                                AnchorPane.topAnchor="0.0">
+                        <columns>
+                            <TreeTableColumn fx:id="colID" text="ID" />
+                            <TreeTableColumn fx:id="colNumFact" text="#fact" />
+                            <TreeTableColumn fx:id="colFecha" text="Fecha" />
+                            <TreeTableColumn fx:id="colRS" text="RS" />
+                            <TreeTableColumn fx:id="colCat" text="Concepto" />
+                            <TreeTableColumn fx:id="colDev" text="Dev" />
+                            <TreeTableColumn fx:id="colNumExtr" text="Extr" />
+                            <TreeTableColumn fx:id="colBase" text="Base" />
+                            <TreeTableColumn fx:id="colTipoIVA" text="Tipo IVA" />
+                            <TreeTableColumn fx:id="colIVA" text="IVA" />
+                            <TreeTableColumn fx:id="colST" text="ST" />
+                            <TreeTableColumn fx:id="colBaseNI" text="Base NI" />
+                            <TreeTableColumn fx:id="colTipoRet" text="tRet" />
+                            <TreeTableColumn fx:id="colRetenc" text="Ret" />
+                            <TreeTableColumn fx:id="colTotal" text="Total" />
+                            <TreeTableColumn fx:id="colNota" text="Nota" />
+                            <TreeTableColumn fx:id="colAcciones" text="Acciones" />
+                        </columns>
+                    </TreeTableView>
                </children>
             </AnchorPane>
             <VBox maxWidth="Infinity" VBox.vgrow="NEVER">

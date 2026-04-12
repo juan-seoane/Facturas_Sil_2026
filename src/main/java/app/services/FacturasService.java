@@ -24,6 +24,10 @@ public class FacturasService {
   }
 
   public void guardarFacturas(List<Factura> lista) {
-    repo.guardarListaFacturas(lista);
+      repo.guardarListaFacturas(lista);
+  }
+
+  public void borarFactura(Factura f) {
+    // TODO : Unimplemented method
   }
 }

@@ -10,91 +10,53 @@ import presentation.config.UIDataConfig;
 
 public class TableScaler {
 
-    private static Map<String, Double> pesosIniciales = new HashMap<>();
+  private static Map<String, Double> calcularPesosDesdeJSON(
+      ObservableList<? extends TableColumnBase<?, ?>> columnas, UIDataConfig cfg) {
 
-    private static void inicializarPesos(ObservableList<? extends TableColumnBase<?, ?>> columnas) {
-        if (!pesosIniciales.isEmpty()) return; // ya inicializado
+    Map<String, Double> pesos = new HashMap<>();
 
-        double suma = columnas.stream().mapToDouble(TableColumnBase::getPrefWidth).sum();
+    double totalBase = columnas.stream().mapToDouble(col -> cfg.getAncho(col.getId())).sum();
 
-        for (TableColumnBase<?, ?> col : columnas) {
-        pesosIniciales.put(col.getId(), col.getPrefWidth() / suma);
-        }
-    }
+    if (totalBase <= 0) return pesos;
 
-    public static Map<String, Double> resizeColumns(TableView<?> tabla, UIDataConfig cfg) {
+    columnas.forEach(
+        col -> {
+          double base = cfg.getAncho(col.getId());
+          pesos.put(col.getId(), base / totalBase);
+        });
 
-        Map<String, Double> nuevos = new HashMap<>();
+    return pesos;
+  }
 
-        if (tabla == null || tabla.getColumns().isEmpty() || cfg == null) {
-            System.out.println("[TableScaler] ERROR: Saliendo antes de calcular nuevos anchos!");
-            return nuevos;
-        }
-        // 1) sumar anchos base de columnas visibles (las que tienen ancho > 0)
-        double totalBase = tabla.getColumns().stream()
-                .filter(col -> cfg.getAnchoBase(col.getId()) > 0)
-                .mapToDouble(col -> cfg.getAnchoBase(col.getId()))
-                .sum();
+  public static Map<String, Double> resizeColumns(TreeTableView<?> table, UIDataConfig cfg) {
+    double anchoDisponible = table.getWidth();
+    return resizeColumnsGeneric(table.getColumns(), cfg, anchoDisponible);
+  }
 
-        if (totalBase <= 0)
-            return nuevos;
-
-        double anchoDisponible = tabla.getLayoutBounds().getWidth();
-        if (anchoDisponible <= 0)
-            return nuevos;
-
-        double f = anchoDisponible / totalBase;
-
-        // 2) aplicar factor
-        tabla
-                .getColumns()
-                .forEach(
-                        col -> {
-                            double base = cfg.getAnchoBase(col.getId());
-
-                            double nuevo;
-
-                            if (base == 0) {
-                                // columna oculta por configuración
-                                nuevo = 0;
-                            } else {
-                                nuevo = base * f;
-                                if (nuevo < 1)
-                                    nuevo = 0; // si queda demasiado pequeña, ocultar
-                            }
-
-                            col.setPrefWidth(nuevo);
-                            nuevos.put(col.getId(), nuevo);
-                            System.out.println("Columna: " + col.getText() +
-                                    " | id=" + col.getId() +
-                                    " | base=" + cfg.getAnchoBase(col.getId()));
-                        });
-        return nuevos;
-    }
-
-    public static Map<String, Double> resizeColumns(TreeTableView<?> table, UIDataConfig cfg) {
-        double anchoDisponible = table.getWidth();
-        return resizeColumnsGeneric(table.getColumns(), cfg, anchoDisponible);
-    }
+  public static Map<String, Double> resizeColumns(TableView<?> tabla, UIDataConfig cfg) {
+    double anchoDisponible = tabla.getWidth();
+    return resizeColumnsGeneric(tabla.getColumns(), cfg, anchoDisponible);
+  }
 
   private static Map<String, Double> resizeColumnsGeneric(
-        ObservableList<? extends TableColumnBase<?, ?>> columnas,
-        UIDataConfig cfg,
-        double anchoDisponible) {
+      ObservableList<? extends TableColumnBase<?, ?>> columnas,
+      UIDataConfig cfg,
+      double anchoDisponible) {
 
-        inicializarPesos(columnas);
+    Map<String, Double> nuevos = new HashMap<>();
 
-        Map<String, Double> nuevos = new HashMap<>();
+    if (anchoDisponible <= 0) return nuevos;
 
-        for (TableColumnBase<?, ?> col : columnas) {
+    Map<String, Double> pesos = calcularPesosDesdeJSON(columnas, cfg);
 
-        double peso = pesosIniciales.getOrDefault(col.getId(), 1.0 / columnas.size());
-        double nuevoAncho = anchoDisponible * peso;
+    columnas.forEach(
+        col -> {
+          double peso = pesos.getOrDefault(col.getId(), 0.0);
+          double nuevoAncho = anchoDisponible * peso;
+          col.setPrefWidth(nuevoAncho);
+          nuevos.put(col.getId(), nuevoAncho);
+        });
 
-        col.setPrefWidth(nuevoAncho);
-        nuevos.put(col.getId(), nuevoAncho);
-        }
-
-        return nuevos;
-    }
+    return nuevos;
+  }
 }

@@ -46,15 +46,15 @@ public class AppContext {
   }
 
   public static Stage getTablaFCT() {
-    System.out.println(
-        "[AppContext>getTablaFCT] tablaFCT devuelta con hashCode " + tablaFCT.hashCode());
+    // System.out.println(
+    //     "[AppContext>getTablaFCT] tablaFCT devuelta con hashCode " + tablaFCT.hashCode());
     return tablaFCT;
   }
 
   public static void setTablaFCT(Stage tabla) {
     tablaFCT = tabla;
-    System.out.println(
-        "[AppContext>setTablaFCT] tablaFCT guardada "
-            + (tablaFCT == null ? "NULL" : String.valueOf(tablaFCT.hashCode())));
+    // System.out.println(
+    //     "[AppContext>setTablaFCT] tablaFCT guardada "
+    //         + (tablaFCT == null ? "NULL" : String.valueOf(tablaFCT.hashCode())));
   }
 }

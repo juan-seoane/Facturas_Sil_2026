@@ -36,11 +36,11 @@ public class AppController {
                 "[AppController>loginExitoso] Usuario '" + usuario + "' ha iniciado sesión exitosamente.");
         // 1. Cargar Configuración del Usuario
         AppContext.configActual = Config.getConfig(usuario);
-        System.out.println(
-                "[AppController>loginExitoso] Configuración cargada para el usuario '"
-                        + usuario
-                        + "': "
-                        + AppContext.configActual.getConfigData().toJSON());
+        // System.out.println(
+        //         "[AppController>loginExitoso] Configuración cargada para el usuario '"
+        //                 + usuario
+        //                 + "': "
+        //                 + AppContext.configActual.getConfigData().toJSON());
         // 2. Inicializar servicio de facturas con la configuración personal
         FacturasService facturas = new FacturasService(AppContext.configActual.getConfigData());
         AppContext.setFacturasService(facturas);

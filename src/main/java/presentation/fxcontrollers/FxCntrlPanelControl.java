@@ -185,9 +185,9 @@ public class FxCntrlPanelControl implements Initializable {
       Stage tabla = AppContext.getTablaFCT();
       tabla.show();
       tabla.toFront();
-      System.out.println(
-          "[FxcntrlPanelControl>btnFCTpulsado] TablaFCT desde AppContext = "
-              + AppContext.getTablaFCT().hashCode());
+    //   System.out.println(
+    //       "[FxcntrlPanelControl>btnFCTpulsado] TablaFCT desde AppContext = "
+    //           + AppContext.getTablaFCT().hashCode());
 
     } else if (!((ToggleButton) (evt.getSource())).isSelected()) {
       btnFCT.setStyle(

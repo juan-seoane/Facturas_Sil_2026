@@ -28,7 +28,7 @@ public class UIDataConfig {
     return anchoColsFCT;
   }
 
-  public double getAnchoBase(String colId) {
+  public double getAncho(String colId) {
     return anchoColsFCT.getOrDefault(colId, 0.0);
   }
 
@@ -63,26 +63,50 @@ public class UIDataConfig {
       return new UIDataConfig(mapa);
   }
 
-public void saveToJson(Path path) throws IOException {
+    public void saveToJson(Path path) throws IOException {
 
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    // reconstruir arrays en el mismo orden que nombreColsFCT
-    List<Double> anchos = new ArrayList<>();
-    for (String nombre : nombreColsFCT) {
-        anchos.add(anchoColsFCT.getOrDefault(nombre, 0.0));
+        // reconstruir arrays en el mismo orden que nombreColsFCT
+        List<Double> anchos = new ArrayList<>();
+        for (String nombre : nombreColsFCT) {
+            anchos.add(anchoColsFCT.getOrDefault(nombre, 0.0));
+        }
+
+        JsonObject root = new JsonObject();
+        root.add("nombreColsFCT", gson.toJsonTree(nombreColsFCT));
+        root.add("anchoColsFCT", gson.toJsonTree(anchos));
+
+        Files.writeString(path, gson.toJson(root));
     }
 
-    JsonObject root = new JsonObject();
-    root.add("nombreColsFCT", gson.toJsonTree(nombreColsFCT));
-    root.add("anchoColsFCT", gson.toJsonTree(anchos));
+    public void updateAncho(String colId, double nuevoAncho) {
+        //System.out.println("[UIDataConfig>updateAncho] en col: " + colId + " : " + nuevoAncho);
+        if (colId == null)
+            return;
+        anchoColsFCT.put(colId, nuevoAncho);
+    }
 
-    Files.writeString(path, gson.toJson(root));
-}
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== UIDataConfig ===\n");
 
-public void updateAncho(String colId, double nuevoAncho) {
-    //System.out.println("[UIDataConfig>updateAncho] en col: " + colId + " : " + nuevoAncho);
-    if (colId == null) return;
-    anchoColsFCT.put(colId, nuevoAncho);
-  }
+        sb.append("Anchos columnas FCT:\n");
+        if (anchoColsFCT == null || anchoColsFCT.isEmpty()) {
+            sb.append("  (vacío)\n");
+        } else {
+            anchoColsFCT.forEach((k, v) -> sb.append(String.format("  %-15s = %.2f\n", k, v)));
+        }
+
+        sb.append("Nombre columnas FCT:\n");
+        if (nombreColsFCT == null || nombreColsFCT.isEmpty()) {
+            sb.append("  (vacío)\n");
+        } else {
+            nombreColsFCT.forEach(n -> sb.append("  " + n + "\n"));
+        }
+
+        sb.append("====================\n");
+        return sb.toString();
+    }
 }

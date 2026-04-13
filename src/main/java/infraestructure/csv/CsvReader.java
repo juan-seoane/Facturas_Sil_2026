@@ -65,9 +65,9 @@ public class CsvReader {
             .toList();
 
     // DEBUG opcional
-    AtomicInteger idx = new AtomicInteger(1);
-    resultado.forEach(
-        arr -> System.out.println("[CSV][" + idx.getAndIncrement() + "] " + Arrays.toString(arr)));
+    // AtomicInteger idx = new AtomicInteger(1);
+    // resultado.forEach(
+    //     arr -> System.out.println("[CSV][" + idx.getAndIncrement() + "] " + Arrays.toString(arr)));
 
     return resultado;
   }

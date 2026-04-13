@@ -19,7 +19,7 @@ public class AuthService {
         int resp = 3;
         boolean valido = false;
         String rutaCreds = _Ruta.CONFIG.getRuta() + "/creds.json";
-        System.out.println("Chequeando la existencia de archivo de credenciales en ruta: " + rutaCreds);
+        System.out.println("[AuthService>autenticar] Chequeando la existencia de archivo de credenciales en ruta: " + rutaCreds);
         boolean existenCreds = Files.exists(Path.of(rutaCreds));
         System.out.println("existe el archivo: " + existenCreds);
         if (existenCreds) {

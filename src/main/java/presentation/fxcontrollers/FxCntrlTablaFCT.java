@@ -27,7 +27,7 @@ public class FxCntrlTablaFCT implements Initializable {
     @FXML private TreeTableColumn<FacturaFX, String> colNumFact;
     @FXML private TreeTableColumn<FacturaFX, String> colFecha;
     @FXML private TreeTableColumn<FacturaFX, String> colRS;
-    @FXML private TreeTableColumn<Object, String> colCat;
+    @FXML private TreeTableColumn<Object, String> colConcepto;
     @FXML private TreeTableColumn<FacturaFX, Boolean> colDev;
     @FXML private TreeTableColumn<FacturaFX, Number> colNumExtr;
 
@@ -61,43 +61,79 @@ public class FxCntrlTablaFCT implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        cfgPath = Path.of(Config.getConfig(Config.usuario).getRutasconfig().getRutaUIData());
-        try {
-            uiCfg = UIDataConfig.fromJson(cfgPath);
-        } catch (IOException e) {
-      // TODO Auto-generated catch block
-      System.out.println(
-          "[FxCntrlTablaFCT>initialize] Error " + e.getClass() + " al cargar la UIDataConfig");
-        }
-
+        cargarConfigUI();
         configurarColumnas();
         cargarDatos();
         configurarAcciones();
         configurarEscalado();
 
-    treeFct
-        .sceneProperty()
-        .addListener(
-            (obs, oldScene, newScene) -> {
-                        if (newScene != null) {
+        treeFct
+                .sceneProperty()
+                .addListener(
+                        (obs, oldScene, newScene) -> {
+                            if (newScene != null) {
+                                Platform.runLater(
+                                        () -> {
+                                            aplicarAnchosDesdeJSON(); // ← aquí se aplican
+                                            recalcularColumnas(); // ← aquí se ajustan
+                                            verificarColumnas(); // ← aquí SÍ tienen tamaño
+                                        });
+                            }
+                        });
 
-                            // 1) Llamada inicial cuando el control ya tiene tamaño real
-                            Platform.runLater(() -> recalcularColumnas());
-                        }
-              });
-                // 2) Listener real de responsividad
-    treeFct
-        .widthProperty()
-        .addListener(
-            (o, ov, nv) -> {
-                System.out.println("WIDTH TREE: " + nv);
-                Platform.runLater(() -> recalcularColumnas());
-            });
+        treeFct
+                .widthProperty()
+                .addListener(
+                        (o, ov, nv) -> {
+                            Platform.runLater(
+                                    () -> {
+                                        recalcularColumnas(); // ← aquí se ajustan
+                                        verificarColumnas(); // ← aquí SÍ tienen tamaño
+                                    });
+                        });
+    }
+
+    private void cargarConfigUI() {
+        cfgPath = Path.of(Config.getConfig(Config.usuario).getRutasconfig().getRutaUIData());
+        try {
+            uiCfg = UIDataConfig.fromJson(cfgPath);
+            // System.out.println("[FxCntrlTablaFCT>cargarConfigUI] UIDataConfig cargado:");
+            // System.out.println(uiCfg);
+        } catch (IOException e) {
+      System.out.println(
+          "[FxCntrlTablaFCT>initialize] Error " + e.getClass() + " al cargar la UIDataConfig");
+        }
     }
 
     private void recalcularColumnas() {
         Map<String, Double> nuevos = TableScaler.resizeColumns(treeFct, uiCfg);
         nuevos.forEach((colId, ancho) -> uiCfg.updateAncho(colId, ancho));
+    }
+
+  private void aplicarAnchosDesdeJSON() {
+    treeFct
+        .getColumns()
+        .forEach(
+            col -> {
+              double ancho = uiCfg.getAncho(col.getId());
+              if (ancho > 0) {
+                col.setPrefWidth(ancho);
+              }
+            });
+  }
+
+    private void verificarColumnas() {
+        System.out.println("=== VERIFICACIÓN COLUMNAS FACTURA ===");
+        treeFct
+            .getColumns()
+            .forEach(
+                col -> {
+                String id = col.getId();
+                double pref = col.getPrefWidth();
+                double cfg = uiCfg.getAncho(id);
+                System.out.println(id + " | Actual=" + pref + " | json=" + cfg);
+                });
+        System.out.println("=====================================");
     }
 
     private void configurarColumnas() {
@@ -134,7 +170,7 @@ public class FxCntrlTablaFCT implements Initializable {
             return null;
             });
 
-        colCat.setCellValueFactory(
+        colConcepto.setCellValueFactory(
             c -> {
             Object v = c.getValue().getValue();
             if (v instanceof FacturaFX f) return f.categoriaProperty();

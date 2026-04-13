@@ -27,7 +27,7 @@ public class ExtractoFX {
     fx.iva.set(e.getIVA());
     fx.subtotal.set(e.getSubtotal());
     fx.concepto.set(e.getConcepto());
-    System.out.println("[ExtractoFX.fromDomain] base= " + e.getBase() +" a FX: " + fx.baseProperty());
+    // System.out.println("[ExtractoFX.fromDomain] base= " + e.getBase() +" a FX: " + fx.baseProperty());
 
     return fx;
   }

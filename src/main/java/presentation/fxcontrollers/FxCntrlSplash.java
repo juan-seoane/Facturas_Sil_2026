@@ -34,9 +34,9 @@ public class FxCntrlSplash {
 
         this.imgSplash.setImage(new Image(getClass().getResourceAsStream(ruta)));
 
-        System.out.println("[FxCntrlSplash.initialize()] - imgSplash = " + this.imgSplash);
-        System.out.println("[FxCntrlSplash.initialize()] - Ruta calculada = " + ruta);
-        System.out.println("[FxCntrlSplash.initialize()] - Stream = " + getClass().getResourceAsStream(ruta));
+        // System.out.println("[FxCntrlSplash.initialize()] - imgSplash = " + this.imgSplash);
+        // System.out.println("[FxCntrlSplash.initialize()] - Ruta calculada = " + ruta);
+        // System.out.println("[FxCntrlSplash.initialize()] - Stream = " + getClass().getResourceAsStream(ruta));
 
         FadeTransition ft = new FadeTransition(Duration.seconds(2), this.imgSplash);
         ft.setFromValue(1.0);
@@ -44,7 +44,7 @@ public class FxCntrlSplash {
         ft.setDelay(Duration.seconds(2)); // tiempo visible
 
         ft.setOnFinished(e -> {
-        System.out.println("FADE TERMINADO → iniciando aplicación");
+        // System.out.println("FADE TERMINADO → iniciando aplicación");
 
         // Cerrar el Stage del Splash
         Stage splashStage = (Stage) imgSplash.getScene().getWindow();

@@ -1,114 +1,87 @@
 package app;
 
-/*
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import domain.records.ConfigData;
-import domain.records.Credenciales;
-import domain.records.Creds;
-import domain.records.MisDatos;
-import domain.records.RutasConfig;
-import domain.records.UIData;
-import infraestructure.filesystem.Fichero;
 import infraestructure.filesystem._Ruta;
 import infraestructure.servicios.AuthService;
 import infraestructure.servicios.config.Config;
-
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 
-import app.core.AppContext;
+import org.junit.jupiter.api.Test;
+
+import domain.records.Credenciales;
 
 public class ConfigTest {
-	//Declara el usuario del que testear los datos
-	String user="admin";
-	String userAelim = "TESTuSER";
-
-	@Test
-	void borrarDatosUsuario(){
-		userAelim = "TESTuSER";
-		Credenciales cred_prev = AppContext.get().auth().leerCredenciales(_Ruta.CONFIG.getRuta() + "/creds.json");
-		var listaCredsNueva = new ArrayList<Creds>();
-		//Generar nuevo archivo de credenciales sin el usuario declarado
-		for (Creds c : cred_prev.getCreds()){
-			if (!c.usuario().equals(userAelim))
-				listaCredsNueva.add(c);
-		}
-
-		var n_creds = new Credenciales();
-		n_creds.setCreds(listaCredsNueva);
-
-		// STUB : 26-03-19 : Falta método para Guardar Credenciales
-		//Config.guardarCredenciales(n_creds);
-		//Borrar subdirectorios de Config y Trabajo
-		borrarSubdirs(userAelim);
-
-	}
-
-	void borrarSubdirs(String usuario){
-		File dir1 = new File("./config/"+usuario.toUpperCase());
-		File dir2 = new File("./datos/"+usuario.toUpperCase());
-
-		if(dir1.exists()) recursiveDelete(dir1);
-		if(dir2.exists()) recursiveDelete(dir2);
-
-		assertTrue(!dir1.exists());
-		assertTrue(!dir2.exists());
-	}
-
-	static void recursiveDelete(File targetDirectory) {
-
-		File[] data = targetDirectory.listFiles();
-
-		for (File file : data) {
-		  if (file.isDirectory())
-			recursiveDelete(file);
-
-		  else
-			file.delete();
-		}
-
-		targetDirectory.delete();
-	  }
-
-	@Test
-	void CreaConfigOK() throws NullPointerException, IOException{
-		Config configPrueba = Config.getConfig(user);
-		assertNotNull(configPrueba);
-	}
-
-	@Test
-	void leerCredencialesOK(){
-
-		String ruta = "./config/creds.json";
-		String ficheroResp = Fichero.leerJSON(ruta);
-
-    	System.out.println("[ConfigTest>leerCredencialesOK] fichero json de creds:\n"+ficheroResp+"\n-------------------");
-
-		assertNotNull(ficheroResp);
-    	Gson gson = new Gson();
-        Type type = new TypeToken<Credenciales>() {}.getType();
-        Credenciales credenciales = gson.fromJson(ficheroResp, type);
-		/*
-        int i=0;
-        for (Contrasena contrasena : credenciales.creds) {
-			System.out.println("Contra num "+i);
-            System.out.println("Usuario: " + contrasena.usuario);
-            System.out.println("Contraseña: " + contrasena.contra);
-			System.out.println("-----------------------------");
-			i++;
+    //Declara el usuario del que testear los datos
+    String user = "admin";
+    String userAelim = "TESTuSER";
+/*
+    @Test
+    void borrarDatosUsuario() {
+        userAelim = "TESTuSER";
+        Credenciales cred_prev = AppContext.get().auth().leerCredenciales(_Ruta.CONFIG.getRuta() + "/creds.json");
+        var listaCredsNueva = new ArrayList<Creds>();
+        //Generar nuevo archivo de credenciales sin el usuario declarado
+        for (Creds c : cred_prev.getCreds()) {
+            if (!c.usuario().equals(userAelim))
+                listaCredsNueva.add(c);
         }
-		*/
+
+        var n_creds = new Credenciales();
+        n_creds.setCreds(listaCredsNueva);
+
+        // STUB : 26-03-19 : Falta método para Guardar Credenciales
+        //Config.guardarCredenciales(n_creds);
+        //Borrar subdirectorios de Config y Trabajo
+        borrarSubdirs(userAelim);
+
+    }
+
+    void borrarSubdirs(String usuario) {
+        File dir1 = new File("./config/" + usuario.toUpperCase());
+        File dir2 = new File("./datos/" + usuario.toUpperCase());
+
+        if (dir1.exists())
+            recursiveDelete(dir1);
+        if (dir2.exists())
+            recursiveDelete(dir2);
+
+        assertTrue(!dir1.exists());
+        assertTrue(!dir2.exists());
+    }
+
+    static void recursiveDelete(File targetDirectory) {
+
+        File[] data = targetDirectory.listFiles();
+
+        for (File file : data) {
+            if (file.isDirectory())
+                recursiveDelete(file);
+
+            else
+                file.delete();
+        }
+
+        targetDirectory.delete();
+    }
+*/
+    @Test
+    void CreaConfigOK() throws NullPointerException, IOException {
+        Config configPrueba = Config.getConfig(user);
+        System.out.println("[FacturaTest>CrearConfig] Config: " + configPrueba.toString());
+        assertNotNull(configPrueba);
+    }
+
+    @Test
+    void leerCredencialesOK() {
+        // TODO - 26-04-16 : El método leerCredenciales en AuthService ahora es ESTÁTICO
+        String rutaCreds = _Ruta.CONFIG.getRuta() + "/creds.json";
+        Credenciales c = AuthService.leerCredenciales(rutaCreds);
+        System.out.println(c.toString());
+        assertNotNull(c);
+
+    }
+}
         /*
     // REVIEW - 24-04-11 : Revisar esto: Si es Arraylist.class o Contrasena.class
 	// REVIEW - 24-04-21 : Parece que hay un problema al leer las credenciales... El fichero lo lee bien, pero el Objeto 'Credenciales' lo coge mal...

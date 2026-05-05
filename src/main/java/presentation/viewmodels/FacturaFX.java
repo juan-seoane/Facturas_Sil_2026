@@ -1,6 +1,8 @@
 package presentation.viewmodels;
 
+import app.services.FacturasService;
 import domain.records.*;
+import java.util.ArrayList;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -24,7 +26,7 @@ public class FacturaFX {
     private final StringProperty numero = new SimpleStringProperty();
     private final ObjectProperty<Fecha> fecha = new SimpleObjectProperty<>();
     private final StringProperty razonSocial = new SimpleStringProperty();
-    private final StringProperty categoria = new SimpleStringProperty();
+    private final StringProperty concepto = new SimpleStringProperty();
     private final BooleanProperty devolucion = new SimpleBooleanProperty();
     private final IntegerProperty numExtractos = new SimpleIntegerProperty();
     private final StringProperty nota = new SimpleStringProperty();
@@ -98,16 +100,16 @@ public class FacturaFX {
         return razonSocial;
     }
 
-    public String getCategoria() {
-        return categoria.get();
+    public String getConcepto() {
+        return concepto.get();
     }
 
-    public void setCategoria(String v) {
-        categoria.set(v);
+    public void setConcepto(String v) {
+        concepto.set(v);
     }
 
-    public StringProperty categoriaProperty() {
-        return categoria;
+    public StringProperty conceptoProperty() {
+        return concepto;
     }
 
     public boolean isDevolucion() {
@@ -248,8 +250,8 @@ public class FacturaFX {
         return total.get();
     }
 
-    public void setTotal(double v) {
-        total.set(v);
+    public void setTotal(Number v) {
+        total.set((double) v);
     }
 
     public DoubleProperty totalProperty() {
@@ -271,7 +273,7 @@ public class FacturaFX {
         fx.setNumero(f.numeroFactura);
         fx.setFecha(f.fecha);
         fx.setRazonSocial(f.RS.getNombre());
-        fx.setCategoria(f.categoria.getTipo());
+        fx.setConcepto(f.concepto.getTipo());
         fx.setDevolucion(f.esDevolucion);
         fx.setNumExtractos(f.extractos.size());
         fx.setNota(f.nota != null ? f.nota.getTexto() : "");
@@ -299,9 +301,10 @@ public class FacturaFX {
     // -------------------------
     // FX → DOMINIO
     // -------------------------
-    /*
-    public Factura toDomain(FacturasService service) {
-        RazonSocial rs = service.buscarRazonSocialPorNombre(getRazonSocial());
+
+    public Factura toDomain() {
+        // Crear RazonSocial directamente desde el nombre
+        RazonSocial rs = new RazonSocial(getRazonSocial(), "");
 
         Totales t = new Totales(
                 getBase(),
@@ -313,26 +316,26 @@ public class FacturaFX {
                 getRet(),
                 getRetenciones(),
                 getTotal(),
-                getCategoria());
+                getConcepto());
 
         return new Factura(
                 getId(),
                 getNumero(),
                 getFecha(),
                 rs,
-                new TipoGasto(getCategoria(), ""),
+                new TipoGasto(getConcepto(), ""),
                 isDevolucion(),
                 new ArrayList<>(),
                 t,
                 getNota().isEmpty() ? null : new Nota(getNota()));
     }
-    */
+
     public void actualizarFactura(Factura original) {
 
         // Campos principales
         original.numeroFactura = getNumero();
         original.fecha = getFecha();
-        original.categoria = new TipoGasto(getCategoria(), "");
+        original.concepto = new TipoGasto(getConcepto(), "");
         original.esDevolucion = isDevolucion();
 
         // Totales

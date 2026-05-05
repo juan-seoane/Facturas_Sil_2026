@@ -56,7 +56,7 @@ public class CsvReader {
             .map(String::trim)
             .filter(linea -> !linea.isBlank())
             .filter(linea -> !linea.startsWith("\"#ID\"")) // filtrar cabecera
-            .map(linea -> linea.split(",", -1)) // separador real
+            .map(linea -> linea.split(";", -1)) // separador real
             .map(
                 arr ->
                     Arrays.stream(arr)
@@ -67,7 +67,8 @@ public class CsvReader {
     // DEBUG opcional
     // AtomicInteger idx = new AtomicInteger(1);
     // resultado.forEach(
-    //     arr -> System.out.println("[CSV][" + idx.getAndIncrement() + "] " + Arrays.toString(arr)));
+    //     arr -> System.out.println("[CSV][" + idx.getAndIncrement() + "] " +
+    // Arrays.toString(arr)));
 
     return resultado;
   }

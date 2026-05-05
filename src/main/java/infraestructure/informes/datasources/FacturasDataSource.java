@@ -48,7 +48,7 @@ public class FacturasDataSource implements JRDataSource {
             case "t ret" -> valor = listaFacturas.get(indiceFacturaActual).totales.getRet();
             case "Retenc" -> valor = listaFacturas.get(indiceFacturaActual).totales.getRetenciones();
             case "Total" -> valor = listaFacturas.get(indiceFacturaActual).totales.getTotal();
-            case "Concepto" -> valor = listaFacturas.get(indiceFacturaActual).categoria;
+            case "Concepto" -> valor = listaFacturas.get(indiceFacturaActual).concepto;
             default -> {
             }
         }

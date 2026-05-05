@@ -1,13 +1,11 @@
 package presentation.fxcontrollers;
 
 import app.core.AppContext;
-import app.core.AppController;
 import app.helpers.VentanaID;
 import infraestructure.filesystem._Ruta;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;

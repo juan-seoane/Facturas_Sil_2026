@@ -9,26 +9,98 @@ import java.util.ArrayList;
 
 public class Factura {
 
-    //#region CAMPOS
+    //#region CAMPOSF
     public Integer ID;
     public String numeroFactura;
     public Fecha fecha;
     public RazonSocial RS;
-    public TipoGasto categoria;
+    public TipoGasto concepto;
     public boolean esDevolucion;
     public ArrayList<Extracto> extractos;
     public Totales totales;
     public Nota nota;
     //#endregion
 
+    public Integer getID() {
+        return ID;
+    }
+
+    public void setID(Integer iD) {
+        ID = iD;
+    }
+
+    public String getNumeroFactura() {
+        return numeroFactura;
+    }
+
+    public void setNumeroFactura(String numeroFactura) {
+        this.numeroFactura = numeroFactura;
+    }
+
+    public Fecha getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Fecha fecha) {
+        this.fecha = fecha;
+    }
+
+    public RazonSocial getRS() {
+        return RS;
+    }
+
+    public void setRS(RazonSocial rS) {
+        RS = rS;
+    }
+
+    public TipoGasto getConcepto() {
+        return concepto;
+    }
+
+    public void setConcepto(String concepto) {
+        this.concepto = new TipoGasto(concepto, concepto);
+    }
+
+    public boolean isEsDevolucion() {
+        return esDevolucion;
+    }
+
+    public void setEsDevolucion(boolean esDevolucion) {
+        this.esDevolucion = esDevolucion;
+    }
+
+    public ArrayList<Extracto> getExtractos() {
+        return extractos;
+    }
+
+    public void setExtractos(ArrayList<Extracto> extractos) {
+        this.extractos = extractos;
+    }
+
+    public Totales getTotales() {
+        return totales;
+    }
+
+    public void setTotales(Totales totales) {
+        this.totales = totales;
+    }
+
+    public Nota getNota() {
+        return nota;
+    }
+
+    public void setNota(Nota nota) {
+        this.nota = nota;
+    }
+
     //#region CONSTR
-    public Factura(Integer ID, String numeroFactura, Fecha fecha, RazonSocial RS, TipoGasto categoria,
+    public Factura(Integer ID, String numeroFactura, Fecha fecha, RazonSocial RS, TipoGasto concepto,
             boolean esDevolucion, ArrayList<Extracto> extractos, Totales totales, Nota nota) {
         this.ID = ID;
         this.numeroFactura = numeroFactura;
         this.fecha = fecha;
         this.RS = RS;
-        this.categoria = categoria;
+        this.concepto = concepto;
         this.esDevolucion = esDevolucion;
         this.extractos = extractos;
         this.totales = totales;
@@ -44,7 +116,7 @@ public class Factura {
     @Override
     public String toString() {
         String cadenaResp = this.ID + "," + this.numeroFactura + "," + this.fecha.toString() + "," + this.RS.getID()
-                + "," + this.RS.getNif() + "," + this.RS.getNombre() + "," + this.categoria.getTipo() + ","
+                + "," + this.RS.getNif() + "," + this.RS.getNombre() + "," + this.concepto.getTipo() + ","
                 + (this.esDevolucion ? "S" : "N") + "," + this.extractos.size() + ", TOTS-> " + this.totales.getBase()
                 + "," + ((this.totales.isVariosIVAs()) ? "S" : "N," + this.totales.getTipoIVA()) + ","
                 + this.totales.getIVA() + "," + this.totales.getRet() + "," + this.totales.getRetenciones() + ","

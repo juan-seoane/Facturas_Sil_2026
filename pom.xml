@@ -20,7 +20,7 @@
     </properties>
 
     <dependencies>
-        
+
         <!-- Junit5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -97,7 +97,15 @@
 
         <build>
             <plugins>
-
+                <!-- JUnit plugin CORRECTO -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.2.5</version>
+                    <configuration>
+                        <useModulePath>false</useModulePath>
+                    </configuration>
+                </plugin>
                 <!-- JavaFX plugin CORRECTO -->
                 <plugin>
                     <groupId>org.openjfx</groupId>

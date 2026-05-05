@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Credenciales {
 
-    private List<Creds> creds;
+    public List<Creds> creds;
 
     public List<Creds> getCreds() {
         return creds;
@@ -13,5 +13,25 @@ public class Credenciales {
     public void setCreds(List<Creds> creds) {
         this.creds = creds;
     }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("=== Credenciales ===\n");
+
+    if (creds == null || creds.isEmpty()) {
+      sb.append("(sin credenciales)\n");
+    } else {
+      for (int i = 0; i < creds.size(); i++) {
+        Creds c = creds.get(i);
+        sb.append("[").append(i).append("] ");
+        sb.append(c != null ? c.toString() : "(null)");
+        sb.append("\n");
+      }
+    }
+
+    sb.append("====================");
+    return sb.toString();
+  }
 }
 

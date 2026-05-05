@@ -1,10 +1,9 @@
 package app.services;
 
-import java.util.List;
-
 import domain.records.ConfigData;
 import domain.records.Factura;
 import infraestructure.csv.FacturaCSVRepo;
+import java.util.List;
 import presentation.viewmodels.FacturaFX;
 
 public class FacturasService {
@@ -28,6 +27,14 @@ public class FacturasService {
   }
 
   public void borarFactura(Factura f) {
-    // TODO : Unimplemented method
+        // TODO : 26-04-16 : Unimplemented method borrarFactura
+  }
+
+  public boolean editarFactura(Factura f) {
+    boolean ok = repo.actualizarFactura(f);
+    if (!ok) {
+      System.err.println("[FacturasService>editarFactura] Intento de editar factura inexistente: " + f.getID());
+    }
+    return ok;
   }
 }

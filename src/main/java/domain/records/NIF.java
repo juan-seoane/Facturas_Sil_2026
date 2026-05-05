@@ -11,6 +11,58 @@ public class NIF implements Comparable<NIF> {
       this.isCIF = isCIF;
   }
 
+  public NIF(String raw) {
+
+    // 1. Normalizar entrada
+
+    if (raw == null || raw.trim().isEmpty()) {
+      // NIF vacío permitido
+      this.numero = 0;
+      this.letra = "";
+      this.isCIF = false;
+      return;
+    }
+
+    String s = raw.trim().toUpperCase().replaceAll("[ .-]", "");
+
+    // 2. Detectar si es CIF (empieza por letra)
+    // CIF: A12345678, B12345678, etc.
+    if (s.matches("[A-Z][0-9]{7}[0-9A-J]")) {
+      this.isCIF = true;
+      this.letra = s.substring(0, 1); // prefijo CIF
+      this.numero = Integer.parseInt(s.substring(1, 8));
+      return;
+    }
+
+    // 3. Detectar DNI clásico: 12345678Z
+    if (s.matches("[0-9]{8}[A-Z]")) {
+      this.isCIF = false;
+      this.numero = Integer.parseInt(s.substring(0, 8));
+      this.letra = s.substring(8);
+      return;
+    }
+
+    // 4. Detectar NIE: X1234567L, Y1234567L, Z1234567L
+    if (s.matches("[XYZ][0-9]{7}[A-Z]")) {
+      this.isCIF = false;
+      // NIE: convertir X/Y/Z a número equivalente
+      char prefix = s.charAt(0);
+      int base =
+          switch (prefix) {
+            case 'X' -> 0;
+            case 'Y' -> 1;
+            case 'Z' -> 2;
+            default -> throw new IllegalStateException("Prefijo NIE inválido");
+          };
+
+      this.numero = Integer.parseInt(base + s.substring(1, 8));
+      this.letra = s.substring(8);
+      return;
+    }
+
+    throw new IllegalArgumentException("Formato de NIF/NIE/CIF no reconocido: " + raw);
+  }
+
   public int getNumero() {
       return numero;
   }
@@ -124,7 +176,11 @@ public class NIF implements Comparable<NIF> {
           try {
               num = Integer.parseInt(array[0]);
           } catch (NumberFormatException ex) {
-              System.out.println("Error " + ex.getClass() + "al convertir Array 2 NIF en un 'tipo NIF': " + ex.getMessage());
+        System.out.println(
+            "Error "
+                + ex.getClass()
+                + "al convertir Array 2 NIF en un 'tipo NIF': "
+                + ex.getMessage());
               return null;
           }
           iscif = false;
@@ -133,7 +189,11 @@ public class NIF implements Comparable<NIF> {
           try {
               num = Integer.parseInt(array[1]);
           } catch (NumberFormatException ex) {
-              System.out.println("Error " + ex.getClass() + "al convertir Array 2 NIF en un 'tipo CIF': " + ex.getMessage());
+        System.out.println(
+            "Error "
+                + ex.getClass()
+                + "al convertir Array 2 NIF en un 'tipo CIF': "
+                + ex.getMessage());
               return null;
           }
           iscif = true;

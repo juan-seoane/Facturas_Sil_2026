@@ -6,10 +6,10 @@ import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import app.core.AppContext;
 import domain.records.Credenciales;
 import domain.records.Creds;
 import infraestructure.filesystem._Ruta;
+import infraestructure.servicios.AuthService;
 import infraestructure.servicios.config.Config;
 import presentation.fxcontrollers.FxCntrlAcceso;
 
@@ -38,7 +38,7 @@ public class ComprobacionesAcceso {
             // REVIEW : Si existe el Subdirectorio y el archivo config, lo lee.. (Cambiar por chequear las credenciales del archivo config base)
             // REVIEW : Otra vez tuve que hacer público el constructor de la clase Config...por lo que...¿Singleton...?
             // REVIEW - 24-04-11 : Escribir un método estático para leer las credenciales del archivo config base
-            for (Creds contr : ((Credenciales)(AppContext.get().auth().leerCredenciales(rutaCreds))).getCreds()){
+            for (Creds contr : ((Credenciales)(AuthService.leerCredenciales(rutaCreds))).getCreds()){
                 // REVIEW : Revisar el modo de comprobación de credenciales
                 FxCntrlAcceso.imprimir(
                     "[ComprobacionesAcceso.java>comprobarCredenciales()]\nDatos obtenidos de Config: " +

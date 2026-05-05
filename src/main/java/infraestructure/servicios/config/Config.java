@@ -1,15 +1,14 @@
 package infraestructure.servicios.config;
 
+import domain.records.ConfigData;
+import domain.records.RutasConfig;
+import infraestructure.filesystem._Ruta;
+import infraestructure.json.JsonParser;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
-
-import domain.records.ConfigData;
-import domain.records.RutasConfig;
-import infraestructure.filesystem._Ruta;
-import infraestructure.json.JsonParser;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
@@ -37,10 +36,12 @@ public class Config {
     private Config(String user) {
         usuario = user;
 
-        // TODO : chequear la existencia de todas estas rutas o su creación (en un archivo aparte?)
-        this.dirCFGpers = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase();
-        this.rutaRutasConfig = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase() + "/rutasconfig.json";
-        this.rutaConfigData = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase() + "/configdata.json";
+    // TODO : 26-03-15 : chequear la existencia de todas estas rutas o su creación (en un archivo
+    // aparte?)
+    this.dirCFGpers = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase();
+    this.rutaRutasConfig =
+        _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase() + "/rutasconfig.json";
+    this.rutaConfigData = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase() + "/configdata.json";
         this.rutaMisDatos = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase() + "/misdatos.json";
         this.rutaUIData = _Ruta.CONFIG.getRuta() + "/" + usuario.toUpperCase() + "/uidata.json";
         this.dirPers = _Ruta.DATOS.getRuta() + "/" + usuario.toUpperCase();
@@ -151,7 +152,7 @@ public class Config {
         String resp = "Config del usuario " +
                 usuario +
                 " :\n ConfigData:\n" +
-                this.configData.toJSON() +
+                this.configData.toJSON();
                 // "\nmisDatos:\n" +
                 // ((this.misDatos != null) ? this.misDatos.toJSON() : " - NULL -") +
                 // "\nuiData:\n" +
@@ -160,8 +161,8 @@ public class Config {
                 // this.rutasconfig.toJSON() +
                 // "\nElementos en Lista static de configuraciones: " +
                 // ((Config.configuraciones != null) ? Config.configuraciones.size() : " - NULL -") +
-                "\nconfigActual not NULL: " +
-                ((Config.configActual != null) ? "S" : "N");
+                // "\nconfigActual not NULL: " +
+                // ((Config.configActual != null) ? "S" : "N");
         return resp;
     }
 

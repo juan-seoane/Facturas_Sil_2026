@@ -18,14 +18,42 @@ public class RazonSocial implements Comparable<RazonSocial> {
     private int[] tiposIVA;
 
     public RazonSocial() {
-        this(0, new NIF(0000, "A", false), "nombre de la empresa", "nombre Razon Social", "900-000000", "direccion del distribuidor", "99999", "Ourense", null, new Totales(), new Nota(""), "COMPRAS", null);
+    this(
+        0,
+        new NIF(0000, "A", false),
+        "nombre de la empresa",
+        "nombre Razon Social",
+        "900-000000",
+        "direccion del distribuidor",
+        "99999",
+        "Ourense",
+        null,
+        new Totales(),
+        new Nota(""),
+        "COMPRAS",
+        null);
     }
 
     public RazonSocial(Integer ID, NIF nif,String nombre) {
-        this(ID, nif, nombre, nombre.toUpperCase(), "900-000000", "direccion del distribuidor", "99999", "Ourense", null, new Totales(), null, "-", null);
+    this(
+        ID,
+        nif,
+        nombre,
+        nombre.toUpperCase(),
+        "900-000000",
+        "direccion del distribuidor",
+        "99999",
+        "Ourense",
+        null,
+        new Totales(),
+        null,
+        "-",
+        null);
     }
 
-    public RazonSocial(int ID, NIF nif, String nombre, String razon, String direccion, String CP, String poblacion, String telefono, HashMap<String, String> otrosDatos, Totales totales, Nota nota, String categoria, int[] tiposIVA) {
+    public RazonSocial(int ID, NIF nif, String nombre, String razon, String direccion, String CP, String poblacion,
+            String telefono, HashMap<String, String> otrosDatos, Totales totales, Nota nota, String categoria,
+            int[] tiposIVA) {
         this.ID = ID;
         this.nif = nif;
         this.nombre = nombre;
@@ -40,6 +68,12 @@ public class RazonSocial implements Comparable<RazonSocial> {
         this.categoria = categoria;
         this.tiposIVA = tiposIVA;
     }
+
+  public RazonSocial(String nombre, String cif) {
+    this.nombre = nombre;
+    this.nif = new NIF(cif);
+    this.direccion = "";
+  }
 
     // Getters
     public int getID() {

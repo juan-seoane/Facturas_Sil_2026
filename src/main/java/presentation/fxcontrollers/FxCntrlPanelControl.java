@@ -30,6 +30,14 @@ public class FxCntrlPanelControl implements Initializable {
   @FXML private ToggleButton toggleModo;
 
   @FXML private Label lblEntradas;
+  public Label getLblEntradas() {
+    return lblEntradas;
+}
+
+  public void setNumFacturasLbl(String numFact) {
+    this.lblEntradas.setText(numFact);;
+  }
+
   @FXML private Label lblTrimestre;
   @FXML private Label lblAnho;
   @FXML private Label lblUsuario;

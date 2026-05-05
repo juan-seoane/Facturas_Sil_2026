@@ -23,7 +23,7 @@ public class AuthService {
         boolean existenCreds = Files.exists(Path.of(rutaCreds));
         System.out.println("existe el archivo: " + existenCreds);
         if (existenCreds) {
-            Credenciales creds = this.leerCredenciales(rutaCreds);
+            Credenciales creds = leerCredenciales(rutaCreds);
 
             List<Creds> listaCreds = creds.getCreds();
             valido = listaCreds.stream().anyMatch(c -> c.usuario().equals(user) && c.pass().equals(pass));
@@ -37,7 +37,7 @@ public class AuthService {
     }
 
     //#region LEER_CREDS()
-    public synchronized Credenciales leerCredenciales(String ruta) {
+    public static synchronized Credenciales leerCredenciales(String ruta) {
 
         try {
             Path p = Path.of(ruta);

@@ -56,7 +56,7 @@ public class FacturaCsvMapper {
         arr[5] = f.RS.getNombre();
 
         // 2) Categoría y devoluciones
-        arr[6] = f.categoria.getTipo();
+        arr[6] = f.concepto.getTipo();
         arr[7] = String.valueOf(f.esDevolucion);
 
         // 3) Número de extractos

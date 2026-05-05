@@ -13,8 +13,8 @@ public class FacturaCSVRepo implements IfacturasRepo {
     private String rutaCSV;
 
     public FacturaCSVRepo(String rutaCSV) {
-    this.rutaCSV = rutaCSV;
-  }
+        this.rutaCSV = rutaCSV;
+    }
 
     public static Factura leerFactura(List<String[]> lineas, int indexInicial) {
         LineaCsvDTO lineaFactura = CsvReader.fromCsvArray(lineas.get(indexInicial));
@@ -67,7 +67,7 @@ public class FacturaCSVRepo implements IfacturasRepo {
             List<Factura> listaFCT;
             listaFCT = CsvReader.leerFacturas(ruta);
             System.out.println(
-                "[FacturaCSVRepo>leerTodasLasFacturas()] Facturas leídas = " + listaFCT.size());
+                "[FacturaCSVRepo>leerTodasLasFacturas()] Facturas leidas = " + listaFCT.size());
             return listaFCT;
         } catch (IOException e) {
       System.out.println(
@@ -75,6 +75,34 @@ public class FacturaCSVRepo implements IfacturasRepo {
             System.exit(1);
         }
         return null;
+    }
+
+    public boolean borrarFactura(String idFactura) {
+        List<Factura> lista = leerListaFacturas();
+
+        // filtrar: eliminar factura base y sus extractos
+        List<Factura> nuevaLista =
+            lista.stream().filter(f -> !f.getID().equals(idFactura)).toList();
+
+        return guardarListaFacturas(nuevaLista);
+    }
+
+    public boolean actualizarFactura(Factura facturaEditada) {
+        List<Factura> lista = leerListaFacturas();
+
+        boolean existe = lista.stream().anyMatch(f -> f.getID().equals(facturaEditada.getID()));
+
+        if (!existe) {
+            System.out.println("[FacturaCSVRepo>actualizarFactura] La factura no existía. La lista de facturas no se modificará!");
+            return false; // o lanzar excepción, según prefieras
+        }
+
+        List<Factura> nuevaLista =
+            lista.stream()
+                .map(f -> f.getID().equals(facturaEditada.getID()) ? facturaEditada : f)
+                .toList();
+
+        return guardarListaFacturas(nuevaLista);
     }
 
     @Override
@@ -86,9 +114,6 @@ public class FacturaCSVRepo implements IfacturasRepo {
     @Override
     public boolean guardarListaFacturas(List<Factura> listaFCT) {
         List<String[]> listaLineas = parsearListaFacturas(listaFCT);
-        // STUB : 26-03-18
-        String ruta = ""; //Config.getConfig(Config.usuario).getConfigData().getRutas().getFCT();
-
-        return (CsvWriter.escribirCSV(ruta, listaLineas));
+        return CsvWriter.escribirCSV(rutaCSV, listaLineas);
     }
 }

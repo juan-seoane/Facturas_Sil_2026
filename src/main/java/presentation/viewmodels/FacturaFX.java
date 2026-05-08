@@ -1,8 +1,8 @@
 package presentation.viewmodels;
 
-import app.services.FacturasService;
 import domain.records.*;
 import java.util.ArrayList;
+import java.util.List;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -27,7 +27,7 @@ public class FacturaFX {
     private final ObjectProperty<Fecha> fecha = new SimpleObjectProperty<>();
     private final StringProperty razonSocial = new SimpleStringProperty();
     private final StringProperty concepto = new SimpleStringProperty();
-    private final BooleanProperty devolucion = new SimpleBooleanProperty();
+    private final BooleanProperty devolucion = new SimpleBooleanProperty(false);
     private final IntegerProperty numExtractos = new SimpleIntegerProperty();
     private final StringProperty nota = new SimpleStringProperty();
 
@@ -44,13 +44,68 @@ public class FacturaFX {
     private final IntegerProperty ret = new SimpleIntegerProperty();
     private final DoubleProperty retenciones = new SimpleDoubleProperty();
     private final DoubleProperty total = new SimpleDoubleProperty();
+    private ObservableList<ExtractoFX> extractos = FXCollections.observableArrayList();
 
-    private final ObservableList<ExtractoFX> extractos = FXCollections.observableArrayList();
+  // -------------------------
+  // GETTERS / SETTERS FX
+  // -------------------------
 
+  public FacturaFX(
+        String numeroFact,
+        String fechaStr,
+        String nifRS,
+        String nombreEmpresa,
+        boolean esDevolucion,
+        double base,
+        int tipoiva,
+        double iva,
+        double baseNI,
+        int tiporet,
+        double retenc,
+        double total,
+        String concepto
+) {
+    this.numero.set(numeroFact != null ? numeroFact : "");
+    this.fecha.set(Fecha.fromString(fechaStr));
+    this.razonSocial.set(nombreEmpresa != null ? nombreEmpresa : "");
+    this.concepto.set(concepto != null ? concepto : "");
+    this.devolucion.set(esDevolucion);
 
-    // -------------------------
-    // GETTERS / SETTERS FX
-    // -------------------------
+    this.base.set(base);
+    this.tipoIVA.set(tipoiva);
+    this.iva.set(iva);
+    this.baseNI.set(baseNI);
+    this.ret.set(tiporet);
+    this.retenciones.set(retenc);
+    this.total.set(total);
+
+    // IMPORTANTE: inicializar nota
+    this.nota.set("");
+
+    // IMPORTANTE: el ID lo pones después con setId()
+  }
+
+    public FacturaFX() {
+        this.numero.set("");
+        this.fecha.set(Fecha.hoy());
+        this.razonSocial.set("");
+        this.concepto.set("");
+        this.devolucion.set(false);
+        this.numExtractos.set(0);
+        this.nota.set("");
+
+        this.base.set(0);
+        this.tipoIVA.set(0);
+        this.iva.set(0);
+        this.subtotal.set(0);
+        this.variosIVAs.set(false);
+        this.baseNI.set(0);
+        this.ret.set(0);
+        this.retenciones.set(0);
+        this.total.set(0);
+
+        this.extractos = FXCollections.observableArrayList();
+    }
 
     public int getId() {
         return id.get();
@@ -82,6 +137,10 @@ public class FacturaFX {
 
     public void setFecha(Fecha v) {
         fecha.set(v);
+    }
+
+    public void setFecha(String fechastr) {
+        fecha.set(Fecha.fromString(fechastr));
     }
 
     public ObjectProperty<Fecha> fechaProperty() {
@@ -262,6 +321,10 @@ public class FacturaFX {
         return extractos;
     }
 
+    public void setExtractos(List<ExtractoFX> lista) {
+        this.extractos = FXCollections.observableArrayList(lista);
+    }
+
     // -------------------------
     // DOMINIO → FX
     // -------------------------
@@ -304,7 +367,7 @@ public class FacturaFX {
 
     public Factura toDomain() {
         // Crear RazonSocial directamente desde el nombre
-        RazonSocial rs = new RazonSocial(getRazonSocial(), "");
+        RazonSocial rs = new RazonSocial(getRazonSocial(), "Z-999999");
 
         Totales t = new Totales(
                 getBase(),
@@ -318,16 +381,16 @@ public class FacturaFX {
                 getTotal(),
                 getConcepto());
 
-        return new Factura(
-                getId(),
-                getNumero(),
-                getFecha(),
-                rs,
-                new TipoGasto(getConcepto(), ""),
-                isDevolucion(),
-                new ArrayList<>(),
-                t,
-                getNota().isEmpty() ? null : new Nota(getNota()));
+    return new Factura(
+        getId(),
+        getNumero(),
+        getFecha(),
+        rs,
+        new TipoGasto(getConcepto(), ""),
+        isDevolucion(),
+        new ArrayList<>(),
+        t,
+        new Nota(getNota() == null ? "" : getNota()));
     }
 
     public void actualizarFactura(Factura original) {
@@ -357,5 +420,15 @@ public class FacturaFX {
     public void addExtracto(ExtractoFX e) {
         extractos.add(e);
     }
+
+    public static FacturaFX filaVacia() {
+        FacturaFX filaVacia = new FacturaFX("--------", Fecha.hoy().toString(),
+                "----", "----",
+                false,
+                0.0, 0, 0.0, 0.0, 0, 0.0, 0.0, "--");
+        filaVacia.setExtractos(new ArrayList<>()); // ← CRÍTICO
+        return filaVacia;
+    }
+
 }
 

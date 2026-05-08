@@ -43,6 +43,7 @@ public class CsvReader {
   }
 
   public static List<String[]> leerCSV(String ruta) throws IOException {
+
     Path p = Path.of(ruta);
 
     if (!Files.exists(p)) {
@@ -56,7 +57,8 @@ public class CsvReader {
             .map(String::trim)
             .filter(linea -> !linea.isBlank())
             .filter(linea -> !linea.startsWith("\"#ID\"")) // filtrar cabecera
-            .map(linea -> linea.split(";", -1)) // separador real
+                    .map(linea -> linea.split(
+                            ";", -1)) // separador real
             .map(
                 arr ->
                     Arrays.stream(arr)

@@ -13,6 +13,12 @@ import java.util.List;
 public class FacturaCsvMapper {
 
     public static Factura fromLinea(LineaCsvDTO l) {
+
+    if (l.length() < 20) {
+      System.out.println("[CSV] Línea inválida ignorada: " + l);
+      return null;
+    }
+
     // 1) Totales
     Totales totales =
         new Totales(

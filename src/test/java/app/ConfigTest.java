@@ -74,7 +74,7 @@ public class ConfigTest {
 
     @Test
     void leerCredencialesOK() {
-        // TODO - 26-04-16 : El método leerCredenciales en AuthService ahora es ESTÁTICO
+        // TODO : 26-04-16 : El método leerCredenciales en AuthService ahora es ESTÁTICO
         String rutaCreds = _Ruta.CONFIG.getRuta() + "/creds.json";
         Credenciales c = AuthService.leerCredenciales(rutaCreds);
         System.out.println(c.toString());

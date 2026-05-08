@@ -1,5 +1,6 @@
 package domain.records;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -75,6 +76,12 @@ public class Fecha implements Comparable<Fecha> {
             return 1;
         return 0;
     }
+
+    public static Fecha hoy() {
+        LocalDate hoy = LocalDate.now();
+        return new Fecha(hoy.getDayOfMonth(), hoy.getMonthValue(), hoy.getYear());
+    }
+
 }
 
 

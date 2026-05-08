@@ -18,6 +18,17 @@ public class ExtractoFX {
   // === CONSTRUCTOR VACÍO ===
   public ExtractoFX() {}
 
+  // === CONSTRUCTOR ===
+  public ExtractoFX(double b, int ti, double i, double st, String conc) {
+    ExtractoFX fx = new ExtractoFX();
+
+    fx.base.set(b);
+    fx.tipoIVA.set(ti);
+    fx.iva.set(i);
+    fx.subtotal.set(st);
+    fx.concepto.set(conc);
+}
+
   // === CONSTRUCTOR DESDE DOMINIO ===
   public static ExtractoFX fromDomain(Extracto e) {
     ExtractoFX fx = new ExtractoFX();

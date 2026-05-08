@@ -21,6 +21,26 @@ public class Factura {
     public Nota nota;
     //#endregion
 
+    //#region CONSTR
+    public Factura(Integer ID, String numeroFactura, Fecha fecha, RazonSocial RS, TipoGasto concepto,
+            boolean esDevolucion, ArrayList<Extracto> extractos, Totales totales, Nota nota) {
+        this.ID = ID;
+        this.numeroFactura = numeroFactura;
+        this.fecha = fecha;
+        this.RS = RS;
+        this.concepto = concepto;
+        this.esDevolucion = esDevolucion;
+        this.extractos = extractos;
+        this.totales = totales;
+        this.nota = nota;
+    }
+
+    public Factura() {
+        this(0, "000000-OOO", new Fecha(17, 03, 24), new RazonSocial(),
+                new TipoGasto("tipoGasto_generico", "descripción"), false, new ArrayList<>(), new Totales(), null);
+    }
+    //#endregion
+    
     public Integer getID() {
         return ID;
     }
@@ -93,25 +113,6 @@ public class Factura {
         this.nota = nota;
     }
 
-    //#region CONSTR
-    public Factura(Integer ID, String numeroFactura, Fecha fecha, RazonSocial RS, TipoGasto concepto,
-            boolean esDevolucion, ArrayList<Extracto> extractos, Totales totales, Nota nota) {
-        this.ID = ID;
-        this.numeroFactura = numeroFactura;
-        this.fecha = fecha;
-        this.RS = RS;
-        this.concepto = concepto;
-        this.esDevolucion = esDevolucion;
-        this.extractos = extractos;
-        this.totales = totales;
-        this.nota = nota;
-    }
-
-    public Factura() {
-        this(0, "000000-OOO", new Fecha(17, 03, 24), new RazonSocial(),
-                new TipoGasto("tipoGasto_generico", "descripción"), false, new ArrayList<>(), new Totales(), null);
-    }
-    //#endregion
 
     @Override
     public String toString() {

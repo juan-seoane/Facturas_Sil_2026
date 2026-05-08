@@ -1,11 +1,11 @@
 {
 	"user": "admin",
-	"anho": { "anho": 2026, "trimestre": 2 },
+	"anho": { "anho": 2026, "trimestre": 0 },
 	"rutas": {
-		"FCT": "data/datos/ADMIN/csv/FCT20262.csv",
+		"FCT": "data/datos/ADMIN/csv/FCT20260.csv",
 		"RS":  "data/datos/ADMIN/csv/RS2026.csv",
-		"CJA": "data/datos/ADMIN/csv/CJA20262.csv"
+		"CJA": "data/datos/ADMIN/csv/CJA20260.csv"
 		},
-	"tiposIVA": [0, 21],
+	"tiposIVA": [0, 10, 21],
 	"origenesCaja": [ "caja", "otros" ]
 }

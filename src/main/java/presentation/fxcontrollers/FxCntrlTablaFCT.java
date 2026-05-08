@@ -1,16 +1,13 @@
 package presentation.fxcontrollers;
 
 import app.core.AppContext;
-import app.core.AppController;
 import domain.records.Factura;
 import domain.records.Fecha;
 import infraestructure.servicios.config.Config;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -19,7 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTreeTableCell;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
-import javafx.util.converter.DoubleStringConverter;
+import javafx.scene.layout.HBox;
 import javafx.util.converter.NumberStringConverter;
 import presentation.config.UIDataConfig;
 import presentation.helpers.TableScaler;
@@ -49,8 +46,7 @@ public class FxCntrlTablaFCT implements Initializable {
 
     @FXML private TreeTableColumn<FacturaFX, String> colNota;
 
-    @FXML
-    private TreeTableColumn<FacturaFX, Void> colAcciones;
+    @FXML private TreeTableColumn<Object, Void> colAcciones;
 
     @FXML private Label lblBase;
     @FXML private Label lblIVA;
@@ -59,11 +55,11 @@ public class FxCntrlTablaFCT implements Initializable {
     @FXML private Label lblRetenc;
     @FXML private Label lblTotal;
     @FXML private Label lblNumFact;
-    @FXML
-    private Label lblIndexFCT;
+    @FXML private Label lblIndexFCT;
 
     private UIDataConfig uiCfg;
     private Path cfgPath;
+  private FacturaFX facturaVaciaEnEdicion = FacturaFX.filaVacia();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -75,38 +71,35 @@ public class FxCntrlTablaFCT implements Initializable {
         configurarAcciones();
         configurarEscalado();
 
+
         treeFct.setEditable(true);
 
         treeFct
-        .sceneProperty()
-        .addListener(
-            (obs, oldScene, newScene) -> {
-                if (newScene != null) {
-                    Platform.runLater(
-                    () -> {
-                            aplicarAnchosDesdeJSON(); // ← aquí se aplican
-                            recalcularColumnas(); // ← aquí se ajustan
-                            verificarColumnas(); // ← aquí SÍ tienen tamaño
-                            actualizarDatosPanelControl();
-                        }
-                    );
-                }
-            }
-        );
+                .sceneProperty()
+                .addListener(
+                        (obs, oldScene, newScene) -> {
+                            if (newScene != null) {
+                                Platform.runLater(
+                                        () -> {
+                                            aplicarAnchosDesdeJSON(); // ← aquí se aplican
+                                            recalcularColumnas(); // ← aquí se ajustan
+                                            verificarColumnas(); // ← aquí SÍ tienen tamaño
+                                            actualizarDatosPanelControl();
+                                        });
+                            }
+                        });
 
         treeFct
-        .widthProperty()
-        .addListener(
-            (o, ov, nv) -> {
-                Platform.runLater(
-                        () -> {
-                            recalcularColumnas(); // ← aquí se ajustan
-                            verificarColumnas(); // ← aquí SÍ tienen tamaño
+                .widthProperty()
+                .addListener(
+                        (o, ov, nv) -> {
+                            Platform.runLater(
+                                    () -> {
+                                        recalcularColumnas(); // ← aquí se ajustan
+                                        verificarColumnas(); // ← aquí SÍ tienen tamaño
+                                    });
                         });
-            }
-        );
     }
-
 
     private void cargarConfigUI() {
         cfgPath = Path.of(Config.getConfig(Config.usuario).getRutasconfig().getRutaUIData());
@@ -315,165 +308,375 @@ public class FxCntrlTablaFCT implements Initializable {
 
         // NUMERO FACTURA
         colNumFact.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
-        colNumFact.setOnEditCommit(event -> {
-            FacturaFX fx = event.getRowValue().getValue();
-            fx.setNumero(event.getNewValue());
-            actualizarFacturaDesdeTabla(fx);
-        });
+        colNumFact.setOnEditCommit(
+                event -> {
+                    Object obj = event.getRowValue().getValue();
+                    if (!(obj instanceof FacturaFX fx))
+                        return;
+                    fx.setNumero(event.getNewValue());
+                    if (fx.getId() == 0) {
+                        facturaVaciaEnEdicion = fx;
+                        return;
+                    }
+
+                    LogCacheFacturaVacia();
+                    actualizarFacturaDesdeTabla(fx);
+                });
 
         // FECHA
         colFecha.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
-        colFecha.setOnEditCommit(event -> {
-            FacturaFX fx = event.getRowValue().getValue();
-            fx.setFecha(Fecha.fromString(event.getNewValue()));
-            actualizarFacturaDesdeTabla(fx);
-        });
+        colFecha.setOnEditCommit(
+                event -> {
+                    Object obj = event.getRowValue().getValue();
+                    if (!(obj instanceof FacturaFX fx))
+                        return;
+
+                    fx.setFecha(Fecha.fromString(event.getNewValue()));
+                    if (fx.getId() == 0) {
+                        facturaVaciaEnEdicion = fx;
+                        return;
+                    }
+
+                    LogCacheFacturaVacia();
+                    actualizarFacturaDesdeTabla(fx);
+                });
 
         // RAZÓN SOCIAL
         colRS.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
-        colRS.setOnEditCommit(event -> {
-            FacturaFX fx = event.getRowValue().getValue();
-            fx.setRazonSocial(event.getNewValue());
-            actualizarFacturaDesdeTabla(fx);
-        });
+        colRS.setOnEditCommit(
+                event -> {
+                    Object obj = event.getRowValue().getValue();
+                    if (!(obj instanceof FacturaFX fx))
+                        return;
+
+                    fx.setRazonSocial(event.getNewValue());
+                    if (fx.getId() == 0) {
+                        facturaVaciaEnEdicion = fx;
+                        return;
+                    }
+
+                    LogCacheFacturaVacia();
+                    actualizarFacturaDesdeTabla(fx);
+                });
 
         // CONCEPTO
         colConcepto.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
-        colConcepto.setOnEditCommit(event -> {
-            FacturaFX fx = (FacturaFX) event.getRowValue().getValue();
-            fx.setConcepto(event.getNewValue());
-            actualizarFacturaDesdeTabla(fx);
+    colConcepto.setOnEditCommit(
+        event -> {
+          Object obj = event.getRowValue().getValue();
+          if (!(obj instanceof FacturaFX fx)) return;
+
+          fx.setConcepto(event.getNewValue());
+          if (fx.getId() == 0) {
+            facturaVaciaEnEdicion = fx;
+            return;
+          }
+
+          LogCacheFacturaVacia();
+          actualizarFacturaDesdeTabla(fx);
         });
 
-        // DEVOLUCIÓN (boolean)
-        colDev.setCellFactory(CheckBoxTreeTableCell.forTreeTableColumn(colDev));
-        colDev.setOnEditCommit(event -> {
-            FacturaFX fx = event.getRowValue().getValue();
-            fx.setDevolucion(event.getNewValue());
-            actualizarFacturaDesdeTabla(fx);
+    // DEVOLUCIÓN (boolean)
+    colDev.setCellValueFactory(param -> param.getValue().getValue().devolucionProperty());
+
+    colDev.setCellFactory(CheckBoxTreeTableCell.forTreeTableColumn(colDev));
+
+        colDev.setOnEditCommit(
+                event -> {
+                    Object obj = event.getRowValue().getValue();
+                    if (!(obj instanceof FacturaFX fx))
+                        return;
+
+                    fx.setDevolucion(event.getNewValue());
+                    if (fx.getId() == 0) {
+                        facturaVaciaEnEdicion = fx;
+                        return;
+                    }
+
+                    LogCacheFacturaVacia();
+                    actualizarFacturaDesdeTabla(fx);
+                });
+
+        // NOTA
+        colNota.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
+        colNota.setOnEditCommit(
+                event -> {
+                    Object obj = event.getRowValue().getValue();
+                    if (!(obj instanceof FacturaFX fx))
+                        return;
+
+                    fx.setNota(event.getNewValue());
+                    if (fx.getId() == 0) {
+                        facturaVaciaEnEdicion = fx;
+                        return;
+                    }
+
+                    LogCacheFacturaVacia();
+                    actualizarFacturaDesdeTabla(fx);
+                });
+
+        // BASE (solo FacturaFX)
+        colBase.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn(new NumberStringConverter()));
+        colBase.setOnEditCommit(
+                event -> {
+                    Object obj = event.getRowValue().getValue();
+                    if (!(obj instanceof FacturaFX fx))
+                        return;
+
+                    Number n = event.getNewValue();
+
+                    fx.setBase(n.doubleValue());
+
+                    if (fx.getId() == 0) {
+                        facturaVaciaEnEdicion = fx;
+                        return;
+                    }
+
+                    LogCacheFacturaVacia();
+                    actualizarFacturaDesdeTabla(fx);
+                });
+
+        // TIPO IVA
+        colTipoIVA.setCellFactory(
+                TextFieldTreeTableCell.forTreeTableColumn(new NumberStringConverter()));
+    colTipoIVA.setOnEditCommit(
+        event -> {
+          Object obj = event.getRowValue().getValue();
+          if (!(obj instanceof FacturaFX fx)) return;
+
+          Number n = event.getNewValue();
+          fx.setTipoIVA(n.intValue());
+
+          if (fx.getId() == 0) {
+            facturaVaciaEnEdicion = fx;
+            return;
+          }
+
+          LogCacheFacturaVacia();
+          actualizarFacturaDesdeTabla(fx);
         });
+        // IVA
+        colIVA.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn(new NumberStringConverter()));
+        colIVA.setOnEditCommit(
+                event -> {
+                    Object obj = event.getRowValue().getValue();
+                    if (!(obj instanceof FacturaFX fx))
+                        return;
+
+                    Number n = event.getNewValue();
+                    fx.setIVA(n.doubleValue());
+
+                    if (fx.getId() == 0) {
+                        facturaVaciaEnEdicion = fx;
+                        return;
+                    }
+
+                    LogCacheFacturaVacia();
+                    actualizarFacturaDesdeTabla(fx);
+                });
+
+        // SUBTOTAL
+        colST.setCellFactory(
+                TextFieldTreeTableCell.forTreeTableColumn(new NumberStringConverter()));
+        colST.setOnEditCommit(
+                event -> {
+                    Object obj = event.getRowValue().getValue();
+                    if (!(obj instanceof FacturaFX fx))
+                        return;
+
+                    Number n = event.getNewValue();
+                    fx.setSubtotal(n.doubleValue());
+
+                    if (fx.getId() == 0) {
+                        facturaVaciaEnEdicion = fx;
+                        return;
+                    }
+
+                    LogCacheFacturaVacia();
+                    actualizarFacturaDesdeTabla(fx);
+                });
 
         // BASE NI
-        colBaseNI.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn(new NumberStringConverter()));
-        colBaseNI.setOnEditCommit(event -> {
-            FacturaFX fx = event.getRowValue().getValue();
-            fx.setBaseNI((double) event.getNewValue());
-            actualizarFacturaDesdeTabla(fx);
-        });
+        colBaseNI.setCellFactory(
+                TextFieldTreeTableCell.forTreeTableColumn(new NumberStringConverter()));
+        colBaseNI.setOnEditCommit(
+                event -> {
+                    Object obj = event.getRowValue().getValue();
+                    if (!(obj instanceof FacturaFX fx))
+                        return;
+
+                    Number n = event.getNewValue();
+                    fx.setBaseNI(n.doubleValue());
+
+                    if (fx.getId() == 0) {
+                        facturaVaciaEnEdicion = fx;
+                        return;
+                    }
+
+                    LogCacheFacturaVacia();
+                    actualizarFacturaDesdeTabla(fx);
+                });
 
         // TIPO RET
-        colTipoRet.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn(new NumberStringConverter()));
-        colTipoRet.setOnEditCommit(event -> {
-            FacturaFX fx = event.getRowValue().getValue();
-            fx.setRet((int) event.getNewValue());
-            actualizarFacturaDesdeTabla(fx);
-        });
+        colTipoRet.setCellFactory(
+                TextFieldTreeTableCell.forTreeTableColumn(new NumberStringConverter()));
+        colTipoRet.setOnEditCommit(
+                event -> {
+                    Object obj = event.getRowValue().getValue();
+                    if (!(obj instanceof FacturaFX fx))
+                        return;
+
+                    Number n = event.getNewValue();
+                    fx.setRet(n.intValue());
+
+                    if (fx.getId() == 0) {
+                        facturaVaciaEnEdicion = fx;
+                        return;
+                    }
+
+                    LogCacheFacturaVacia();
+                    actualizarFacturaDesdeTabla(fx);
+                });
 
         // RETENCIONES
-        colRetenc.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn(new NumberStringConverter()));
-        colRetenc.setOnEditCommit(event -> {
-            FacturaFX fx = event.getRowValue().getValue();
-            fx.setRetenciones((double) event.getNewValue());
-            actualizarFacturaDesdeTabla(fx);
-        });
+        colRetenc.setCellFactory(
+                TextFieldTreeTableCell.forTreeTableColumn(new NumberStringConverter()));
+        colRetenc.setOnEditCommit(
+                event -> {
+                    Object obj = event.getRowValue().getValue();
+                    if (!(obj instanceof FacturaFX fx))
+                        return;
+
+                    Number n = event.getNewValue();
+                    fx.setRetenciones(n.doubleValue());
+
+                    if (fx.getId() == 0) {
+                        facturaVaciaEnEdicion = fx;
+                        return;
+                    }
+
+                    LogCacheFacturaVacia();
+                    actualizarFacturaDesdeTabla(fx);
+                });
 
         // TOTAL
         colTotal.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn(new NumberStringConverter()));
         colTotal.setOnEditCommit(event -> {
-            FacturaFX fx = event.getRowValue().getValue();
-            fx.setTotal(event.getNewValue());
-            actualizarFacturaDesdeTabla(fx);
-        });
+            Object obj = event.getRowValue().getValue();
+            if (!(obj instanceof FacturaFX fx))
+                return;
 
-        // NOTA
-        colNota.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
-        colNota.setOnEditCommit(event -> {
-            FacturaFX fx = event.getRowValue().getValue();
-            fx.setNota(event.getNewValue());
-            actualizarFacturaDesdeTabla(fx);
-        });
+            Number n = event.getNewValue();
+            fx.setTotal(n.doubleValue());
 
-        // BASE (solo FacturaFX)
-        colBase.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn(new NumberStringConverter()));
-        colBase.setOnEditCommit(event -> {
-            Object v = event.getRowValue().getValue();
-            if (v instanceof FacturaFX fx) {
-                fx.setBase((double) event.getNewValue());
-                actualizarFacturaDesdeTabla(fx);
+            if (fx.getId() == 0) {
+                facturaVaciaEnEdicion = fx;
+                return;
             }
+
+            LogCacheFacturaVacia();
+            actualizarFacturaDesdeTabla(fx);
         });
-    }
-
-
-    public void cargarDatos() {
-
-        List<FacturaFX> facturas = AppContext.get().fact().leerFacturasFX();
-
-        TreeItem<Object> root = new TreeItem<>();
-        root.setExpanded(true);
-
-        for (FacturaFX f : facturas) {
-
-        TreeItem<Object> nodoFactura = new TreeItem<>(f);
-
-        for (ExtractoFX extr : f.getExtractos()) {
-            nodoFactura.getChildren().add(new TreeItem<>(extr));
-        }
-
-        root.getChildren().add(nodoFactura);
-        }
-
-        treeFct.setRoot(root);
-        treeFct.setShowRoot(false);
-
-        actualizarTotales(facturas);
     }
 
     private void configurarAcciones() {
 
     colAcciones.setCellFactory(
         col ->
-            new TreeTableCell<>() {
+            new TreeTableCell<Object, Void>() {
 
-              private final Button btn = new Button("Borrar");
+              private final Button btnAddFactura = new Button("+Factura");
+              // private final Button btnAddExtracto = new Button("+Extracto");
+              private final Button btnBorrar = new Button("-Borrar");
+              private final HBox contFacturaVacia = new HBox(5, btnAddFactura);
+              private final HBox contFactura = new HBox(5, btnBorrar);
+
+              // private final HBox contExtracto = new HBox(5, btnBorrar);
 
               {
-                btn.setOnAction(
+                // +Factura → insertar nueva factura
+                btnAddFactura.setOnAction(
                     e -> {
-                      // TODO : 26-04-16 : Ver qué hacer con este método obsoleto
-                      FacturaFX f = getTreeTableRow().getItem();
-                      // TODO : 26-04-16 : Completar AQUÍ la funcionalidad real de borrado
-                      // AppContext.get().fact().borrarFacturaFX(f);
-                      cargarDatos();
+                      Object rowItem = getTreeTableView().getTreeItem(getIndex()).getValue();
+                      if (!(rowItem instanceof FacturaFX fx)) return;
+                      LogCacheFacturaVacia();
+                      insertarFacturaDesdeTabla(fx); // o crearFacturaVacia() y usar servicio
+                    });
+
+                // +Extracto → insertar extracto en factura
+                /*
+                btnAddExtracto.setOnAction(
+                        e -> {
+                          Object rowItem = getTreeTableView().getTreeItem(getIndex()).getValue();
+                          if (!(rowItem instanceof FacturaFX fxFactura)) return;
+                          ExtractoFX nuevo = crearExtractoVacio();
+                          insertarExtractoDesdeTabla(fxFactura, nuevo);
+                        });
+                    */
+                // Borrar → según si es factura o extracto
+                btnBorrar.setOnAction(
+                    e -> {
+                      Object rowItem = getTreeTableView().getTreeItem(getIndex()).getValue();
+                      if (rowItem instanceof FacturaFX fxFactura) {
+                        borrarFacturaDesdeTabla(fxFactura);
+                      } else if (rowItem instanceof ExtractoFX fxExtracto) {
+                        borrarExtractoDesdeTabla(fxExtracto);
+                      }
                     });
               }
 
               @Override
               protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : btn);
+
+                if (empty) {
+                  setGraphic(null);
+                  return;
+                }
+
+                @SuppressWarnings("deprecation")
+                TreeItem<Object> treeItem = getTreeTableRow().getTreeItem();
+                if (treeItem == null) {
+                  setGraphic(null);
+                  return;
+                }
+
+                Object value = treeItem.getValue();
+                if (value == null) {
+                  setGraphic(null);
+                  return;
+                }
+
+                // 1) Fila vacía → +Factura
+                if (value instanceof FacturaFX fx && fx.getId() == 0) {
+                  setGraphic(contFacturaVacia); // SOLO +Factura
+                  return;
+                }
+
+                // 2) Factura normal → Borrar
+                if (value instanceof FacturaFX) {
+                  setGraphic(contFactura); // SOLO Borrar
+                  return;
+                }
+
+                // 3) Extracto → nada
+                if (value instanceof ExtractoFX) {
+                  setGraphic(null);
+                  return;
+                }
+
+                setGraphic(null);
               }
             });
     }
 
     private void configurarEscalado() {
         Platform.runLater(
-                () -> {
-                    treeFct.getColumns().forEach(col -> col.setSortable(false));
-                    TableScaler.resizeColumns(treeFct, uiCfg);
-                });
-    }
-
-    private void actualizarFacturaDesdeTabla(FacturaFX fx) {
-        // Aquí conviertes FacturaFX → Factura (usa el método que ya tengas)
-        Factura factura = fx.toDomain();   // si no lo tienes, habrá que crearlo en FacturaFX
-
-        boolean ok = AppContext.get().fact().editarFactura(factura);
-
-        if (!ok) {
-            System.err.println("No se pudo actualizar la factura " + factura.getID());
+            () -> {
+                treeFct.getColumns().forEach(col -> col.setSortable(false));
+                TableScaler.resizeColumns(treeFct, uiCfg);
+            });
         }
-    }
 
     private void actualizarTotales(List<FacturaFX> facturas) {
 
@@ -492,6 +695,44 @@ public class FxCntrlTablaFCT implements Initializable {
         lblTotal.setText(String.format("%.2f", totalTot));
         lblNumFact.setText(String.valueOf(facturas.size()));
     }
+
+  public void cargarDatos() {
+
+    // 1) Leer facturas
+    List<FacturaFX> facturas = new ArrayList<>(AppContext.get().fact().leerFacturasFX());
+
+    // 2) Ordenar por ID
+    facturas.sort(Comparator.comparingInt(FacturaFX::getId));
+
+    // 3) Crear raíz
+    TreeItem<Object> root = new TreeItem<>();
+    root.setExpanded(true);
+
+    // 4) Añadir facturas y extractos
+    for (FacturaFX f : facturas) {
+
+      TreeItem<Object> nodoFactura = new TreeItem<>(f);
+
+      for (ExtractoFX extr : f.getExtractos()) {
+        nodoFactura.getChildren().add(new TreeItem<>(extr));
+      }
+
+      root.getChildren().add(nodoFactura);
+    }
+
+    // 5) Añadir fila vacía SIEMPRE al final
+    TreeItem<Object> filaVacia = new TreeItem<>(FacturaFX.filaVacia());
+    root.getChildren().add(filaVacia);
+
+    // 6) Aplicar a la tabla
+    treeFct.setRoot(root);
+    treeFct.setShowRoot(false);
+
+    // 7) Totales
+    actualizarTotales(facturas);
+  }
+
+    //region EVENTOS FXML
     @FXML
     private void btnVisorFctPulsado(ActionEvent ev) {
         System.out.println("[FxCntrlTablaFCT] VISOR pulsado");
@@ -527,5 +768,168 @@ public class FxCntrlTablaFCT implements Initializable {
         System.out.println("[FxCntrlTablaFCT] IMPRIMIR pulsado");
     }
 
+  // endregion
 
+  // region OPERACIONES DESDE TABLA
+
+    private void actualizarFacturaDesdeTabla(FacturaFX fx) {
+
+        // CASO 1: Es la fila vacía → INSERTAR FACTURA NUEVA
+        if (fx.getId() == 0) {
+
+        // 1) Generar ID nueva
+        int nuevaID = AppContext.get().fact().generarID();
+        fx.setId(nuevaID);
+
+        // 2) Convertir a dominio
+        Factura nueva = fx.toDomain();
+
+        // 3) Guardar en CSV
+        AppContext.get().fact().introducirFactura(nueva);
+
+        // 4) Crear nueva fila vacía (ID=0)
+        facturaVaciaEnEdicion = FacturaFX.filaVacia();
+
+        // 5) Recargar tabla (ya con la nueva fila vacía)
+        cargarDatos();
+
+        return;
+        }
+
+        // CASO 2: Es una factura real → EDITAR
+        Factura factura = fx.toDomain();
+        boolean ok = AppContext.get().fact().editarFactura(factura);
+
+        if (!ok) {
+        System.err.println("[FxCntrlTablaFCT] No se pudo actualizar la factura " + factura.getID());
+        }
+    }
+
+    private void insertarFacturaDesdeTabla(FacturaFX fx) {
+
+        // 1. Convertir FX → dominio
+        Factura factura = fx.toDomain();
+        fx.setId(AppContext.get().fact().generarID());
+
+        // 2. Guardar en CSV
+        boolean ok = AppContext.get().fact().introducirFactura(factura);
+
+        if (!ok) {
+            System.err.println("No se pudo insertar la factura " + factura.getID());
+            return;
+        }
+
+        // 3. Añadir a la tabla
+        TreeItem<Object> item = new TreeItem<>(fx);
+        treeFct.getRoot().getChildren().add(item);
+    }
+
+    private void borrarFacturaDesdeTabla(FacturaFX fxFactura) {
+        // 1) Llamar al servicio de dominio
+        boolean ok = AppContext.get().fact().borrarFactura(fxFactura.toDomain());
+        if (!ok) {
+            System.err.println("No se pudo borrar la factura");
+            return;
+        }
+
+        // 2) Quitar nodo del árbol
+        TreeItem<Object> root = treeFct.getRoot();
+        TreeItem<Object> nodoABorrar = null;
+
+        for (TreeItem<Object> item : root.getChildren()) {
+            if (item.getValue() == fxFactura) {
+                nodoABorrar = item;
+                break;
+            }
+        }
+
+        if (nodoABorrar != null) {
+            root.getChildren().remove(nodoABorrar);
+        }
+    }
+
+    private void insertarExtractoDesdeTabla(FacturaFX fxFactura, ExtractoFX fxExtracto) {
+
+        // 1) Añadir extracto a la factura FX
+        fxFactura.getExtractos().add(fxExtracto);
+
+        // 2) Añadir nodo hijo en la tabla
+        TreeItem<Object> nodoFactura = buscarNodo(fxFactura);
+        if (nodoFactura != null) {
+            nodoFactura.getChildren().add(new TreeItem<>(fxExtracto));
+        }
+
+        // 3) Guardar factura actualizada en el CSV
+        Factura factura = fxFactura.toDomain();
+        AppContext.get().fact().introducirFactura(factura);
+    }
+
+    private void borrarExtractoDesdeTabla(ExtractoFX fxExtracto) {
+
+        // 1) Encontrar la factura padre
+        TreeItem<Object> root = treeFct.getRoot();
+        FacturaFX fxFacturaPadre = null;
+        TreeItem<Object> nodoExtracto = null;
+
+        for (TreeItem<Object> itemFactura : root.getChildren()) {
+            if (!(itemFactura.getValue() instanceof FacturaFX fxF))
+                continue;
+
+            for (TreeItem<Object> itemExt : itemFactura.getChildren()) {
+                if (itemExt.getValue() == fxExtracto) {
+                    fxFacturaPadre = fxF;
+                    nodoExtracto = itemExt;
+                    break;
+                }
+            }
+            if (fxFacturaPadre != null)
+                break;
+        }
+
+        if (fxFacturaPadre == null || nodoExtracto == null)
+            return;
+
+        // 2) Quitar de la lista de extractos de la factura FX
+        fxFacturaPadre.getExtractos().remove(fxExtracto);
+
+        // 3) Quitar nodo del árbol
+        TreeItem<Object> nodoFactura = buscarNodo(fxFacturaPadre);
+        if (nodoFactura != null) {
+            nodoFactura.getChildren().remove(nodoExtracto);
+        }
+
+        // 4) Guardar factura actualizada
+        AppContext.get().fact().introducirFactura(fxFacturaPadre.toDomain());
+    }
+
+    //endregion
+
+    private ExtractoFX crearExtractoVacio() {
+        return new ExtractoFX(
+                0.0, // base
+                21, // IVA
+                0.0, // cuota
+                0.0, // total
+                "Nuevo extracto");
+    }
+
+    private TreeItem<Object> buscarNodo(FacturaFX fx) {
+        for (TreeItem<Object> item : treeFct.getRoot().getChildren()) {
+            if (item.getValue() == fx) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    private void LogCacheFacturaVacia() {
+        System.out.println("[DEBUG] facturaVaciaEnEdicion ahora es:");
+        System.out.println("  Numero: " + facturaVaciaEnEdicion.getNumero());
+        System.out.println("  Fecha: " + facturaVaciaEnEdicion.getFecha());
+        System.out.println("  RS: " + facturaVaciaEnEdicion.getRazonSocial());
+        System.out.println("  Concepto: " + facturaVaciaEnEdicion.getConcepto());
+        System.out.println("  Base: " + facturaVaciaEnEdicion.getBase());
+        System.out.println("  Total: " + facturaVaciaEnEdicion.getTotal());
+        System.out.println("  Nota: " + facturaVaciaEnEdicion.getNota());
+    }
 }

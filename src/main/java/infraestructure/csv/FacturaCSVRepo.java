@@ -25,11 +25,36 @@ public class FacturaCSVRepo implements IfacturasRepo {
         for (int j = 0; j < numExtractos; j++) {
             LineaCsvDTO lineaExtracto = CsvReader.fromCsvArray(lineas.get(indexInicial + 1 + j));
             Extracto ex = ExtractoCsvMapper.fromLineaExtracto(lineaExtracto);
+            if (ex == null) continue;
             factura.extractos.add(ex);
         }
 
         return factura;
     }
+    @Override
+    public List<Factura> leerListaFacturas() {
+    List<Factura> listaFCT = leerTodasLasFacturas();
+    return listaFCT;
+  }
+
+    public static List<Factura> leerTodasLasFacturas() {
+    // STUB : 26-03-18
+    String ruta = Config.getConfig(Config.usuario).getConfigData().getRutas().getFCT();
+    System.out.println(
+        "[FacturaCSVRepo>leerTodasLasFacturas()] Leyendo facturas del archivo " + ruta);
+    try {
+      List<Factura> listaFCT;
+      listaFCT = CsvReader.leerFacturas(ruta);
+      System.out.println(
+          "[FacturaCSVRepo>leerTodasLasFacturas()] Facturas leidas = " + listaFCT.size());
+      return listaFCT;
+    } catch (IOException e) {
+      System.out.println(
+          "Error " + e.getClass() + " leyendo listaFCT de " + ruta + " : " + e.getMessage());
+      System.exit(1);
+    }
+    return null;
+  }
 
     public static List<String[]> escribirFactura(Factura f) {
         List<String[]> lineas = new ArrayList<>();
@@ -47,73 +72,66 @@ public class FacturaCSVRepo implements IfacturasRepo {
         return lineas;
     }
 
-    public static List<String[]> parsearListaFacturas(List<Factura> facturas) {
-        List<String[]> salida = new ArrayList<>();
-
-        for (Factura f : facturas) {
-            // 1) Línea principal
-            salida.addAll(escribirFactura(f));
-        }
-
-        return salida;
-    }
-
-    public static List<Factura> leerTodasLasFacturas() {
-        // STUB : 26-03-18
-        String ruta = Config.getConfig(Config.usuario).getConfigData().getRutas().getFCT();
-    System.out.println(
-        "[FacturaCSVRepo>leerTodasLasFacturas()] Leyendo facturas del archivo " + ruta);
-        try {
-            List<Factura> listaFCT;
-            listaFCT = CsvReader.leerFacturas(ruta);
-            System.out.println(
-                "[FacturaCSVRepo>leerTodasLasFacturas()] Facturas leidas = " + listaFCT.size());
-            return listaFCT;
-        } catch (IOException e) {
-      System.out.println(
-          "Error " + e.getClass() + " leyendo listaFCT de " + ruta + " : " + e.getMessage());
-            System.exit(1);
-        }
-        return null;
-    }
-
-    public boolean borrarFactura(String idFactura) {
-        List<Factura> lista = leerListaFacturas();
-
-        // filtrar: eliminar factura base y sus extractos
-        List<Factura> nuevaLista =
-            lista.stream().filter(f -> !f.getID().equals(idFactura)).toList();
-
-        return guardarListaFacturas(nuevaLista);
-    }
-
     public boolean actualizarFactura(Factura facturaEditada) {
         List<Factura> lista = leerListaFacturas();
 
         boolean existe = lista.stream().anyMatch(f -> f.getID().equals(facturaEditada.getID()));
 
         if (!existe) {
-            System.out.println("[FacturaCSVRepo>actualizarFactura] La factura no existía. La lista de facturas no se modificará!");
+      System.out.println(
+          "[FacturaCSVRepo>actualizarFactura] La factura no existía. La lista de facturas no se"
+              + " modificará!");
             return false; // o lanzar excepción, según prefieras
         }
 
-        List<Factura> nuevaLista =
-            lista.stream()
-                .map(f -> f.getID().equals(facturaEditada.getID()) ? facturaEditada : f)
-                .toList();
+        for (int i = 0; i < lista.size(); i++) {
+            if (lista.get(i).getID().equals(facturaEditada.getID())) {
+                lista.set(i, facturaEditada); // ← MISMA LISTA, MISMO TAMAÑO, MISMA REFERENCIA
+                break;
+            }
+        }
 
-        return guardarListaFacturas(nuevaLista);
+        return guardarListaFacturas(lista);
     }
 
+    public boolean borrarFactura(String idFactura) {
+    List<Factura> lista = leerListaFacturas();
+
+    // filtrar: eliminar factura base y sus extractos
+    List<Factura> nuevaLista = lista.stream().filter(f -> !f.getID().equals(idFactura)).toList();
+
+    return guardarListaFacturas(nuevaLista);
+  }
     @Override
-    public List<Factura> leerListaFacturas() {
-        List<Factura> listaFCT = leerTodasLasFacturas();
-        return listaFCT;
-    }
+    public boolean guardarFactura(Factura factura) {
+    // TODO : 26/05/08 : Chequear que ningún campo tenga una coma antes de guardar el CSV
+    // 1. Leer lista actual
+    List<Factura> lista = leerListaFacturas();
 
+        // 2. Añadir la nueva factura
+        lista.add(factura);
+
+        // 3. Convertir TODAS las facturas a CSV
+        List<String[]> lineas = parsearListaFacturas(lista);
+
+        // 4. Escribir CSV completo
+        return CsvWriter.escribirCSV(rutaCSV, lineas);
+    }
     @Override
     public boolean guardarListaFacturas(List<Factura> listaFCT) {
         List<String[]> listaLineas = parsearListaFacturas(listaFCT);
         return CsvWriter.escribirCSV(rutaCSV, listaLineas);
     }
+
+    public static List<String[]> parsearListaFacturas(List<Factura> facturas) {
+        List<String[]> salida = new ArrayList<>();
+
+        for (Factura f : facturas) {
+        // 1) Línea principal
+        salida.addAll(escribirFactura(f));
+        }
+
+        return salida;
+    }
+
 }

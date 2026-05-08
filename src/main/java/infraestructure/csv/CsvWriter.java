@@ -25,7 +25,8 @@ public class CsvWriter {
             Files.createDirectories(p.getParent());
 
             List<String> salida = lineas.stream()
-                    .map(arr -> String.join(";", arr))
+                    .map(arr -> String.join(
+                            ";", arr))
                     .toList();
 
             Files.write(p, salida); // sobrescribe

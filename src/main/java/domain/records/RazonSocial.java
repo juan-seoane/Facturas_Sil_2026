@@ -20,13 +20,13 @@ public class RazonSocial implements Comparable<RazonSocial> {
     public RazonSocial() {
     this(
         0,
-        new NIF(0000, "A", false),
+        new NIF(99999999, "Z", true),
         "nombre de la empresa",
         "nombre Razon Social",
-        "900-000000",
         "direccion del distribuidor",
         "99999",
         "Ourense",
+        "988-888888",
         null,
         new Totales(),
         new Nota(""),
@@ -40,10 +40,10 @@ public class RazonSocial implements Comparable<RazonSocial> {
         nif,
         nombre,
         nombre.toUpperCase(),
-        "900-000000",
         "direccion del distribuidor",
         "99999",
-        "Ourense",
+        "poblac",
+        "999999999",
         null,
         new Totales(),
         null,
@@ -180,27 +180,7 @@ public class RazonSocial implements Comparable<RazonSocial> {
     public void setTiposIVA(int[] tiposIVA) {
         this.tiposIVA = tiposIVA;
     }
-/*
-    public Vector<Object> toVector(){
 
-        Vector<Object> vector = new Vector<Object>();
-
-        vector.add(this.getID());
-        vector.add(this.getNif());
-        vector.add(this.getNombre());
-        vector.add(this.getRazon());
-        vector.add(this.getDireccion());
-        vector.add(this.getCP());
-        vector.add(this.getPoblacion());
-        vector.add(this.getTelefono());
-        vector.add(this.getTotales().getTotal());
-        vector.add(this.getCategoria());
-
-        ////System.out.println("transformando a Vector: "+vector.toString());
-        return vector;
-
-    }
-*/
 // Revisar la forma de comparar RS
     @Override
     public int compareTo(RazonSocial b){

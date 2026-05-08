@@ -23,44 +23,15 @@ public class NIF implements Comparable<NIF> {
       return;
     }
 
-    String s = raw.trim().toUpperCase().replaceAll("[ .-]", "");
+    String s = raw.trim().toUpperCase();
 
-    // 2. Detectar si es CIF (empieza por letra)
-    // CIF: A12345678, B12345678, etc.
-    if (s.matches("[A-Z][0-9]{7}[0-9A-J]")) {
-      this.isCIF = true;
-      this.letra = s.substring(0, 1); // prefijo CIF
-      this.numero = Integer.parseInt(s.substring(1, 8));
-      return;
-    }
+    //2. parsear
 
-    // 3. Detectar DNI clásico: 12345678Z
-    if (s.matches("[0-9]{8}[A-Z]")) {
-      this.isCIF = false;
-      this.numero = Integer.parseInt(s.substring(0, 8));
-      this.letra = s.substring(8);
-      return;
-    }
+    NIF nuevoNif = parseNif(s);
+    this.numero = nuevoNif.getNumero();
+    this.letra = nuevoNif.getLetra();
+    this.isCIF = nuevoNif.isCIF();
 
-    // 4. Detectar NIE: X1234567L, Y1234567L, Z1234567L
-    if (s.matches("[XYZ][0-9]{7}[A-Z]")) {
-      this.isCIF = false;
-      // NIE: convertir X/Y/Z a número equivalente
-      char prefix = s.charAt(0);
-      int base =
-          switch (prefix) {
-            case 'X' -> 0;
-            case 'Y' -> 1;
-            case 'Z' -> 2;
-            default -> throw new IllegalStateException("Prefijo NIE inválido");
-          };
-
-      this.numero = Integer.parseInt(base + s.substring(1, 8));
-      this.letra = s.substring(8);
-      return;
-    }
-
-    throw new IllegalArgumentException("Formato de NIF/NIE/CIF no reconocido: " + raw);
   }
 
   public int getNumero() {
@@ -164,41 +135,43 @@ public class NIF implements Comparable<NIF> {
   }
 
   public static NIF array2nif(String[] array) {
-      boolean iscif = false;
-      String l = "A";
-      int num = 11111111;
-      if (array == null || array.length != 2) {
-          System.out.println("[NIF>array2nif] El array es NULL o no tiene 2 campos");
-          return null;
-      }
-      if (array[0].length() > array[1].length()) {
-          l = array[1];
-          try {
-              num = Integer.parseInt(array[0]);
-          } catch (NumberFormatException ex) {
-        System.out.println(
-            "Error "
-                + ex.getClass()
-                + "al convertir Array 2 NIF en un 'tipo NIF': "
-                + ex.getMessage());
-              return null;
-          }
-          iscif = false;
-      } else if (array[1].length() > array[0].length()) {
-          l = array[0];
-          try {
-              num = Integer.parseInt(array[1]);
-          } catch (NumberFormatException ex) {
-        System.out.println(
-            "Error "
-                + ex.getClass()
-                + "al convertir Array 2 NIF en un 'tipo CIF': "
-                + ex.getMessage());
-              return null;
-          }
-          iscif = true;
-      }
-      return (new NIF(num, l, iscif));
+      // 1. Declarar las variables
+      String letra = "Z";
+      int numero = 99999999;
+      boolean isCIF = false;
+
+
+      if (array[0].matches("[A-Z]")) {
+        // 2. Detectar si es CIF (empieza por letra)
+        isCIF = true;
+        letra = array[0].substring(0, 1); // prefijo CIF
+        numero = Integer.parseInt(array[1]);
+    } else if (array[0].matches("[0-9]{8}")) {
+        // 3. Detectar DNI clásico: 12345678Z
+        isCIF = false;
+        numero = Integer.parseInt(array[0]);
+        letra = array[1];
+    } else {
+        //TODO : 26/05/07 : Faltan los NIE
+        throw new IllegalArgumentException("[NIF>array2nif] Formato de NIF/CIF no reconocido: "+array[0].toString() + " - " + array[1].toString());
+    }
+
+/*
+    // 4. Detectar NIE: X1234567L, Y1234567L, Z1234567L
+    if (s.matches("[XYZ][0-9]{7}[A-Z]")) {
+      this.isCIF = false;
+      // NIE: convertir X/Y/Z a número equivalente
+      char prefix = s.charAt(0);
+      int base =
+          switch (prefix) {
+            case 'X' -> 0;
+            case 'Y' -> 1;
+            case 'Z' -> 2;
+            default -> throw new IllegalStateException("Prefijo NIE inválido");
+          };
+*/
+
+      return (new NIF(numero, letra, isCIF));
   }
 
   public static NIF parseNif(String texto) {

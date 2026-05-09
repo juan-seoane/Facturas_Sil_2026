@@ -72,27 +72,25 @@ public class FacturaCSVRepo implements IfacturasRepo {
         return lineas;
     }
 
-    public boolean actualizarFactura(Factura facturaEditada) {
-        List<Factura> lista = leerListaFacturas();
+  public boolean actualizarFactura(Factura facturaEditada) {
+    List<Factura> lista = leerListaFacturas();
 
-        boolean existe = lista.stream().anyMatch(f -> f.getID().equals(facturaEditada.getID()));
+    boolean existe = lista.stream().anyMatch(f -> f.getID().equals(facturaEditada.getID()));
 
-        if (!existe) {
+    if (!existe) {
       System.out.println(
           "[FacturaCSVRepo>actualizarFactura] La factura no existía. La lista de facturas no se"
               + " modificará!");
-            return false; // o lanzar excepción, según prefieras
-        }
-
-        for (int i = 0; i < lista.size(); i++) {
-            if (lista.get(i).getID().equals(facturaEditada.getID())) {
-                lista.set(i, facturaEditada); // ← MISMA LISTA, MISMO TAMAÑO, MISMA REFERENCIA
-                break;
-            }
-        }
-
-        return guardarListaFacturas(lista);
+      return false;
     }
+
+    facturaEditada.normalizarSignos();
+
+    return guardarListaFacturas(
+        lista.stream()
+            .map(f -> f.getID().equals(facturaEditada.getID()) ? facturaEditada : f)
+            .toList());
+  }
 
     public boolean borrarFactura(String idFactura) {
     List<Factura> lista = leerListaFacturas();
@@ -104,11 +102,12 @@ public class FacturaCSVRepo implements IfacturasRepo {
   }
     @Override
     public boolean guardarFactura(Factura factura) {
-    // TODO : 26/05/08 : Chequear que ningún campo tenga una coma antes de guardar el CSV
-    // 1. Leer lista actual
-    List<Factura> lista = leerListaFacturas();
+        // TODO : 26/05/08 : Chequear que ningún campo tenga una coma antes de guardar el CSV
+        // 1. Leer lista actual
+        List<Factura> lista = leerListaFacturas();
 
         // 2. Añadir la nueva factura
+        factura.normalizarSignos();
         lista.add(factura);
 
         // 3. Convertir TODAS las facturas a CSV
@@ -117,21 +116,17 @@ public class FacturaCSVRepo implements IfacturasRepo {
         // 4. Escribir CSV completo
         return CsvWriter.escribirCSV(rutaCSV, lineas);
     }
+
     @Override
     public boolean guardarListaFacturas(List<Factura> listaFCT) {
-        List<String[]> listaLineas = parsearListaFacturas(listaFCT);
-        return CsvWriter.escribirCSV(rutaCSV, listaLineas);
+        return CsvWriter.escribirCSV(
+            rutaCSV, parsearListaFacturas(listaFCT));
     }
 
     public static List<String[]> parsearListaFacturas(List<Factura> facturas) {
-        List<String[]> salida = new ArrayList<>();
-
-        for (Factura f : facturas) {
-        // 1) Línea principal
-        salida.addAll(escribirFactura(f));
-        }
-
-        return salida;
+        return facturas.stream()
+            .peek(Factura::normalizarSignos) // normaliza cada factura
+            .flatMap(f -> escribirFactura(f).stream()) // convierte cada factura en sus líneas CSV
+            .toList(); // devuelve la lista final
     }
-
 }

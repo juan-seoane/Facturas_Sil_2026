@@ -35,6 +35,7 @@ public class Factura {
         this.totales = totales;
         this.nota = (nota == null ? new Nota("") : nota);
         this.notaExiste = (this.nota.getTexto().equals("") ? false : true);
+        this.normalizarSignos();
     }
 
     public Factura() {
@@ -125,6 +126,32 @@ public class Factura {
 
     public boolean notaExiste() {
         return notaExiste;
+    }
+
+    public void normalizarSignos() {
+
+        if (this.esDevolucion) {
+            this.totales.setBase(-Math.abs(this.totales.getBase()));
+            this.totales.setIVA(-Math.abs(this.totales.getIVA()));
+            this.totales.setBaseNI(-Math.abs(this.totales.getBaseNI()));
+            this.totales.setRet(-Math.abs(this.totales.getRet()));
+            this.totales.setRetenciones(-Math.abs(this.totales.getRetenciones()));
+        } else {
+            this.totales.setBase(Math.abs(this.totales.getBase()));
+            this.totales.setIVA(Math.abs(this.totales.getIVA()));
+            this.totales.setBaseNI(Math.abs(this.totales.getBaseNI()));
+            this.totales.setRet(Math.abs(this.totales.getRet()));
+            this.totales.setRetenciones(Math.abs(this.totales.getRetenciones()));
+        }
+
+        // ✔ Recalcular subtotal SIEMPRE
+        this.totales.setSubtotal(this.totales.getBase() + this.totales.getIVA());
+
+        // ✔ Recalcular total SIEMPRE
+        this.totales.setTotal(
+                this.totales.getSubtotal()
+                + this.totales.getBaseNI()
+                + this.totales.getRetenciones());
     }
 
     @Override

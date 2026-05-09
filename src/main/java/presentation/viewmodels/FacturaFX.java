@@ -435,6 +435,29 @@ public class FacturaFX {
         extractos.add(e);
     }
 
+  public void normalizarSignos() {
+
+    if (this.isDevolucion()) {
+      this.setBase(-Math.abs(this.getBase()));
+      this.setIVA(-Math.abs(this.getIVA()));
+      this.setBaseNI(-Math.abs(this.getBaseNI()));
+      this.setRet(-Math.abs(this.getRet()));
+      this.setRetenciones(-Math.abs(this.getRetenciones()));
+    } else {
+      this.setBase(Math.abs(this.getBase()));
+      this.setIVA(Math.abs(this.getIVA()));
+      this.setBaseNI(Math.abs(this.getBaseNI()));
+      this.setRet(Math.abs(this.getRet()));
+      this.setRetenciones(Math.abs(this.getRetenciones()));
+    }
+
+    // ✔ Recalcular subtotal
+    this.setSubtotal(this.getBase() + this.getIVA());
+
+    // ✔ Recalcular total
+    this.setTotal(this.getSubtotal() + this.getBaseNI() + this.getRetenciones());
+  }
+
     public static FacturaFX filaVacia() {
         FacturaFX filaVacia = new FacturaFX("--------", Fecha.hoy().toString(),
                 "----", "----",

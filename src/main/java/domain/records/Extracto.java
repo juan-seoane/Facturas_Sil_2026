@@ -43,7 +43,7 @@ public class Extracto implements Comparable<Extracto> {
         return subtotal;
     }
 
-    public void setSubbtotal(double subtotal) {
+    public void setSubtotal(double subtotal) {
         this.subtotal = subtotal;
     }
 

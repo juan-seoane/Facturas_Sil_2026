@@ -700,7 +700,10 @@ public class FxCntrlTablaFCT implements Initializable {
             });
         }
 
-    private void actualizarTotales(List<FacturaFX> facturas) {
+        private void actualizarTotales(List<FacturaFX> facturas) {
+
+        // ✔ Normalizar TODAS las facturas antes de sumar
+        facturas.forEach(FacturaFX::normalizarSignos);
 
         double totalBase = facturas.stream().mapToDouble(FacturaFX::getBase).sum();
         double totalIVA = facturas.stream().mapToDouble(FacturaFX::getIVA).sum();

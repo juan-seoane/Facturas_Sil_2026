@@ -97,6 +97,24 @@
 
         <build>
             <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>3.5.1</version>
+                    <configuration>
+                        <executable>${java.home}/bin/java</executable>
+                        <arguments>
+                            <argument>--module-path</argument>
+                            <argument>${path.to.javafx}</argument>
+                            <argument>--add-modules</argument>
+                            <argument>javafx.controls,javafx.fxml</argument>
+                            <argument>-cp</argument>
+                            <argument>${project.build.outputDirectory}</argument>
+                            <argument>presentation.Main</argument>
+                        </arguments>
+                    </configuration>
+                </plugin>
+
                 <!-- JUnit plugin CORRECTO -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -113,7 +131,7 @@
                     <version>0.0.8</version>
                     <configuration>
                         <javafxVersion>${javafx.version}</javafxVersion>
-                        <mainClass>facturas.sil/presentation.Main</mainClass>
+                        <mainClass>presentation.Main</mainClass>
                     </configuration>
                 </plugin>
         </plugins>

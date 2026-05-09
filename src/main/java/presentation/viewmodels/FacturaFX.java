@@ -45,6 +45,7 @@ public class FacturaFX {
     private final DoubleProperty retenciones = new SimpleDoubleProperty();
     private final DoubleProperty total = new SimpleDoubleProperty();
     private ObservableList<ExtractoFX> extractos = FXCollections.observableArrayList();
+    private final BooleanProperty notaExiste = new SimpleBooleanProperty(false);
 
   // -------------------------
   // GETTERS / SETTERS FX
@@ -207,6 +208,18 @@ public class FacturaFX {
         return nota;
     }
 
+    public boolean notaExiste() {
+        return notaExiste.get();
+    }
+
+    public void setNotaExiste(boolean v) {
+        notaExiste.set(v);
+    }
+
+    public BooleanProperty notaExisteProperty() {
+        return notaExiste;
+    }
+
     // ---- Totales ----
 
     public double getBase() {
@@ -339,8 +352,8 @@ public class FacturaFX {
         fx.setConcepto(f.concepto.getTipo());
         fx.setDevolucion(f.esDevolucion);
         fx.setNumExtractos(f.extractos.size());
+        fx.setNotaExiste(f.nota != null && !f.nota.getTexto().isBlank());
         fx.setNota(f.nota != null ? f.nota.getTexto() : "");
-
 
         for (Extracto e : f.extractos) {
             fx.addExtracto(ExtractoFX.fromDomain(e)); // o ExtractoFX si lo tienes separado
@@ -364,6 +377,7 @@ public class FacturaFX {
     // -------------------------
     // FX → DOMINIO
     // -------------------------
+
 
     public Factura toDomain() {
         // Crear RazonSocial directamente desde el nombre

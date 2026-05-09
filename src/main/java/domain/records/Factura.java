@@ -18,6 +18,7 @@ public class Factura {
     public boolean esDevolucion;
     public ArrayList<Extracto> extractos;
     public Totales totales;
+    private boolean notaExiste;
     public Nota nota;
     //#endregion
 
@@ -32,15 +33,24 @@ public class Factura {
         this.esDevolucion = esDevolucion;
         this.extractos = extractos;
         this.totales = totales;
-        this.nota = nota;
+        this.nota = (nota == null ? new Nota("") : nota);
+        this.notaExiste = (this.nota.getTexto().equals("") ? false : true);
     }
 
     public Factura() {
-        this(0, "000000-OOO", new Fecha(17, 03, 24), new RazonSocial(),
-                new TipoGasto("tipoGasto_generico", "descripción"), false, new ArrayList<>(), new Totales(), null);
+    this(
+        0,
+        "000000-OOO",
+        new Fecha(17, 03, 24),
+        new RazonSocial(),
+        new TipoGasto("tipoGasto_generico", "descripción"),
+        false,
+        new ArrayList<>(),
+        new Totales(),
+        null);
     }
     //#endregion
-    
+
     public Integer getID() {
         return ID;
     }
@@ -113,25 +123,63 @@ public class Factura {
         this.nota = nota;
     }
 
+    public boolean notaExiste() {
+        return notaExiste;
+    }
 
     @Override
     public String toString() {
-        String cadenaResp = this.ID + "," + this.numeroFactura + "," + this.fecha.toString() + "," + this.RS.getID()
-                + "," + this.RS.getNif() + "," + this.RS.getNombre() + "," + this.concepto.getTipo() + ","
-                + (this.esDevolucion ? "S" : "N") + "," + this.extractos.size() + ", TOTS-> " + this.totales.getBase()
-                + "," + ((this.totales.isVariosIVAs()) ? "S" : "N," + this.totales.getTipoIVA()) + ","
-                + this.totales.getIVA() + "," + this.totales.getRet() + "," + this.totales.getRetenciones() + ","
-                + this.totales.getTotal() + "," + ((this.nota != null) ? this.nota.getTexto() : "sinNOTA");
+    String cadenaResp =
+        this.ID
+            + ","
+            + this.numeroFactura
+            + ","
+            + this.fecha.toString()
+            + ","
+            + this.RS.getID()
+            + ","
+            + this.RS.getNif()
+            + ","
+            + this.RS.getNombre()
+            + ","
+            + this.concepto.getTipo()
+            + ","
+            + (this.esDevolucion ? "S" : "N")
+            + ","
+            + this.extractos.size()
+            + ", TOTS-> "
+            + this.totales.getBase()
+            + ","
+            + ((this.totales.isVariosIVAs()) ? "S" : "N," + this.totales.getTipoIVA())
+            + ","
+            + this.totales.getIVA()
+            + ","
+            + this.totales.getRet()
+            + ","
+            + this.totales.getRetenciones()
+            + ","
+            + this.totales.getTotal()
+            + ","
+            + ((this.nota != null) ? this.nota.getTexto() : "sinNOTA");
         // ojo que sólo puede haber una Nota...
         if (this.extractos.size() > 1) {
             for (int i = 0; i < this.extractos.size(); i++) {
-                cadenaResp += "\nEXTR->" + this.extractos.get(i).getBase() + "," + this.extractos.get(i).getTipoIVA()
-                        + "," + this.extractos.get(i).getIVA() + "," + this.extractos.get(i).getSubtotal() + "#";
+        cadenaResp +=
+            "\nEXTR->"
+                + this.extractos.get(i).getBase()
+                + ","
+                + this.extractos.get(i).getTipoIVA()
+                + ","
+                + this.extractos.get(i).getIVA()
+                + ","
+                + this.extractos.get(i).getSubtotal()
+                + "#";
             }
         }
 
         return cadenaResp;
     }
+
 
 }
 

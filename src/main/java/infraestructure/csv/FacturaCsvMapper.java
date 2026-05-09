@@ -1,14 +1,9 @@
 package infraestructure.csv;
 
-import domain.records.Factura;
-import domain.records.Fecha;
-import domain.records.NIF;
-import domain.records.Nota;
-import domain.records.RazonSocial;
-import domain.records.TipoGasto;
-import domain.records.Totales;
 import java.util.ArrayList;
 import java.util.List;
+
+import domain.records.*;
 
 public class FacturaCsvMapper {
 
@@ -34,7 +29,9 @@ public class FacturaCsvMapper {
             l.get(6));
 
         // 2) Nota
-        Nota nota = new Nota(l.get(18)); // SOLO texto
+        boolean existe = l.get(18).equals("1");
+        String contenido = l.get(19);
+        Nota nota = (existe ? new Nota(contenido) : null);
 
         // 3) Factura
         return new Factura(
@@ -82,10 +79,8 @@ public class FacturaCsvMapper {
         arr[17] = String.valueOf(t.getTotal());
 
         // 5) Nota
-        arr[18] = f.nota.getTexto();
-
-        // 6) Columna 19 queda vacía o reservada
-        arr[19] = "";
+        arr[18] = f.notaExiste() ? "1" : "0";
+        arr[19] = f.notaExiste() ? f.getNota().getTexto() : "";
 
         return new LineaCsvDTO(arr);
     }

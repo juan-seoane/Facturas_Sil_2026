@@ -2,7 +2,7 @@ package app.core;
 
 import app.helpers.VentanaID;
 import app.services.FacturasService;
-import infraestructure.servicios.config.Config;
+import infrastructure.servicios.config.Config;
 import javafx.stage.Stage;
 import presentation.fxcontrollers.FxCntrlTablaFCT;
 

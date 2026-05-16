@@ -1,4 +1,4 @@
-package infraestructure.informes.datasources;
+package infrastructure.informes.datasources;
 
 import java.util.ArrayList;
 import java.util.List;

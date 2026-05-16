@@ -2,7 +2,7 @@ package presentation.fxcontrollers;
 
 import app.core.AppContext;
 import app.helpers.VentanaID;
-import infraestructure.filesystem._Ruta;
+import infrastructure.filesystem._Ruta;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;

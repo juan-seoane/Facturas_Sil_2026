@@ -1,4 +1,4 @@
-package infraestructure.json;
+package infrastructure.json;
 
 import com.google.gson.Gson;
 import java.io.FileReader;

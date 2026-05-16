@@ -1,4 +1,4 @@
-package infraestructure.helpers;
+package infrastructure.helpers;
 
 public enum _Auth {
     AUTH_OK(1),

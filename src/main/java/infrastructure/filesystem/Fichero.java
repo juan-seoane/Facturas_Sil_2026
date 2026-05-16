@@ -1,4 +1,4 @@
-package infraestructure.filesystem;
+package infrastructure.filesystem;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

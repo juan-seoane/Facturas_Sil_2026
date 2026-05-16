@@ -1,4 +1,4 @@
-package infraestructure.servicios;
+package infrastructure.servicios;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,8 +8,8 @@ import com.google.gson.Gson;
 
 import domain.records.Credenciales;
 import domain.records.Creds;
-import infraestructure.filesystem._Ruta;
-import infraestructure.helpers._Auth;
+import infrastructure.filesystem._Ruta;
+import infrastructure.helpers._Auth;
 
 /* CONTROLA EL PROCESO DE AUTENTICACIÓN */
 public class AuthService {

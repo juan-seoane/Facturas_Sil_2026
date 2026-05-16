@@ -1,4 +1,4 @@
-package infraestructure.csv;
+package infrastructure.csv;
 
 import domain.records.Factura;
 import java.io.IOException;

@@ -2,8 +2,8 @@ package app.core;
 
 import app.services.FacturasService;
 import app.services.NavService;
-import infraestructure.servicios.AuthService;
-import infraestructure.servicios.config.Config;
+import infrastructure.servicios.AuthService;
+import infrastructure.servicios.config.Config;
 import javafx.stage.Stage;
 
 public class AppContext {

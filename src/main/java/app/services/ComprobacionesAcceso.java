@@ -8,9 +8,9 @@ import javax.swing.JOptionPane;
 
 import domain.records.Credenciales;
 import domain.records.Creds;
-import infraestructure.filesystem._Ruta;
-import infraestructure.servicios.AuthService;
-import infraestructure.servicios.config.Config;
+import infrastructure.filesystem._Ruta;
+import infrastructure.servicios.AuthService;
+import infrastructure.servicios.config.Config;
 import presentation.fxcontrollers.FxCntrlAcceso;
 
 public class ComprobacionesAcceso {

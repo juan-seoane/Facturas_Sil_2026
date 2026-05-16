@@ -1,9 +1,10 @@
-package infraestructure.servicios.config;
+package infrastructure.servicios.config;
 
 import domain.records.ConfigData;
 import domain.records.RutasConfig;
-import infraestructure.filesystem._Ruta;
-import infraestructure.json.JsonParser;
+import infrastructure.filesystem._Ruta;
+import infrastructure.json.JsonParser;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

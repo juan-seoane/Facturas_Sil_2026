@@ -1,10 +1,10 @@
-package infraestructure.filesystem;
+package infrastructure.filesystem;
 
 public enum _Ruta {
     // Datos en filesystem (fuera de src/main/resources)
     CONFIG("data/config"),
     DATOS("data/datos"),
-
+            
     // Recursos dentro de src/main/resources
     IMG("/images"),
     FXML("/fxml");

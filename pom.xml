@@ -20,6 +20,12 @@
     </properties>
 
     <dependencies>
+        <!-- Asprise OCR -->
+        <dependency>
+            <groupId>com.asprise</groupId>
+            <artifactId>java-ocr-api</artifactId>
+            <version>15.3.0.1</version>
+        </dependency>
 
         <!-- Junit5 -->
         <dependency>

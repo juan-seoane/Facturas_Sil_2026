@@ -1,4 +1,4 @@
-package infraestructure.csv;
+package infrastructure.csv;
 
 public final class CsvFacturaSchema {
 

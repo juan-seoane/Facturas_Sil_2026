@@ -1,4 +1,4 @@
-package infraestructure.csv;
+package infrastructure.csv;
 
 import java.io.IOException;
 import java.nio.file.Files;

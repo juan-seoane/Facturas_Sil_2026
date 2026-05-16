@@ -1,6 +1,6 @@
 package app.services;
 
-import infraestructure.filesystem._Ruta;
+import infrastructure.filesystem._Ruta;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

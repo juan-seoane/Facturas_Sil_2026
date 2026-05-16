@@ -1,4 +1,4 @@
-package infraestructure.csv;
+package infrastructure.csv;
 
 public record LineaCsvDTO(String[] columnas) {
     public String get(int index) {

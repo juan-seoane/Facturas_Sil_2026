@@ -3,7 +3,8 @@ package presentation.fxcontrollers;
 import app.core.AppContext;
 import domain.records.Factura;
 import domain.records.Fecha;
-import infraestructure.servicios.config.Config;
+import infrastructure.servicios.config.Config;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;

@@ -1,7 +1,8 @@
 package presentation.fxcontrollers;
 
 import app.core.AppContext;
-import infraestructure.servicios.config.Config;
+import infrastructure.servicios.config.Config;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.BrokenBarrierException;

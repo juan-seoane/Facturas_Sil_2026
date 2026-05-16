@@ -1,9 +1,10 @@
-package infraestructure.csv;
+package infrastructure.csv;
 
 import domain.interfaces.IfacturasRepo;
 import domain.records.Extracto;
 import domain.records.Factura;
-import infraestructure.servicios.config.Config;
+import infrastructure.servicios.config.Config;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

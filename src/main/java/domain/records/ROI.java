@@ -1,3 +1,3 @@
 package domain.records;
 
-public record ROI(int x1, int y1, int x2, int y2) {}
+public record ROI(double x1, double y1, double x2, double y2) {}

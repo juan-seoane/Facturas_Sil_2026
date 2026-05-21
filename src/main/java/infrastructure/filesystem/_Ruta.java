@@ -4,7 +4,8 @@ public enum _Ruta {
     // Datos en filesystem (fuera de src/main/resources)
     CONFIG("data/config"),
     DATOS("data/datos"),
-            
+    MODELOSOCR("data/datos/modelosOCR"),
+
     // Recursos dentro de src/main/resources
     IMG("/images"),
     FXML("/fxml");

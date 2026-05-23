@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="presentation.fxcontrollers.FxROIEditorController"
+      spacing="5">
+
+    <!-- ============================
+         TOOLBAR SUPERIOR
+         ============================ -->
+    <children>
+        <ToolBar fx:id="toolbar">
+            <items>
+                <Button fx:id="btnROI" text="ROI"/>
+                <TextField fx:id="campoNombre" promptText="nombre del campo" prefWidth="150"/>
+                <Label fx:id="lblCoords" text="x1,y1 → x2,y2"/>
+                <Button fx:id="btnAdd" text="+"/>
+                <Button fx:id="btnOCR" onAction="#onOCRTest" text="OCR TEST"/>
+                <Button fx:id="btnListo" text="LISTO"/>
+            </items>
+        </ToolBar>
+
+        <!-- ============================
+             SCROLLPANE (NO ESTIRA NADA)
+             ============================ -->
+        <ScrollPane fx:id="scrollPane"
+                    fitToWidth="false"
+                    fitToHeight="false"
+                    pannable="true"
+                    VBox.vgrow="ALWAYS">
+
+            <!-- ============================
+                 CONTENEDOR DE LA IMAGEN
+                 ============================ -->
+            <content>
+                <Pane fx:id="centerPane"
+                      prefWidth="400"
+                      prefHeight="300">
+
+                    <!-- Imagen -->
+                    <children>
+                        <StackPane fx:id="panelOCR"
+                                visible="false"
+                                style="-fx-background-color: rgba(0,0,0,0.75); -fx-padding: 15; -fx-background-radius: 8;"
+                                layoutX="20"
+                                layoutY="20">
+                            <children>
+                                <Label fx:id="lblOCR"
+                                    textFill="white"
+                                    wrapText="true"
+                                    maxWidth="300"/>
+                            </children>
+                        </StackPane>
+                        <ImageView fx:id="imageView"
+                                   preserveRatio="true"
+                                   pickOnBounds="false"/>
+
+                        <!-- Overlay transparente -->
+                        <Pane fx:id="overlay"
+                              pickOnBounds="true"
+                              mouseTransparent="false"
+                              style="-fx-background-color: rgba(255,0,0,0.25);"/>
+                    </children>
+
+                </Pane>
+            </content>
+        </ScrollPane>
+    </children>
+
+</VBox>

@@ -55,7 +55,7 @@ public class ModeloOCR implements IModeloFactura {
       private String version = "1.0";
       private String rutaImagen;
       private int dpi = 300;
-      private Map<String, ROI> zonas;
+      public Map<String, ROI> zonas;
 
       public Builder nombre(String nombre) {
           this.nombre = nombre;

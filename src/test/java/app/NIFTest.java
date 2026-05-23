@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class NIFTest {
 
 	@Test
-	public void dameLetraNIFok(){
+	public void testLetra(){
 		int num= 00010001;
         int num2 = 00010010;
 		String letra = NIF.dameLetraNIF(num);

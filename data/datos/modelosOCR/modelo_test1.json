@@ -1,0 +1,8 @@
+{
+  "nombre": "Modelo OCR",
+  "version": "1.0",
+  "rutaImagen": "data/datos/ADMIN/scans/test1.png",
+  "dpi": 300,
+  "zonas": {},
+  "ocrPorZona": {}
+}

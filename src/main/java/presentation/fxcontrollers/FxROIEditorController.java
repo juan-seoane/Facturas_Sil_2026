@@ -1,11 +1,35 @@
 
 package presentation.fxcontrollers;
 
-import infrastructure.servicios.ocr.OCRService;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.LinkedHashMap;
+import java.util.Optional;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import domain.records.ROI;
+import infrastructure.filesystem._Ruta;
+import infrastructure.servicios.ocr.ModeloOCR;
+import infrastructure.servicios.ocr.ModeloOCRService;
+import infrastructure.servicios.ocr.OCRService;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToolBar;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -32,20 +56,29 @@ public class FxROIEditorController {
     @FXML private Label lblCoords;
 
 
+    private ModeloOCRService service = new ModeloOCRService();
     private OCRService ocrService;
     private Rectangle currentRect;
     private double startX, startY;
-    private double scaleX = 1, scaleY = 1;
     private double screenHeight;
+
     private double targetHeight;
+    //private final List<Rectangle> listaROIs = new ArrayList();
+    private final ModeloOCR.Builder builder = new ModeloOCR.Builder();
+
+
+  public FxROIEditorController() {
+      builder.zonas = new LinkedHashMap<>();
+      builder.ocrPorZona = new LinkedHashMap<>();
+  }
 
   @FXML
   private void initialize() {
 
     this.ocrService = new OCRService();
-
+    
     screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
-    targetHeight = screenHeight * 0.80;
+    targetHeight = screenHeight * 0.95;
 
     imageView.setPreserveRatio(true);
     imageView.setFitHeight(targetHeight);
@@ -75,9 +108,16 @@ public class FxROIEditorController {
     // ============================
     // CARGAR IMAGEN DESDE FUERA
     // ============================
-    public void cargarImagen(Image img) {
-        imageView.setImage(img);
-    }
+
+public void cargarImagen(String ruta) throws FileNotFoundException {
+    File f = new File(ruta);
+    Image img = new Image(new FileInputStream(f));
+    imageView.setImage(img);
+
+    service.setImagenBase(img);
+    service.setInfoModelo(ruta, 300, "Modelo OCR", "1.0");
+}
+
 
     // ============================
     // INICIAR ROI
@@ -117,58 +157,101 @@ public class FxROIEditorController {
     lblCoords.setText(String.format("%.1f,%.1f → %.1f,%.1f", startX, startY, e.getX(), e.getY()));
     }
 
-  @FXML
-  private void onOCRTest() {
+  
+  private void OCRTest() {
     if (currentRect == null) {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No hay ROI seleccionado.");
       alert.showAndWait();
       return;
     }
 
-    String texto = realizarOCR(currentRect);
+    String texto = service.realizarOCR(currentRect,
+    imageView.getBoundsInParent().getWidth(),
+    imageView.getBoundsInParent().getHeight());
 
-    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    alert.setTitle("Resultado OCR");
-    alert.setHeaderText("Texto detectado:");
-    alert.setContentText(texto);
-    alert.showAndWait();
+    System.out.println("[ROIEditor>OCRTest] TEXTO DETECTADO:" + texto);
+    // Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    // alert.setTitle("Resultado OCR");
+    // alert.setHeaderText("Texto detectado:");
+    // alert.setContentText(texto);
+    // alert.showAndWait();
   }
 
-  private String realizarOCR(Rectangle roi) {
+
+
+  // ============================
+  // FINALIZAR ROI
+  // ============================
+  private void finalizarROI(MouseEvent e) {
+    System.out.println("ROI final: " + currentRect.getX() + ", " + currentRect.getY());
+    OCRTest();
+  }
+
+  @FXML
+  private void onListo() {
+    if (builder.zonas.isEmpty()) {
+      new Alert(Alert.AlertType.WARNING, "No hay zonas definidas.").showAndWait();
+      return;
+    }
+
     try {
-      Image img = imageView.getImage();
-      if (img == null) return "[ERROR] No hay imagen cargada";
+        // Preguntar nombre del modelo
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Guardar modelo OCR");
+        dialog.setHeaderText("Introduce el nombre del modelo OCR");
+        dialog.setContentText("Nombre:");
 
-      BufferedImage bimg = SwingFXUtils.fromFXImage(img, null);
+        Optional<String> result = dialog.showAndWait();
+        if (result.isEmpty()) return;
 
-      double scaleX = bimg.getWidth() / imageView.getBoundsInParent().getWidth();
-      double scaleY = bimg.getHeight() / imageView.getBoundsInParent().getHeight();
+        String nombreModelo = result.get().trim();
+        if (nombreModelo.isEmpty()) return;
 
-      int x = (int) (roi.getX() * scaleX);
-      int y = (int) (roi.getY() * scaleY);
-      int w = (int) (roi.getWidth() * scaleX);
-      int h = (int) (roi.getHeight() * scaleY);
+        // Construir modelo final
+        ModeloOCR modelo = service.build();
+        service.guardarJSON(modelo, Paths.get(_Ruta.MODELOSOCR.getRuta() + "/modelo_" + nombreModelo + ".json"));
 
-      BufferedImage sub = bimg.getSubimage(x, y, w, h);
-
-      // OCR RAW
-      String texto = ocrService.ocr(sub);
-
-      // NORMALIZADO
-      String normalizado = ocrService.normalizar(texto);
-
-      return normalizado;
-
-    } catch (Exception ex) {
-      ex.printStackTrace();
-      return "[ERROR OCR] " + ex.getMessage();
+    } catch (Exception e) {
+        e.printStackTrace();
     }
   }
 
-    // ============================
-    // FINALIZAR ROI
-    // ============================
-    private void finalizarROI(MouseEvent e) {
-        System.out.println("ROI final: " + currentRect.getX() + ", " + currentRect.getY());
+    
+  @FXML
+  private void onAddROI() {
+
+    if (currentRect == null) {
+        System.out.println("[ADD ROI] No hay ROI seleccionado");
+        return;
     }
+
+    String nombre = campoNombre.getText().trim();
+    if (nombre.isEmpty()) {
+        new Alert(Alert.AlertType.WARNING, "Introduce un nombre en la barra superior").showAndWait();
+        return;
+    }
+
+    // Tamaño real del ImageView (o del overlay si coincide)
+    double viewW = imageView.getBoundsInParent().getWidth();
+    double viewH = imageView.getBoundsInParent().getHeight();
+
+    // Convertir ROI JavaFX → ROI real
+    ROI roiReal = service.convertirAFisico(currentRect, viewW, viewH);
+
+    // OCR automático
+    String textoOCR = service.realizarOCR(currentRect, viewW, viewH);
+
+    // Guardar en el builder
+    builder.zonas.put(nombre, roiReal);
+    builder.ocrPorZona.put(nombre, textoOCR);
+
+    System.out.println("[ADD ROI] Zona '" + nombre + "' guardada.");
+    System.out.println("ROI: " + roiReal);
+    System.out.println("OCR: " + textoOCR);
+
+    campoNombre.clear();
+  }
+
+
+
 }

@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import presentation.helpers.Debug;
 
 
 public class FxCntrlSplash {
@@ -25,16 +26,16 @@ public class FxCntrlSplash {
 
     private void iniciarSplash() {
 
-        System.out.println("[FxCntrlSplash.initialize()] → INICIO");
+        // Debug.print("[FxCntrlSplash.initialize()] → INICIO");
 
         int i = (int) (Math.floor(Math.random() * 4) + 1);
         String ruta = _Ruta.IMG.getRuta() + "/splash" + i + ".jpg";
 
         this.imgSplash.setImage(new Image(getClass().getResourceAsStream(ruta)));
 
-        // System.out.println("[FxCntrlSplash.initialize()] - imgSplash = " + this.imgSplash);
-        // System.out.println("[FxCntrlSplash.initialize()] - Ruta calculada = " + ruta);
-        // System.out.println("[FxCntrlSplash.initialize()] - Stream = " + getClass().getResourceAsStream(ruta));
+        // Debug.print("[FxCntrlSplash.initialize()] - imgSplash = " + this.imgSplash);
+        // Debug.print("[FxCntrlSplash.initialize()] - Ruta calculada = " + ruta);
+        // Debug.print("[FxCntrlSplash.initialize()] - Stream = " + getClass().getResourceAsStream(ruta));
 
         FadeTransition ft = new FadeTransition(Duration.seconds(2), this.imgSplash);
         ft.setFromValue(1.0);

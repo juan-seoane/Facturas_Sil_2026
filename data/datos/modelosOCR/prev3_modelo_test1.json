@@ -1,0 +1,94 @@
+{
+  "nombre": "TEST1",
+  "version": "1.0",
+  "rutaImagen": "data/datos/ADMIN/scans/test1.png",
+  "dpi": 600,
+  "zonas": {
+    "factura.NumFact": {
+      "x1": 645.0,
+      "y1": 210.0,
+      "x2": 713.0,
+      "y2": 233.0
+    },
+    "factura.Fecha": {
+      "x1": 629.0,
+      "y1": 235.0,
+      "x2": 715.0,
+      "y2": 260.0
+    },
+    "extracto.Concepto": {
+      "x1": 120.0,
+      "y1": 378.0,
+      "x2": 363.0,
+      "y2": 404.0
+    },
+    "factura.IVA": {
+      "x1": 659.0,
+      "y1": 522.0,
+      "x2": 703.0,
+      "y2": 550.0
+    },
+    "extracto.Bloque": {
+      "x1": 35.0,
+      "y1": 320.0,
+      "x2": 722.0,
+      "y2": 479.0
+    },
+    "factura.NombreEmpresa": {
+      "x1": 54.0,
+      "y1": 120.0,
+      "x2": 204.0,
+      "y2": 148.0
+    },
+    "extracto.Cantidad": {
+      "x1": 79.0,
+      "y1": 375.0,
+      "x2": 110.0,
+      "y2": 401.0
+    },
+    "factura.ST": {
+      "x1": 645.0,
+      "y1": 485.0,
+      "x2": 721.0,
+      "y2": 519.0
+    },
+    "factura.Total": {
+      "x1": 626.0,
+      "y1": 551.0,
+      "x2": 723.0,
+      "y2": 590.0
+    },
+    "factura.TipoIVA": {
+      "x1": 492.0,
+      "y1": 519.0,
+      "x2": 545.0,
+      "y2": 545.0
+    },
+    "extracto.TotalExtracto": {
+      "x1": 640.0,
+      "y1": 372.0,
+      "x2": 703.0,
+      "y2": 406.0
+    },
+    "extracto.PrecioUnitario": {
+      "x1": 470.0,
+      "y1": 372.0,
+      "x2": 551.0,
+      "y2": 407.0
+    }
+  },
+  "ocrPorZona": {
+    "factura.NumFact": "ES-001\n",
+    "factura.Fecha": "29012019",
+    "extracto.Concepto": "TELLA PEQUEÑA TRAJE DE LUCES EN ROJO\n",
+    "factura.IVA": "34.65",
+    "extracto.Bloque": "CANT. DESCRIPCIÓN PRECIO UNITARIO IMPORTE\n1 TALLA PEQUEÑA TRAJE DE LUCES EN ROJO 100.00 100.00\n2 MUI GRANDE CHURROLITO 25.00 50.00\n3 EQUIPAJE DE FÚTBOL 5.00 15.00\n",
+    "factura.NombreEmpresa": "ROJO POLO PAELLA INC.\n",
+    "extracto.Cantidad": "1",
+    "factura.ST": "165.00",
+    "factura.Total": "199.66",
+    "factura.TipoIVA": "21.0",
+    "extracto.TotalExtracto": "100.00",
+    "extracto.PrecioUnitario": "100.00"
+  }
+}

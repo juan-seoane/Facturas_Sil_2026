@@ -1,57 +1,25 @@
 package domain.records;
 
+import java.util.Map;
+
 public class UIData {
-    private String[] nombreColsFCT;
-    private Integer[] anchoColsFCT;
 
-    public UIData(String[] nombreColsFCT, Integer[] anchoColsFCT) {
-        this.nombreColsFCT = nombreColsFCT;
-        this.anchoColsFCT = anchoColsFCT;
-    }
+  private Map<String, CampoConfig> factura;
+  private Map<String, CampoConfig> extracto;
 
-    public String[] getNombreColsFCT() {
-        return nombreColsFCT;
-    }
+  public Map<String, CampoConfig> getFactura() {
+    return factura;
+  }
 
-    public void setNombreColsFCT(String[] nombreColsFCT) {
-        this.nombreColsFCT = nombreColsFCT;
-    }
+  public void setFactura(Map<String, CampoConfig> factura) {
+    this.factura = factura;
+  }
 
-    public Integer[] getAnchoColsFCT() {
-        return anchoColsFCT;
-    }
+  public Map<String, CampoConfig> getExtracto() {
+    return extracto;
+  }
 
-    public void setAnchoColsFCT(Integer[] anchoColsFCT) {
-        this.anchoColsFCT = anchoColsFCT;
-    }
-
-	public String toJSON() {
-
-		int i = 0;
-		String nombreColsFCTformat ="[\t";
-		for(String str : this.nombreColsFCT){
-			i++;
-			if (i<this.nombreColsFCT.length){
-				nombreColsFCTformat += "\"" + str + "\",";
-			}else{
-				nombreColsFCTformat += "\"" + str + "\"";
-			}
-		}
-		nombreColsFCTformat += "\t]";
-
-		i = 0;
-		String anchoColsFCTformat ="[\t";
-		for(Integer num : this.anchoColsFCT){
-			i++;
-			if(i<this.anchoColsFCT.length){
-				anchoColsFCTformat += " " + num + ",";
-			}else{
-				anchoColsFCTformat += " " + num;
-			}
-		}
-		anchoColsFCTformat += "\t]";
-
-		String cadenaResp = "{\n\t\"nombreColsFCT\": " + nombreColsFCTformat + ",\n\t\"anchoColsFCT\": " + anchoColsFCTformat + "\n}";
-		return cadenaResp;
-	}
+  public void setExtracto(Map<String, CampoConfig> extracto) {
+    this.extracto = extracto;
+  }
 }

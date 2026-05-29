@@ -6,13 +6,58 @@ public class Extracto implements Comparable<Extracto> {
     public int tipoiva;
     public double iva;
     public double subtotal;
+    private int cantidad;
+    private int numExtracto;
+    private double precioUnitario;
 
-    public Extracto(double base, int tipoiva, double iva, double subtotal, String concepto) {
-        this.base = base;
+    public Extracto( double precioUnitario, int cantidad, int tipoiva, double iva, double subtotal, String concepto) {
+        this.precioUnitario = precioUnitario;
+        this.cantidad = cantidad;
+        this.base = precioUnitario * cantidad;
         this.tipoiva = tipoiva;
         this.iva = iva;
         this.subtotal = subtotal;
         this.concepto = concepto;
+    }
+
+    public int getTipoiva() {
+        return tipoiva;
+    }
+
+    public void setTipoiva(int tipoiva) {
+        this.tipoiva = tipoiva;
+    }
+
+    public double getIva() {
+        return iva;
+    }
+
+    public void setIva(double iva) {
+        this.iva = iva;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    public int getNumExtracto() {
+        return numExtracto;
+    }
+
+    public void setNumExtracto(int numExtracto) {
+        this.numExtracto = numExtracto;
+    }
+
+    public double getPrecioUnitario() {
+        return precioUnitario;
+    }
+
+    public void setPrecioUnitario(double precioUnitario) {
+        this.precioUnitario = precioUnitario;
     }
 
     public double getBase() {
@@ -66,9 +111,9 @@ public class Extracto implements Comparable<Extracto> {
 
 		if (b == null)
 			return 1;
-		else if (this.subtotal < b.getSubtotal())
+		else if (this.cantidad < b.getCantidad())
 			return -1;
-		else if (this.subtotal == b.getSubtotal())
+		else if (this.cantidad == b.getCantidad())
 			return 0;
 		else return 1;
 

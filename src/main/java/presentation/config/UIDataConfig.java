@@ -2,111 +2,91 @@ package presentation.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UIDataConfig {
 
-  private Map<String, Double> anchoColsFCT;
-  private List<String> nombreColsFCT;
+  private TablaFCTConfig tablaFCT;
+  private List<OCRItem> ocr;
 
-  public UIDataConfig(Map<String, Double> anchoColsFCT) {
-    this.anchoColsFCT = anchoColsFCT;
+  public TablaFCTConfig getTablaFCT() {
+    return tablaFCT;
   }
 
-  public List<String> getNombreColsFCT() {
-    return nombreColsFCT;
+  public List<OCRItem> getOcr() {
+    return ocr;
   }
 
-  public Map<String, Double> getAnchoColsFCT() {
-    return anchoColsFCT;
-  }
-
-  public double getAncho(String colId) {
-    return anchoColsFCT.getOrDefault(colId, 0.0);
-  }
-
-  public Map<String, Double> getAnchos() {
-    return anchoColsFCT;
-  }
-
+  // ------------------------------
+  // CARGAR JSON
+  // ------------------------------
   public static UIDataConfig fromJson(Path path) throws IOException {
-
-      // 1) Leer archivo
-      String json = Files.readString(path);
-
-      // 2) Parsear con Gson
-      Gson gson = new Gson();
-      UIDataJsonDTO dto = gson.fromJson(json, UIDataJsonDTO.class);
-
-      // 3) Validar
-      if (dto.nombreColsFCT == null || dto.anchoColsFCT == null) {
-          throw new IllegalArgumentException("JSON inválido: faltan campos");
-      }
-      if (dto.nombreColsFCT.size() != dto.anchoColsFCT.size()) {
-          throw new IllegalArgumentException("JSON inválido: tamaños no coinciden");
-      }
-
-      // 4) Construir mapa nombre → anchoBase
-      Map<String, Double> mapa = new HashMap<>();
-      for (int i = 0; i < dto.nombreColsFCT.size(); i++) {
-          mapa.put(dto.nombreColsFCT.get(i), dto.anchoColsFCT.get(i));
-      }
-
-      // 5) Crear config final
-      return new UIDataConfig(mapa);
+    String json = Files.readString(path);
+    Gson gson = new Gson();
+    return gson.fromJson(json, UIDataConfig.class);
   }
 
-    public void saveToJson(Path path) throws IOException {
+  // ------------------------------
+  // GUARDAR JSON
+  // ------------------------------
+  public void saveToJson(Path path) throws IOException {
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    Files.writeString(path, gson.toJson(this));
+  }
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+  // ------------------------------
+  // MÉTODOS ÚTILES
+  // ------------------------------
 
-        // reconstruir arrays en el mismo orden que nombreColsFCT
-        List<Double> anchos = new ArrayList<>();
-        for (String nombre : nombreColsFCT) {
-            anchos.add(anchoColsFCT.getOrDefault(nombre, 0.0));
-        }
+  /** Devuelve el ancho de una columna por su ID */
+  public int getAncho(String colId) {
+    Integer ancho = tablaFCT.getAncho(colId);
+    return ancho != null ? ancho : 0;
+  }
 
-        JsonObject root = new JsonObject();
-        root.add("nombreColsFCT", gson.toJsonTree(nombreColsFCT));
-        root.add("anchoColsFCT", gson.toJsonTree(anchos));
+  /** Actualiza el ancho de una columna */
+  public void updateAncho(String colId, int nuevoAncho) {
+    tablaFCT.updateAncho(colId, nuevoAncho);
+  }
 
-        Files.writeString(path, gson.toJson(root));
+  /** Devuelve todos los nombres OCR (solo type="campo") */
+  public List<String> getAllOcrNames() {
+    List<String> lista = new ArrayList<>();
+    for (OCRItem item : ocr) {
+      if ("campo".equals(item.getType())) {
+        lista.add(item.getId());
+      }
     }
+    return lista;
+  }
 
-    public void updateAncho(String colId, double nuevoAncho) {
-        //System.out.println("[UIDataConfig>updateAncho] en col: " + colId + " : " + nuevoAncho);
-        if (colId == null)
-            return;
-        anchoColsFCT.put(colId, nuevoAncho);
+  /** Devuelve todos los bloques OCR (type="bloque") */
+  public List<String> getAllBloques() {
+    List<String> lista = new ArrayList<>();
+    for (OCRItem item : ocr) {
+      if ("bloque".equals(item.getType())) {
+        lista.add(item.getId());
+      }
     }
+    return lista;
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("=== UIDataConfig ===\n");
-
-        sb.append("Anchos columnas FCT:\n");
-        if (anchoColsFCT == null || anchoColsFCT.isEmpty()) {
-            sb.append("  (vacío)\n");
-        } else {
-            anchoColsFCT.forEach((k, v) -> sb.append(String.format("  %-15s = %.2f\n", k, v)));
-        }
-
-        sb.append("Nombre columnas FCT:\n");
-        if (nombreColsFCT == null || nombreColsFCT.isEmpty()) {
-            sb.append("  (vacío)\n");
-        } else {
-            nombreColsFCT.forEach(n -> sb.append("  " + n + "\n"));
-        }
-
-        sb.append("====================\n");
-        return sb.toString();
+  /** Devuelve parámetros especiales (type="parametro") */
+  public List<OCRItem> getParametros() {
+    List<OCRItem> lista = new ArrayList<>();
+    for (OCRItem item : ocr) {
+      if ("parametro".equals(item.getType())) {
+        lista.add(item);
+      }
     }
+    return lista;
+  }
+
+  @Override
+  public String toString() {
+    return "UIDataConfig{\n" + "tablaFCT=" + tablaFCT + ", ocr=" + ocr + "\n}";
+  }
 }

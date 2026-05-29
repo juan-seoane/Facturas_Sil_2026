@@ -17,6 +17,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import presentation.helpers.Debug;
 
 public class FxCntrlPanelControl implements Initializable {
 
@@ -98,14 +99,14 @@ public class FxCntrlPanelControl implements Initializable {
     // REVIEW : Arreglar la inicialización de la GUI del PanelControl... No funciona
     setAnho((Integer) Config.configActual.getConfigData().getAnho().getAnho());
     setTrimestre(((Integer) (Config.configActual.getConfigData().getAnho().getTrimestre())));
-    System.out.println(
-        "[FxCntrlPanelControl] Inicializando, estableciendo la etiqueta de usuario en : "
-            + AppContext.usuarioActual);
-    System.out.println(
-        "[FxCnytrlPanelControl] Anho y trimestre establecidos en : "
-            + Config.configActual.getConfigData().getAnho().getAnho()
-            + " - "
-            + Config.configActual.getConfigData().getAnho().getTrimestre());
+    // System.out.println(
+    //     "[FxCntrlPanelControl] Inicializando, estableciendo la etiqueta de usuario en : "
+    //         + AppContext.usuarioActual);
+    // System.out.println(
+    //     "[FxCntrlPanelControl] Anho y trimestre establecidos en : "
+            // + Config.configActual.getConfigData().getAnho().getAnho()
+            // + " - "
+            // + Config.configActual.getConfigData().getAnho().getTrimestre());
 
     FxCntrlPanelControl.instancia_pc = this;
 
@@ -153,56 +154,56 @@ public class FxCntrlPanelControl implements Initializable {
   @FXML
   private void btnCFGpulsado(Event evt) throws InterruptedException, BrokenBarrierException {
     // this.ctrlPpal = Controlador_prev.getControlador();
-    // System.out.println(" [PanelControl] Boton CFG pulsado!");
+    Debug.print(" [FxCntrlPanelControl] Boton CFG pulsado!");
     // botonactivo = 4;
     // botonpulsado = true;
   }
 
   @FXML
   private void btnNTSpulsado(Event evt) {
-    System.out.println(" [PanelControl] Boton NTS pulsado!");
+    Debug.print(" [FxCntrlPanelControl] Boton NTS pulsado!");
     botonactivo = 3;
     botonpulsado = true;
   }
 
   @FXML
   private void btnRSpulsado(Event evt) {
-    System.out.println(" [PanelControl] Boton DIST pulsado!");
+    Debug.print(" [FxCntrlPanelControl] Boton DIST pulsado!");
     botonactivo = 2;
     botonpulsado = true;
   }
 
   @FXML
   private void btnVisorFctPulsado(Event evt) {
-    System.out.println(" [PanelControl] Boton VisorFCT pulsado!");
+    Debug.print(" [FxCntrlPanelControl] Boton VisorFCT pulsado!");
     //botonactivo = 2;
     botonpulsado = true;
   }
 
   @FXML
   private void btnFCTpulsado(Event evt) throws InterruptedException, BrokenBarrierException {
-    // System.out.println(" [PanelControl] Boton FCT pulsado!");
+    // Debug.print(" [PanelControl] Boton FCT pulsado!");
     // this.ctrlFct = Controlador_prev.getControladorFacturas();
     if (((ToggleButton) (evt.getSource())).isSelected()) {
       btnFCT.setStyle(
           "-fx-background-color: yellow; -fx-border-color: #063970; -fx-border-radius: 10;"
               + " -fx-border-width: 3");
-      System.out.println("[PanelControl>btnFCTpulsado] FCT activo!");
+    //   Debug.print("[FxCntrlPanelControl>btnFCTpulsado] FCT activo!");
       botonactivo = 1;
       botonpulsado = true;
 
       Stage tabla = AppContext.getTablaFCT();
       tabla.show();
       tabla.toFront();
-    //   System.out.println(
-    //       "[FxcntrlPanelControl>btnFCTpulsado] TablaFCT desde AppContext = "
+    //   Debug.print(
+    //       "[FxCntrlPanelControl>btnFCTpulsado] TablaFCT desde AppContext = "
     //           + AppContext.getTablaFCT().hashCode());
 
     } else if (!((ToggleButton) (evt.getSource())).isSelected()) {
       btnFCT.setStyle(
           "-fx-background-color: transparent; -fx-border-color: #063970; -fx-border-radius: 10;"
               + " -fx-border-width: 3");
-      System.out.println("[PanelControl>btnFCTpulsado] FCT desactivado!");
+    //   Debug.print("[FxCntrlPanelControl>btnFCTpulsado] FCT desactivado!");
       botonactivo = 11;
       botonpulsado = true;
 
@@ -216,20 +217,21 @@ public class FxCntrlPanelControl implements Initializable {
 
   @FXML
   private void btnCJApulsado(Event evt) {
-    System.out.println(" [PanelControl] Boton CJA pulsado!");
+    Debug.print(" [FxCntrlPanelControl] Boton CJA pulsado!");
     botonactivo = 5;
     botonpulsado = true;
   }
 
   @FXML
   private void btnAutosavepulsado(Event evt) {
+    Debug.print(" [FxCntrlPanelControl] Boton AutoSave pulsado!");
     botonactivo = 6;
     botonpulsado = true;
   }
 
   @FXML
   private void btnAutosavePressed(Event evt) {
-    System.out.println(" [PanelControl] Boton AutoSave pulsado!");
+    Debug.print(" [FxCntrlPanelControl] Boton AutoSave pulsado!");
     btnAutosavepulsado(evt);
     ((Button) evt.getSource())
         .setStyle(
@@ -247,20 +249,20 @@ public class FxCntrlPanelControl implements Initializable {
 
   @FXML
   private void toggleModopulsado(Event evt) {
-    System.out.println(" [PanelControl] Boton MODO pulsado!");
+     Debug.print(" [FxCntrlPanelControl] Boton MODO pulsado!");
     if (((ToggleButton) (evt.getSource())).isSelected()) {
       toggleModo.setText("MODO INGR");
       toggleModo.setStyle(
           "-fx-background-color: yellow; -fx-border-color: #063970; -fx-border-radius: 10;"
               + " -fx-border-width: 3");
-      System.out.println(" [PanelControl] modo: INGR");
+      Debug.print(" [FxCntrlPanelControl] modo: INGR");
       // modo = Controlador_prev.INGR;
     } else if (!((ToggleButton) (evt.getSource())).isSelected()) {
       toggleModo.setText("MODO NAV");
       toggleModo.setStyle(
           "-fx-background-color: transparent; -fx-border-color: #063970; -fx-border-radius: 10;"
               + " -fx-border-width: 3");
-      System.out.println(" [PanelControl] modo: NAV");
+      Debug.print(" [FxCntrlPanelControl] modo: NAV");
       // modo = Controlador_prev.NAV;
     }
     botonactivo = 7;
@@ -284,7 +286,7 @@ public class FxCntrlPanelControl implements Initializable {
 
   // #region RESET
   public static void reset() {
-    System.out.println("[PanelControl>reset] Reseteando P/C");
+    // Debug.print("[PanelControl>reset] Reseteando P/C");
     botonpulsado = false;
   }
 

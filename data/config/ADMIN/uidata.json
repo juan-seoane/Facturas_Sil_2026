@@ -1,44 +1,75 @@
 {
-  "nombreColsFCT": [
-    "colID",
-    "colNumFact",
-    "colFecha",
-    "colRS",
-    "colNifRS",
-    "colNombreEmpresa",
-    "colConcepto",
-    "colDev",
-    "colNumExtr",
-    "colBase",
-    "colTipoIVA",
-    "colIVA",
-    "colST",
-    "colBaseNI",
-    "colTipoRet",
-    "colRetenc",
-    "colTotal",
-    "colNota",
-    "colAcciones"
-  ],
-  "anchoColsFCT": [
-    20,
-    50,
-    30,
-    60,
-    60,
-    60,
-    60,
-    20,
-    20,
-    50,
-    30,
-    40,
-    40,
-    40,
-    20,
-    30,
-    60,
-    20,
-    30
+  "tablaFCT": {
+    "factura": {
+      "colID": 20,
+      "colNumFact": 50,
+      "colFecha": 30,
+      "colRS": 60,
+      "colNifRS": 60,
+      "colNombreEmpresa": 60,
+      "colConcepto": 60,
+      "colDev": 20,
+      "colCantidad": 20,
+      "colBaseNI": 40,
+      "colTipoRet": 20,
+      "colRetenc": 30,
+      "colNota": 20,
+      "colAcciones": 30,
+      "colBase": 50,
+      "colTipoIVA": 30,
+      "colIVA": 40,
+      "colST": 40,
+      "colTotal": 60
+    },
+
+    "extracto": {
+      "colNumFact": 50,
+      "colConcepto": 60,
+      "colCantidad": 20,
+      "colBase": 30,
+      "colTipoIVA": 30,
+      "colIVA": 40,
+      "colST": 40
+    }
+  },
+
+  "ocr": [
+    { "id": "factura.NumFact", "entity": "factura", "type": "campo" },
+    { "id": "factura.Fecha", "entity": "factura", "type": "campo" },
+    { "id": "factura.RS", "entity": "factura", "type": "campo" },
+    { "id": "factura.NifRS", "entity": "factura", "type": "campo" },
+    { "id": "factura.NombreEmpresa", "entity": "factura", "type": "campo" },
+    { "id": "factura.Concepto", "entity": "factura", "type": "campo" },
+    { "id": "factura.Dev", "entity": "factura", "type": "campo" },
+    { "id": "factura.NumExtr", "entity": "factura", "type": "campo" },
+    { "id": "factura.BaseNI", "entity": "factura", "type": "campo" },
+    { "id": "factura.TipoRet", "entity": "factura", "type": "campo" },
+    { "id": "factura.Retenc", "entity": "factura", "type": "campo" },
+    { "id": "factura.Nota", "entity": "factura", "type": "campo" },
+
+    { "id": "extracto.Concepto", "entity": "extracto", "type": "campo" },
+    { "id": "extracto.Cantidad", "entity": "extracto", "type": "campo" },
+    { "id": "extracto.PrecioUnitario", "entity": "extracto", "type": "campo" },
+    { "id": "extracto.tipoIVA", "entity": "extracto", "type": "campo" },
+    { "id": "extracto.IVA", "entity": "extracto", "type": "campo" },
+    { "id": "extracto.TotalExtracto", "entity": "extracto", "type": "campo" },
+
+    { "id": "totales.Base", "entity": "totales", "type": "campo" },
+    { "id": "totales.tipoIVA", "entity": "totales", "type": "campo" },
+    { "id": "totales.IVA", "entity": "totales", "type": "campo" },
+    { "id": "totales.subTotal", "entity": "totales", "type": "campo" },
+    { "id": "totales.Total", "entity": "totales", "type": "campo" },
+
+    { "id": "bloqueTotales", "entity": "totales", "type": "bloque" },
+    { "id": "bloqueExtractos", "entity": "extracto", "type": "bloque" },
+    { "id": "cabeceraExtractos", "entity": "extracto", "type": "bloque" },
+    { "id": "finalExtractos", "entity": "extracto", "type": "bloque" },
+    { "id": "lineaExtracto", "entity": "extracto", "type": "bloque" },
+    {
+      "id": "alturaLineaExtracto",
+      "entity": null,
+      "type": "parametro",
+      "meta": { "default": 40 }
+    }
   ]
 }

@@ -458,14 +458,14 @@ public class FacturaFX {
     this.setTotal(this.getSubtotal() + this.getBaseNI() + this.getRetenciones());
   }
 
-    public static FacturaFX filaVacia() {
-        FacturaFX filaVacia = new FacturaFX("--------", Fecha.hoy().toString(),
-                "----", "----",
-                false,
-                0.0, 0, 0.0, 0.0, 0, 0.0, 0.0, "--");
-        filaVacia.setExtractos(new ArrayList<>()); // ← CRÍTICO
-        return filaVacia;
-    }
-
+  public static FacturaFX filaVacia() {
+    FacturaFX fx = new FacturaFX();
+    fx.setNumero("--------");
+    fx.setFecha(Fecha.hoy());
+    fx.setRazonSocial("----");
+    fx.setConcepto("----");
+    fx.setExtractos(new ArrayList<>());
+    return fx;
+  }
 }
 

@@ -17,7 +17,9 @@
         <ToolBar fx:id="toolbar">
             <items>
                 <Button fx:id="btnROI" text="ROI"/>
-                <TextField fx:id="campoNombre" promptText="nombre del campo" prefWidth="150"/>
+                <ComboBox fx:id="comboCamposOCR"
+                    prefWidth="200"
+                    promptText="Selecciona campo OCR" />
                 <Label fx:id="lblCoords" text="x1,y1 → x2,y2"/>
                 <Button fx:id="btnAdd" onAction="#onAddROI" text="+"/>
                 <!-- <Button fx:id="btnOCR" onAction="#onOCRTest" text="OCR TEST"/> -->

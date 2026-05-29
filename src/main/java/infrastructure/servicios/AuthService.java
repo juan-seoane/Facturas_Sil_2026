@@ -10,6 +10,7 @@ import domain.records.Credenciales;
 import domain.records.Creds;
 import infrastructure.filesystem._Ruta;
 import infrastructure.helpers._Auth;
+import presentation.helpers.Debug;
 
 /* CONTROLA EL PROCESO DE AUTENTICACIÓN */
 public class AuthService {
@@ -19,15 +20,15 @@ public class AuthService {
         int resp = 3;
         boolean valido = false;
         String rutaCreds = _Ruta.CONFIG.getRuta() + "/creds.json";
-        System.out.println("[AuthService>autenticar] Chequeando la existencia de archivo de credenciales en ruta: " + rutaCreds);
+        // Debug.print("[AuthService>autenticar] Chequeando la existencia de archivo de credenciales en ruta: " + rutaCreds);
         boolean existenCreds = Files.exists(Path.of(rutaCreds));
-        System.out.println("existe el archivo: " + existenCreds);
+        // Debug.print("existe el archivo: " + existenCreds);
         if (existenCreds) {
             Credenciales creds = leerCredenciales(rutaCreds);
 
             List<Creds> listaCreds = creds.getCreds();
             valido = listaCreds.stream().anyMatch(c -> c.usuario().equals(user) && c.pass().equals(pass));
-            System.out.println("Credenciales válidas: " + valido);
+            // Debug.print("Credenciales válidas: " + valido);
         }
         if (valido)
             resp = _Auth.AUTH_OK.getCode();
@@ -50,7 +51,7 @@ public class AuthService {
             return c;
 
         } catch (Exception e) {
-            System.out.println("[AuthService] Excepc " + e.getClass() + " al leer Credenciales");
+            Debug.printError("[AuthService] Excepc " + e.getClass() + " al leer Credenciales");
             return null;
         }
     }

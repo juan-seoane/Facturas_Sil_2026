@@ -2,6 +2,8 @@ package infrastructure.servicios.ocr;
 
 import domain.interfaces.IModeloFactura;
 import domain.records.ROI;
+
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ModeloOCR implements IModeloFactura {
@@ -50,12 +52,12 @@ public class ModeloOCR implements IModeloFactura {
   // Builder interno
   // -------------------------------
   public static class Builder {
-      public Map<String, String> ocrPorZona;
+      public Map<String, ROI> zonas = new LinkedHashMap<>();
+      public Map<String, String> ocrPorZona = new LinkedHashMap<>();;
       private String nombre;
       private String version = "1.0";
       private String rutaImagen;
-      private int dpi = 300;
-      public Map<String, ROI> zonas;
+      private int dpi = 600;
 
       public Builder nombre(String nombre) {
           this.nombre = nombre;
@@ -88,7 +90,7 @@ public class ModeloOCR implements IModeloFactura {
             this.ocrPorZona = ocrPorZona;
             return this;
         }
-        
+
         public ModeloOCR build() {
             return new ModeloOCR(this);
         }

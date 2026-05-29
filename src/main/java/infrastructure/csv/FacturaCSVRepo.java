@@ -4,6 +4,7 @@ import domain.interfaces.IfacturasRepo;
 import domain.records.Extracto;
 import domain.records.Factura;
 import infrastructure.servicios.config.Config;
+import presentation.helpers.Debug;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,17 +42,17 @@ public class FacturaCSVRepo implements IfacturasRepo {
     public static List<Factura> leerTodasLasFacturas() {
     // STUB : 26-03-18
     String ruta = Config.getConfig(Config.usuario).getConfigData().getRutas().getFCT();
-    System.out.println(
-        "[FacturaCSVRepo>leerTodasLasFacturas()] Leyendo facturas del archivo " + ruta);
+    // System.out.println(
+    //     "[FacturaCSVRepo>leerTodasLasFacturas()] Leyendo facturas del archivo " + ruta);
     try {
       List<Factura> listaFCT;
       listaFCT = CsvReader.leerFacturas(ruta);
-      System.out.println(
-          "[FacturaCSVRepo>leerTodasLasFacturas()] Facturas leidas = " + listaFCT.size());
+    //   System.out.println(
+    //       "[FacturaCSVRepo>leerTodasLasFacturas()] Facturas leidas = " + listaFCT.size());
       return listaFCT;
     } catch (IOException e) {
-      System.out.println(
-          "Error " + e.getClass() + " leyendo listaFCT de " + ruta + " : " + e.getMessage());
+      Debug.printError(
+          "[FacturaCSVRepo>leerTodasLasFacturas()] Error " + e.getClass() + " leyendo listaFCT de " + ruta + " : " + e.getMessage());
       System.exit(1);
     }
     return null;
@@ -79,7 +80,7 @@ public class FacturaCSVRepo implements IfacturasRepo {
     boolean existe = lista.stream().anyMatch(f -> f.getID().equals(facturaEditada.getID()));
 
     if (!existe) {
-      System.out.println(
+      Debug.printError(
           "[FacturaCSVRepo>actualizarFactura] La factura no existía. La lista de facturas no se"
               + " modificará!");
       return false;

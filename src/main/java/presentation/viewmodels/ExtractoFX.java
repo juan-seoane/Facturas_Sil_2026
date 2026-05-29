@@ -1,10 +1,7 @@
 package presentation.viewmodels;
 
 import domain.records.Extracto;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 public class ExtractoFX {
 
@@ -14,66 +11,81 @@ public class ExtractoFX {
   private final DoubleProperty iva = new SimpleDoubleProperty();
   private final DoubleProperty subtotal = new SimpleDoubleProperty();
   private final StringProperty concepto = new SimpleStringProperty();
+  private final IntegerProperty cantidad = new SimpleIntegerProperty(1);
 
   // === CONSTRUCTOR VACÍO ===
   public ExtractoFX() {}
 
   // === CONSTRUCTOR ===
   public ExtractoFX(double b, int ti, double i, double st, String conc) {
-    ExtractoFX fx = new ExtractoFX();
+      ExtractoFX fx = new ExtractoFX();
 
-    fx.base.set(b);
-    fx.tipoIVA.set(ti);
-    fx.iva.set(i);
-    fx.subtotal.set(st);
-    fx.concepto.set(conc);
-}
+      fx.base.set(b);
+      fx.tipoIVA.set(ti);
+      fx.iva.set(i);
+      fx.subtotal.set(st);
+      fx.concepto.set(conc);
+    }
 
-  // === CONSTRUCTOR DESDE DOMINIO ===
-  public static ExtractoFX fromDomain(Extracto e) {
-    ExtractoFX fx = new ExtractoFX();
+    // === CONSTRUCTOR DESDE DOMINIO ===
+    public static ExtractoFX fromDomain(Extracto e) {
+        ExtractoFX fx = new ExtractoFX();
 
-    fx.base.set(e.getBase());
-    fx.tipoIVA.set(e.getTipoIVA());
-    fx.iva.set(e.getIVA());
-    fx.subtotal.set(e.getSubtotal());
-    fx.concepto.set(e.getConcepto());
-    // System.out.println("[ExtractoFX.fromDomain] base= " + e.getBase() +" a FX: " + fx.baseProperty());
+        fx.base.set(e.getBase());
+        fx.tipoIVA.set(e.getTipoIVA());
+        fx.iva.set(e.getIVA());
+        fx.subtotal.set(e.getSubtotal());
+        fx.concepto.set(e.getConcepto());
+        // System.out.println("[ExtractoFX.fromDomain] base= " + e.getBase() +" a FX: " + fx.baseProperty());
 
     return fx;
-  }
+}
 
-  // === PROPERTIES PARA EL TREE TABLE VIEW ===
+// === PROPERTIES PARA EL TREE TABLE VIEW ===
 
-  public DoubleProperty baseProperty() {
+public DoubleProperty baseProperty() {
     return base;
-  }
+}
 
-  public DoubleProperty tipoIVAProperty() {
+public DoubleProperty tipoIVAProperty() {
     return tipoIVA;
-  }
+}
 
-  public DoubleProperty ivaProperty() {
+public DoubleProperty ivaProperty() {
     return iva;
-  }
+}
 
-  public DoubleProperty subtotalProperty() {
+public DoubleProperty subtotalProperty() {
     return subtotal;
-  }
+}
 
-  public StringProperty conceptoProperty() {
+public StringProperty conceptoProperty() {
     return concepto;
-  }
+}
 
-  // === GETTERS SIMPLES (opcional, pero útil) ===
+public IntegerProperty cantidadProperty() {
+    return cantidad;
+}
 
-  public double getBase() {
+// === GETTERS SIMPLES (opcional, pero útil) ===
+
+
+public int getCantidad() {
+    return cantidad.get();
+}
+
+public void setCantidad(int v) {
+    cantidad.set(v);
+}
+
+
+public double getBase() {
     return base.get();
-  }
+}
 
-  public double getTipoIVA() {
+public double getTipoIVA() {
     return tipoIVA.get();
-  }
+}
 
   public double getIVA() {
     return iva.get();

@@ -34,7 +34,7 @@ Cucumber
 
 ## Project Info
 
-Actualizado a JDK 25
+Actualizado a JDK 21
 El proyecto trata de renovar el programa en Java,
 y automatizar la entrada de facturas,
 de manera que el procedimiento sea más ágil: en vez de escribir uno a uno los datos de cada factura,
@@ -47,7 +47,7 @@ También se actualizan las GUI con JavaFX, en vez de Swing, y se usan FXtest + J
 Arquitectura Previa: Arquitectura MVC extendida...
 
 src/main/java/
-    1-modeloDominio/          
+    1-modeloDominio/
         base/                           <!-- clases base del dominio -->
         interfaces/                 	<!-- Interfaces del dominio: IOrdenable, Identificable, ConFecha -->
         dtos/                           <!-- objetos simples (DTOs, records) -->
@@ -76,11 +76,11 @@ src/main/java/
 	4-vista/			<!-- vista -->
 		helpers/						<!--  FxmlHelper.java o Splash.java -->
 src/main/resources/
-        fxml/							
+        fxml/
         css/							<!-- hojas de estilo CSS -->
         images/							<!-- imágenes utilizadas -->
         modelos_informes/               <!-- plantillas JRXML -->
-data/                   
+data/
     config/								<!-- archivos de configurac. para todos los usuarios (creds, etc...) -->
 		$USERNAME/						<!-- archivos de configurac. para cada usuario (rutas, anho, etc...) -->
     datos/
@@ -91,8 +91,8 @@ data/
 
 --------------------(aparte)--------------------------------------------------------------------------------------------------------------
 
-UML/				  
-especifSO/			  
+UML/
+especifSO/
 src/test/java  		  <!-- tests unitarios (JUnit y testFX) -->
 ------------------------------------------------------------------------------------------------------------------------------------------
 <!-- #endregion -->
@@ -107,11 +107,11 @@ Proyecto/
 │   │   ├── java/
 │   │   │   │
 │   │   │   ├── app/                          ← Application Layer
-│   │   │   │   │ 
+│   │   │   │   │
 │   │   │   │   ├── core
 │   │   │   │   │     ├── AppController.java
 │   │   │   │   │     └── AppContext.java
-│   │   │   │   │ 
+│   │   │   │   │
 │   │   │   │   ├── controladores/
 │   │   │   │   │     ├── FacturaController.java
 │   │   │   │   │     └── helpers/
@@ -231,7 +231,7 @@ Proyecto/
 ├── UML/                    <!-- diagramas UML usados para el desarrollo -->
 │
 └── especifSO/              <!-- archivos necesarios específicos para cada SO -->
-		  
+
 <!-- #endregion -->
 
 Clase	                Rol	                                                                                                            ¿Dónde va?

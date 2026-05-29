@@ -4,25 +4,42 @@ import domain.records.Extracto;
 
 public class ExtractoCsvMapper {
 
-    public static Extracto fromLineaExtracto(LineaCsvDTO l) {
+  public static Extracto fromLineaExtracto(LineaCsvDTO l) {
 
-        double base = parseDoubleSafe(l.get(9));
+    // 1) NumExtracto (columna 1)
+    int numExtracto = parseIntSafe(l.get(1));
 
-        // tipo IVA puede venir como "10" o "10.0"
-        int tipoIVA = (int) parseDoubleSafe(l.get(11));
+    // 2) Concepto (columna 6)
+    String concepto = l.get(6);
 
-        double iva = parseDoubleSafe(l.get(12));
-        double subtotal = parseDoubleSafe(l.get(13));
-        String concepto = l.get(6);
+    // 3) Cantidad (columna 8)
+    int cantidad = parseIntSafe(l.get(8));
 
-        return new Extracto(base, tipoIVA, iva, subtotal, concepto);
-    }
+    // 4) Base total (columna 9)
+    double base = parseDoubleSafe(l.get(9));
+
+    // 5) Precio unitario = base / cantidad
+    double precioUnitario = (cantidad == 0) ? 0 : base / cantidad;
+
+    // 6) Tipo IVA (columna 11)
+    int tipoIVA = (int) parseDoubleSafe(l.get(11));
+
+    // 7) IVA (columna 12)
+    double iva = parseDoubleSafe(l.get(12));
+
+    // 8) Total extracto (columna 13)
+    double totalExtracto = parseDoubleSafe(l.get(13));
+
+    return new Extracto(
+         precioUnitario, cantidad, tipoIVA, iva, totalExtracto, concepto);
+  }
 
     public static LineaCsvDTO toLineaExtracto(Extracto e) {
       String[] arr = new String[20];
 
       arr[0] = ""; // extracto → ID vacío
-      arr[1] = ""; // sin num de extracto
+      // TODO 26-05-28 : Añadir numExtracto durante la entrada de datos (OCR o manual)
+      arr[1] = e.getNumExtracto() != 0 ? String.valueOf(e.getNumExtracto()) : "0"; // sin num de extracto (por ahora)
       arr[6] = "extracto";
 
       arr[10] = String.valueOf(e.getBase());

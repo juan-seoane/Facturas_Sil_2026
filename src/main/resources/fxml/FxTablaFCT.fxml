@@ -31,7 +31,7 @@
                             <TreeTableColumn fx:id="colRS" text="RS" />
                             <TreeTableColumn fx:id="colConcepto" text="Concepto" />
                             <TreeTableColumn fx:id="colDev" text="Dev" />
-                            <TreeTableColumn fx:id="colNumExtr" text="Extr" />
+                            <TreeTableColumn fx:id="colCantidad" text="Cant" />
                             <TreeTableColumn fx:id="colBase" text="Base" />
                             <TreeTableColumn fx:id="colTipoIVA" text="Tipo IVA" />
                             <TreeTableColumn fx:id="colIVA" text="IVA" />

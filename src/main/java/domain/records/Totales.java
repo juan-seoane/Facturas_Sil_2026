@@ -14,7 +14,7 @@ public class Totales extends Extracto{
   }
 
   public Totales(double base, boolean variosIVAs, int tipoIVA, double iva, double subtotal, double baseNI, int ret, double retenciones, double total, String categoria) {
-    super(base, tipoIVA, iva, subtotal, categoria);
+    super(base,1, tipoIVA, iva, subtotal, categoria);
     this.variosIVAs = variosIVAs;
     this.baseNI = baseNI;
     this.ret = ret;

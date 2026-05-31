@@ -21,6 +21,7 @@ import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.layout.HBox;
 import javafx.util.converter.NumberStringConverter;
 import presentation.config.UIDataConfig;
+import presentation.helpers.Debug;
 import presentation.helpers.TableScaler;
 import presentation.viewmodels.ExtractoFX;
 import presentation.viewmodels.FacturaFX;
@@ -110,7 +111,7 @@ public class FxCntrlTablaFCT implements Initializable {
             // System.out.println("[FxCntrlTablaFCT>cargarConfigUI] UIDataConfig cargado:");
             // System.out.println(uiCfg);
         } catch (IOException e) {
-      System.out.println(
+      Debug.printError(
           "[FxCntrlTablaFCT>initialize] Error " + e.getClass() + " al cargar la UIDataConfig");
         }
     }
@@ -141,9 +142,9 @@ public class FxCntrlTablaFCT implements Initializable {
                 String id = col.getId();
                 double pref = col.getPrefWidth();
                 double cfg = uiCfg.getAncho(id);
-                System.out.println(id + " | Actual=" + pref + " | json=" + cfg);
+                Debug.print(id + " | Actual=" + pref + " | json=" + cfg);
             });
-            System.out.println("=====================================");
+            Debug.print("=====================================");
         }
 
     private void actualizarDatosPanelControl() {
@@ -328,7 +329,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setNumero(event.getNewValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-              LogCacheFacturaVacia();
+            //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -346,7 +347,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setFecha(Fecha.fromString(event.getNewValue()));
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-              LogCacheFacturaVacia();
+            //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -364,7 +365,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setRazonSocial(event.getNewValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-              LogCacheFacturaVacia();
+            //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -382,7 +383,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setConcepto(event.getNewValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-              LogCacheFacturaVacia();
+            //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -401,7 +402,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setDevolucion(event.getNewValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-              LogCacheFacturaVacia();
+            //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -446,7 +447,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setNota(event.getNewValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-              LogCacheFacturaVacia();
+            //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -465,7 +466,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setBase(n.doubleValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-              LogCacheFacturaVacia();
+            //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -485,7 +486,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setTipoIVA(n.intValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-              LogCacheFacturaVacia();
+            //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -504,7 +505,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setIVA(n.doubleValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-              LogCacheFacturaVacia();
+            //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -523,7 +524,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setSubtotal(n.doubleValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-              LogCacheFacturaVacia();
+            //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -543,7 +544,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setBaseNI(n.doubleValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-              LogCacheFacturaVacia();
+            //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -563,7 +564,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setRet(n.intValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-              LogCacheFacturaVacia();
+            //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -583,7 +584,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setRetenciones(n.doubleValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-              LogCacheFacturaVacia();
+            //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -602,7 +603,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setTotal(n.doubleValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-              LogCacheFacturaVacia();
+            //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -630,7 +631,7 @@ public class FxCntrlTablaFCT implements Initializable {
                     e -> {
                       Object rowItem = getTreeTableView().getTreeItem(getIndex()).getValue();
                       if (!(rowItem instanceof FacturaFX fx)) return;
-                      LogCacheFacturaVacia();
+                    //   LogCacheFacturaVacia();
                       insertarFacturaDesdeTabla(fx);
                       facturaVaciaEnEdicion = FacturaFX.filaVacia();
                       cargarDatos();
@@ -771,37 +772,37 @@ public class FxCntrlTablaFCT implements Initializable {
     //region EVENTOS FXML
     @FXML
     private void btnVisorFctPulsado(ActionEvent ev) {
-        System.out.println("[FxCntrlTablaFCT] VISOR pulsado");
+        Debug.print("[FxCntrlTablaFCT] VISOR pulsado");
     }
 
     @FXML
     private void btnNuevaFctPulsado(ActionEvent ev) {
-        System.out.println("[FxCntrlTablaFCT] NUEVA FCT pulsado");
+        Debug.print("[FxCntrlTablaFCT] NUEVA FCT pulsado");
     }
 
     @FXML
     private void btnEditarFctPulsado(ActionEvent ev) {
-        System.out.println("[FxCntrlTablaFCT] EDITAR pulsado");
+        Debug.print("[FxCntrlTablaFCT] EDITAR pulsado");
     }
 
     @FXML
     private void btnFiltrosFctPulsado(ActionEvent ev) {
-        System.out.println("[FxCntrlTablaFCT] FILTROS pulsado");
+        Debug.print("[FxCntrlTablaFCT] FILTROS pulsado");
     }
 
     @FXML
     private void btnBorrarFctPulsado(ActionEvent ev) {
-        System.out.println("[FxCntrlTablaFCT] BORRAR pulsado");
+        Debug.print("[FxCntrlTablaFCT] BORRAR pulsado");
     }
 
     @FXML
     private void btnScanFctPulsado(ActionEvent ev) {
-        System.out.println("[FxCntrlTablaFCT] SCAN pulsado");
+        Debug.print("[FxCntrlTablaFCT] SCAN pulsado");
     }
 
     @FXML
     private void btnImprimirFctPulsado(ActionEvent ev) {
-        System.out.println("[FxCntrlTablaFCT] IMPRIMIR pulsado");
+        Debug.print("[FxCntrlTablaFCT] IMPRIMIR pulsado");
     }
 
   // endregion
@@ -837,7 +838,7 @@ public class FxCntrlTablaFCT implements Initializable {
         boolean ok = AppContext.get().fact().editarFactura(factura);
 
         if (!ok) {
-        System.err.println("[FxCntrlTablaFCT] No se pudo actualizar la factura " + factura.getID());
+        Debug.printError("[FxCntrlTablaFCT] No se pudo actualizar la factura " + factura.getID());
         }
     }
 
@@ -854,7 +855,7 @@ public class FxCntrlTablaFCT implements Initializable {
         boolean ok = AppContext.get().fact().introducirFactura(factura);
 
         if (!ok) {
-            System.err.println("No se pudo insertar la factura " + factura.getID());
+            Debug.printError("No se pudo insertar la factura " + factura.getID());
             return;
         }
 
@@ -867,7 +868,7 @@ public class FxCntrlTablaFCT implements Initializable {
         // 1) Llamar al servicio de dominio
         boolean ok = AppContext.get().fact().borrarFactura(fxFactura.toDomain());
         if (!ok) {
-            System.err.println("No se pudo borrar la factura");
+            Debug.printError("No se pudo borrar la factura");
             return;
         }
 
@@ -962,13 +963,13 @@ public class FxCntrlTablaFCT implements Initializable {
     }
 
     private void LogCacheFacturaVacia() {
-    System.out.println("[FxCntrlTablaFCT>LogCacheFacturaVacia] facturaVaciaEnEdicion ahora es:");
-        System.out.println("  Numero: " + facturaVaciaEnEdicion.getNumero());
-        System.out.println("  Fecha: " + facturaVaciaEnEdicion.getFecha());
-        System.out.println("  RS: " + facturaVaciaEnEdicion.getRazonSocial());
-        System.out.println("  Concepto: " + facturaVaciaEnEdicion.getConcepto());
-        System.out.println("  Base: " + facturaVaciaEnEdicion.getBase());
-        System.out.println("  Total: " + facturaVaciaEnEdicion.getTotal());
-        System.out.println("  Nota: " + facturaVaciaEnEdicion.getNota());
+        Debug.print("[FxCntrlTablaFCT>LogCacheFacturaVacia] facturaVaciaEnEdicion ahora es:");
+        Debug.print("  Numero: " + facturaVaciaEnEdicion.getNumero());
+        Debug.print("  Fecha: " + facturaVaciaEnEdicion.getFecha());
+        Debug.print("  RS: " + facturaVaciaEnEdicion.getRazonSocial());
+        Debug.print("  Concepto: " + facturaVaciaEnEdicion.getConcepto());
+        Debug.print("  Base: " + facturaVaciaEnEdicion.getBase());
+        Debug.print("  Total: " + facturaVaciaEnEdicion.getTotal());
+        Debug.print("  Nota: " + facturaVaciaEnEdicion.getNota());
     }
 }

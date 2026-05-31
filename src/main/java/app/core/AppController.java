@@ -5,6 +5,7 @@ import app.services.FacturasService;
 import infrastructure.servicios.config.Config;
 import javafx.stage.Stage;
 import presentation.fxcontrollers.FxCntrlTablaFCT;
+import presentation.helpers.Debug;
 
 public class AppController {
 
@@ -32,11 +33,11 @@ public class AppController {
 
     public static void loginExitoso(String usuario) {
         AppContext.setUsuarioActual(usuario);
-        System.out.println(
-                "[AppController>loginExitoso] Usuario '" + usuario + "' ha iniciado sesión exitosamente.");
+        // Debug.print(
+                // "[AppController>loginExitoso] Usuario '" + usuario + "' ha iniciado sesión exitosamente.");
         // 1. Cargar Configuración del Usuario
         AppContext.configActual = Config.getConfig(usuario);
-        // System.out.println(
+        // Debug.print(
         //         "[AppController>loginExitoso] Configuración cargada para el usuario '"
         //                 + usuario
         //                 + "': "
@@ -52,7 +53,7 @@ public class AppController {
 
     AppContext.setTablaFCT(tablaFCT);
 
-        //   System.out.println("AppContext en loginExitoso: " + AppContext.getTablaFCT().hashCode());
+        //   Debug.print("AppContext en loginExitoso: " + AppContext.getTablaFCT().hashCode());
         // 4. Cargar el Panel de Control
         Stage pc = AppContext.get().nav().crearVentana(
                 VentanaID.PANEL_CONTROL,

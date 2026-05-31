@@ -60,6 +60,7 @@
     { "id": "totales.subTotal", "entity": "totales", "type": "campo" },
     { "id": "totales.Total", "entity": "totales", "type": "campo" },
 
+    { "id": "bloque", "entity": "generico", "type": "bloque" },
     { "id": "bloqueTotales", "entity": "totales", "type": "bloque" },
     { "id": "bloqueExtractos", "entity": "extracto", "type": "bloque" },
     { "id": "cabeceraExtractos", "entity": "extracto", "type": "bloque" },

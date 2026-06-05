@@ -1,0 +1,95 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Hereda del POM padre -->
+    <parent>
+        <groupId>com.sil.facturas</groupId>
+        <artifactId>facturasSil</artifactId>
+        <version>2.6</version>
+    </parent>
+
+    <artifactId>app</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+
+    <!-- Módulos propios -->
+    <dependency>
+        <groupId>com.sil.facturas</groupId>
+        <artifactId>domain</artifactId>
+        <version>2.6</version>
+    </dependency>
+
+    <dependency>
+        <groupId>com.sil.facturas</groupId>
+        <artifactId>infrastructure</artifactId>
+        <version>2.6</version>
+    </dependency>
+
+    <dependency>
+        <groupId>com.sil.facturas</groupId>
+        <artifactId>presentationcli</artifactId>
+        <version>2.6</version>
+    </dependency>
+
+
+    <!-- JavaFX -->
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-controls</artifactId>
+        <version>21.0.2</version>
+    </dependency>
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-fxml</artifactId>
+        <version>21.0.2</version>
+    </dependency>
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-graphics</artifactId>
+        <version>21.0.2</version>
+    </dependency>
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-base</artifactId>
+        <version>21.0.2</version>
+    </dependency>
+
+    <!-- Librerías externas -->
+    <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>com.opencsv</groupId>
+        <artifactId>opencsv</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>com.lowagie</groupId>
+        <artifactId>itext</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>net.sf.jasperreports</groupId>
+        <artifactId>jasperreports</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>net.sourceforge.tess4j</groupId>
+        <artifactId>tess4j</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+    </dependency>
+
+</dependencies>
+
+</project>

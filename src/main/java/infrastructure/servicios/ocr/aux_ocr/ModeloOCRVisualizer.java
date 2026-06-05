@@ -1,4 +1,4 @@
-package infrastructure.servicios.ocr.aux;
+package infrastructure.servicios.ocr.aux_ocr;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

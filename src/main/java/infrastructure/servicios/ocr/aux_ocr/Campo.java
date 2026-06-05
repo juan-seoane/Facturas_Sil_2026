@@ -1,4 +1,4 @@
-package infrastructure.servicios.ocr.aux;
+package infrastructure.servicios.ocr.aux_ocr;
 
 public class Campo {
   public String nombre;

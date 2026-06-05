@@ -1,4 +1,4 @@
-package infrastructure.servicios.ocr.aux;
+package infrastructure.servicios.ocr.aux_ocr;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

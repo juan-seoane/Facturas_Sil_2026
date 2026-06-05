@@ -3,9 +3,9 @@ package app.services;
 import domain.records.ConfigData;
 import domain.records.Factura;
 import infrastructure.csv.FacturaCSVRepo;
+import presentation.gui.viewmodels.FacturaFX;
 
 import java.util.List;
-import presentation.viewmodels.FacturaFX;
 
 public class FacturasService {
 

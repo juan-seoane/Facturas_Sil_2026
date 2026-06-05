@@ -2,6 +2,10 @@ package presentation.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import infrastructure.servicios.ocr.aux.OCRItem;
+import presentation.gui.config.TablaFCTConfig;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

@@ -1,0 +1,73 @@
+{
+  "nombre": "TEST1",
+  "version": "1.0",
+  "rutaImagen": "data/datos/ADMIN/scans/test1.png",
+  "dpi": 600,
+  "zonas": {
+    "extracto.TotalExtracto": {
+      "x1": 601.0,
+      "y1": 382.0,
+      "x2": 718.0,
+      "y2": 407.0
+    },
+    "bloque": {
+      "x1": 439.0,
+      "y1": 192.0,
+      "x2": 721.0,
+      "y2": 309.0
+    },
+    "extracto.Concepto": {
+      "x1": 132.0,
+      "y1": 384.0,
+      "x2": 438.0,
+      "y2": 406.0
+    },
+    "totales.Total": {
+      "x1": 610.0,
+      "y1": 554.0,
+      "x2": 719.0,
+      "y2": 587.0
+    },
+    "extracto.PrecioUnitario": {
+      "x1": 444.0,
+      "y1": 384.0,
+      "x2": 567.0,
+      "y2": 407.0
+    },
+    "totales.IVA": {
+      "x1": 640.0,
+      "y1": 523.0,
+      "x2": 715.0,
+      "y2": 550.0
+    },
+    "extracto.Cantidad": {
+      "x1": 47.0,
+      "y1": 384.0,
+      "x2": 125.0,
+      "y2": 406.0
+    },
+    "totales.subTotal": {
+      "x1": 645.0,
+      "y1": 494.0,
+      "x2": 706.0,
+      "y2": 516.0
+    },
+    "totales.tipoIVA": {
+      "x1": 494.0,
+      "y1": 519.0,
+      "x2": 547.0,
+      "y2": 551.0
+    }
+  },
+  "ocrPorZona": {
+    "extracto.TotalExtracto": "100.00",
+    "bloque": "N”DE FACTURA ES-001\nFECHA 29/01/2019\nN\u0027DE PEDIDO 1730/2019\nFECHA VENCIMIENTO 29/01/2019\n",
+    "extracto.Concepto": "TALLA PEQUEÑA TRAJE DE LUCES EN ROJO\n",
+    "totales.Total": "199.66",
+    "extracto.PrecioUnitario": "100.00",
+    "totales.IVA": "34.65",
+    "extracto.Cantidad": "1",
+    "totales.subTotal": "165.00",
+    "totales.tipoIVA": "21.0"
+  }
+}

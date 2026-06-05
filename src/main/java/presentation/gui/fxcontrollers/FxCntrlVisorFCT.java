@@ -1,4 +1,4 @@
-package presentation.fxcontrollers;
+package presentation.gui.fxcontrollers;
 /*
 import domain.records.Extracto;
 import domain.records.Factura;

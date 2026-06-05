@@ -1,29 +1,26 @@
 package infrastructure.servicios.ocr;
 
-import domain.interfaces.IModeloFactura;
 import domain.records.ROI;
+import infrastructure.servicios.ocr.aux.Bloque;
 
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
-public class ModeloOCR implements IModeloFactura {
+public class ModeloOCR {
 
-  private final String nombre;
-  private final String version;
-  private final String rutaImagen;
-  private final int dpi;
-  private final Map<String, ROI> zonas;
-  private final Map<String, String> ocrPorZona;
+  private String nombre;
+  private String version;
+  private int dpi;
+  private String rutaImagen;
 
-  private ModeloOCR(Builder builder) {
-    this.nombre = builder.nombre;
-    this.version = builder.version;
-    this.rutaImagen = builder.rutaImagen;
-    this.dpi = builder.dpi;
-    this.zonas = Map.copyOf(builder.zonas);
-    this.ocrPorZona = Map.copyOf(builder.ocrPorZona);
-  }
+  private Map<String, ROI> zonas;
+  private Map<String, String> ocrPorZona;
 
+  public List<Bloque> bloques; // <-- NUEVO
+
+  // ============================
+  // GETTERS
+  // ============================
   public String nombre() {
     return nombre;
   }
@@ -33,12 +30,12 @@ public class ModeloOCR implements IModeloFactura {
   }
 
   public int dpi() {
-      return dpi;
-    }
+    return dpi;
+  }
 
-    public String rutaImagen() {
-        return rutaImagen;
-    }
+  public String rutaImagen() {
+    return rutaImagen;
+  }
 
   public Map<String, ROI> zonas() {
     return zonas;
@@ -48,55 +45,74 @@ public class ModeloOCR implements IModeloFactura {
     return ocrPorZona;
   }
 
-  // -------------------------------
-  // Builder interno
-  // -------------------------------
-  public static class Builder {
-      public Map<String, ROI> zonas = new LinkedHashMap<>();
-      public Map<String, String> ocrPorZona = new LinkedHashMap<>();;
-      private String nombre;
-      private String version = "1.0";
-      private String rutaImagen;
-      private int dpi = 600;
-
-      public Builder nombre(String nombre) {
-          this.nombre = nombre;
-          return this;
-        }
-
-        public Builder version(String version) {
-            this.version = version;
-            return this;
-        }
-
-        public Builder rutaImagen(String ruta) {
-            this.rutaImagen = ruta;
-            return this;
-        }
-
-
-        public Builder dpi(int dpi) {
-            this.dpi = dpi;
-            return this;
-        }
-
-
-        public Builder zonas(Map<String, ROI> zonas) {
-            this.zonas = zonas;
-            return this;
-        }
-
-        public Builder ocrPorZona(Map<String, String> ocrPorZona) {
-            this.ocrPorZona = ocrPorZona;
-            return this;
-        }
-
-        public ModeloOCR build() {
-            return new ModeloOCR(this);
-        }
-    }
+    public List<Bloque> bloques() {
+        return bloques;
+    } // <-- NUEVO
 
     public static Builder builder() {
         return new Builder();
+    }
+
+  // ============================
+  // BUILDER
+  // ============================
+  public static class Builder {
+
+    private String nombre;
+    private String version;
+    private int dpi;
+    private String rutaImagen;
+
+    public Map<String, ROI> zonas = new java.util.LinkedHashMap<>();
+    public Map<String, String> ocrPorZona = new java.util.LinkedHashMap<>();
+
+    private List<Bloque> bloques; // <-- NUEVO
+
+    public Builder nombre(String n) {
+      this.nombre = n;
+      return this;
+    }
+
+    public Builder version(String v) {
+        this.version = v;
+        return this;
+    }
+
+    public Builder zonas(Map<String, ROI> z) {
+        this.zonas = z;
+        return this;
+    }
+
+    public Builder ocrPorZona(Map<String, String> o) {
+        this.ocrPorZona = o;
+        return this;
+    }
+
+    public Builder dpi(int d) {
+      this.dpi = d;
+      return this;
+    }
+
+    public Builder rutaImagen(String r) {
+      this.rutaImagen = r;
+      return this;
+    }
+
+    public Builder bloques(List<Bloque> b) {
+      this.bloques = b;
+      return this;
+    } // <-- NUEVO
+
+    public ModeloOCR build() {
+      ModeloOCR m = new ModeloOCR();
+      m.nombre = this.nombre;
+      m.version = this.version;
+      m.dpi = this.dpi;
+      m.rutaImagen = this.rutaImagen;
+      m.zonas = this.zonas;
+      m.ocrPorZona = this.ocrPorZona;
+      m.bloques = this.bloques; // <-- NUEVO
+      return m;
+    }
   }
 }

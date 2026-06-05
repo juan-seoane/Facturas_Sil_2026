@@ -1,4 +1,4 @@
-package presentation.config;
+package infrastructure.servicios.ocr.aux;
 
 import java.util.Map;
 

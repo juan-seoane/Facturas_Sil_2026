@@ -1,0 +1,14 @@
+{
+  "name": "Kali CLI 2GB",
+  "image": "kalilinux/kali-rolling",
+  "runArgs": ["--memory=2g"],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "vscjava.vscode-java-pack"
+      ]
+    }
+  },
+  "postCreateCommand": "apt update && apt install -y openjdk-21-jdk maven tesseract-ocr"
+}

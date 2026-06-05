@@ -12,6 +12,8 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import presentation.helpers.Debug;
+import presentation.helpers._Colores;
 
 public class ModeloOCRService {
 
@@ -23,7 +25,7 @@ public class ModeloOCRService {
 
     public ModeloOCRService() {
         this.builder = new ModeloOCR.Builder();
-    System.out.println(
+    Debug.print(
         ">>> [ModeloOCRService] NUEVO ModeloOCRServicebuilder: " + this.builder.hashCode());
         this.ocrService = new OCRService();
     }
@@ -33,7 +35,7 @@ public class ModeloOCRService {
     // ============================
     public void setInfoModelo(String rutaImagen, int dpi, String nombre, String version) {
         this.rutaImagen = rutaImagen;
-    System.out.println(
+    Debug.print(
         "[ModeloOCRService>setInfoModelo] Guardando Ruta imagen: " + this.rutaImagen);
         this.builder.rutaImagen(rutaImagen);
         this.builder.dpi(dpi);
@@ -112,11 +114,11 @@ public class ModeloOCRService {
 
         this.builder.zonas.put(nombreZona, roiReal);
         this.builder.ocrPorZona.put(nombreZona, textoOCR);
-    System.out.println(
-        ">>> [ModeloOCRService>addROI] Añadiendo ROI al builder: "
-            + this.builder.hashCode()
-            + " - Zonas en builder: "
-            + this.builder.zonas);
+        Debug.print(_Colores.BLUE,
+            ">>> [ModeloOCRService>addROI] Añadiendo ROI al builder: "
+                + this.builder.hashCode()
+                + " - Zonas en builder: "
+                + this.builder.zonas);
     }
 
     // ============================
@@ -132,7 +134,7 @@ public class ModeloOCRService {
     public void guardarJSON(ModeloOCR modelo, Path destino) throws Exception {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(modelo);
-        System.out.println(
+        Debug.print(_Colores.BLUE,
                 "[ModeloOCRService>guardarJSON] ROIs en builder: "
                         + this.builder.zonas
                         + " - ROIs en modelo final: "

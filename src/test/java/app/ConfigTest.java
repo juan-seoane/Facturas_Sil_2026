@@ -13,8 +13,8 @@ import domain.records.Credenciales;
 import domain.records.RutasConfig;
 import infrastructure.filesystem.Fichero;
 import infrastructure.filesystem._Ruta;
-import infrastructure.servicios.AuthService;
 import infrastructure.servicios.config.Config;
+import infrastructure.servicios.AuthService;
 
 public class ConfigTest {
      //Declara el usuario del que testear los datos

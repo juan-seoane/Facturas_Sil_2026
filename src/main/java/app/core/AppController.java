@@ -4,7 +4,7 @@ import app.helpers.VentanaID;
 import app.services.FacturasService;
 import infrastructure.servicios.config.Config;
 import javafx.stage.Stage;
-import presentation.fxcontrollers.FxCntrlTablaFCT;
+import presentation.gui.fxcontrollers.FxCntrlTablaFCT;
 import presentation.helpers.Debug;
 
 public class AppController {

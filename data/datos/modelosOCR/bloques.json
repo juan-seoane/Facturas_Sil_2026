@@ -1,0 +1,112 @@
+[
+  {
+    "id": "bloque",
+    "nombre": "bloque",
+    "entity": "generico",
+    "x": 0.08133333333333333,
+    "y": 0.8897266729500471,
+    "width": 0.2813333333333333,
+    "height": 0.07540056550424128,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "bloqueExtractos",
+    "nombre": "bloqueExtractos",
+    "entity": "generico",
+    "x": 0.042666666666666665,
+    "y": 0.3006597549481621,
+    "width": 0.9213333333333333,
+    "height": 0.16022620169651272,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "finalExtractos",
+    "nombre": "finalExtractos",
+    "entity": "generico",
+    "x": 0.050666666666666665,
+    "y": 0.4354382657869934,
+    "width": 0.904,
+    "height": 0.021677662582469368,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "lineaExtracto",
+    "nombre": "lineaExtracto",
+    "entity": "generico",
+    "x": 0.058666666666666666,
+    "y": 0.3590951932139491,
+    "width": 0.8986666666666666,
+    "height": 0.027332704995287466,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "bloqueTotales",
+    "nombre": "bloqueTotales",
+    "entity": "generico",
+    "x": 0.616,
+    "y": 0.4655984919886899,
+    "width": 0.3506666666666667,
+    "height": 0.10367577756833177,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "cabeceraExtractos",
+    "nombre": "cabeceraExtractos",
+    "entity": "generico",
+    "x": 0.052,
+    "y": 0.30348727615457116,
+    "width": 0.9066666666666666,
+    "height": 0.05372290292177191,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "alturaLineaExtracto",
+    "nombre": "alturaLineaExtracto",
+    "entity": "generico",
+    "x": 0.064,
+    "y": 0.3600377002827521,
+    "width": 0.10266666666666667,
+    "height": 0.02544769085768143,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "bloque",
+    "nombre": "bloque",
+    "entity": "generico",
+    "x": 0.027467350668074906,
+    "y": 0.18306636465528997,
+    "width": 0.27074959944245264,
+    "height": 0.10678871271558582,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "bloque",
+    "nombre": "bloque",
+    "entity": "generico",
+    "x": 0.3197984399211578,
+    "y": 0.18167949825638627,
+    "width": 0.2354344342977849,
+    "height": 0.10956244551339324,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "bloque",
+    "nombre": "bloque",
+    "entity": "generico",
+    "x": 0.5944719466019068,
+    "y": 0.17890576545857884,
+    "width": 0.36884728039986303,
+    "height": 0.11788364390681551,
+    "hijos": [],
+    "campos": []
+  }
+]

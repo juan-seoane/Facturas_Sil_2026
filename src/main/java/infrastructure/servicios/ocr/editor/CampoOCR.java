@@ -1,3 +1,4 @@
+
 package infrastructure.servicios.ocr.editor;
 
 import javafx.beans.property.DoubleProperty;

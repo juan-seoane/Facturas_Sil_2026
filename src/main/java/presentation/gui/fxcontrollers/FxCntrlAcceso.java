@@ -1,4 +1,4 @@
-package presentation.fxcontrollers;
+package presentation.gui.fxcontrollers;
 
 import java.io.IOException;
 import java.net.URL;

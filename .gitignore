@@ -12,6 +12,9 @@ target/
 *.iml
 
 # VSCode
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
 .vscode/
 .history/
 .settings/
@@ -35,6 +38,9 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Directorios específicos del sistema o del entorno local
+especifSO/
 
 # Temporary files
 *.tmp

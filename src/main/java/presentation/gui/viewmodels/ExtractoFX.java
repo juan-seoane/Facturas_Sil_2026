@@ -1,4 +1,4 @@
-package presentation.viewmodels;
+package presentation.gui.viewmodels;
 
 import domain.records.Extracto;
 import javafx.beans.property.*;
@@ -12,6 +12,7 @@ public class ExtractoFX {
   private final DoubleProperty subtotal = new SimpleDoubleProperty();
   private final StringProperty concepto = new SimpleStringProperty();
   private final IntegerProperty cantidad = new SimpleIntegerProperty(1);
+  private final BooleanProperty devolucion = new SimpleBooleanProperty();
 
   // === CONSTRUCTOR VACÍO ===
   public ExtractoFX() {}
@@ -38,8 +39,20 @@ public class ExtractoFX {
         fx.concepto.set(e.getConcepto());
         // System.out.println("[ExtractoFX.fromDomain] base= " + e.getBase() +" a FX: " + fx.baseProperty());
 
-    return fx;
-}
+        return fx;
+    }
+
+  public void normalizarSignos() {
+    if (devolucion.get()) {
+      base.set(-Math.abs(base.get()));
+      iva.set(-Math.abs(iva.get()));
+      subtotal.set(-Math.abs(subtotal.get()));
+    } else {
+      base.set(Math.abs(base.get()));
+      iva.set(Math.abs(iva.get()));
+      subtotal.set(Math.abs(subtotal.get()));
+    }
+  }
 
 // === PROPERTIES PARA EL TREE TABLE VIEW ===
 
@@ -96,6 +109,14 @@ public double getTipoIVA() {
   }
 
   public String getConcepto() {
-    return concepto.get();
+      return concepto.get();
+  }
+
+  public BooleanProperty devolucionProperty() {
+    return devolucion;
+  }
+
+  public void setDevolucion(boolean b) {
+    devolucion.set(b);
   }
 }

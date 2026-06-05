@@ -1,0 +1,79 @@
+[
+  {
+    "id": "bloque",
+    "nombre": "bloque",
+    "entity": "generico",
+    "x": 61.0,
+    "y": 944.0,
+    "width": 211.0,
+    "height": 80.0,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "bloqueExtractos",
+    "nombre": "bloqueExtractos",
+    "entity": "generico",
+    "x": 32.0,
+    "y": 319.0,
+    "width": 691.0,
+    "height": 170.0,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "finalExtractos",
+    "nombre": "finalExtractos",
+    "entity": "generico",
+    "x": 38.0,
+    "y": 462.0,
+    "width": 678.0,
+    "height": 23.0,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "lineaExtracto",
+    "nombre": "lineaExtracto",
+    "entity": "generico",
+    "x": 44.0,
+    "y": 381.0,
+    "width": 674.0,
+    "height": 29.0,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "bloqueTotales",
+    "nombre": "bloqueTotales",
+    "entity": "generico",
+    "x": 462.0,
+    "y": 494.0,
+    "width": 263.0,
+    "height": 110.0,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "cabeceraExtractos",
+    "nombre": "cabeceraExtractos",
+    "entity": "generico",
+    "x": 39.0,
+    "y": 322.0,
+    "width": 680.0,
+    "height": 57.0,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "alturaLineaExtracto",
+    "nombre": "alturaLineaExtracto",
+    "entity": "generico",
+    "x": 48.0,
+    "y": 382.0,
+    "width": 77.0,
+    "height": 27.0,
+    "hijos": [],
+    "campos": []
+  }
+]

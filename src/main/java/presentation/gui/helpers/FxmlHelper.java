@@ -1,4 +1,4 @@
-package presentation.helpers;
+package presentation.gui.helpers;
 
 import java.io.IOException;
 

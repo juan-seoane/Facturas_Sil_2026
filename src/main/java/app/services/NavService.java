@@ -13,7 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import presentation.helpers.FxmlHelper;
+import presentation.gui.helpers.FxmlHelper;
 
 /* CONTROLA LA CREACIÓN DE ESCENAS Y DEMÁS ASPECTOS DE LA NAVEGACIÓN POR VENTANAS */
 public class NavService {

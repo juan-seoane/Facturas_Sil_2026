@@ -6,7 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import presentation.fxcontrollers.FxROIEditorController;
+import presentation.gui.fxcontrollers.FxROIEditorController;
 
 public class ROIEditor extends Application {
 
@@ -14,23 +14,24 @@ public class ROIEditor extends Application {
 
   @Override
   public void start(Stage stage) throws Exception {
-    
-    
+
+
     // ============================================================
     // 1) Cargar imagen desde disco
     // ============================================================
     String usuario = "admin";
     String nombreImagen = "test1.png";
-    
+
     rutaImagen = _Ruta.DATOS.getRuta() + "/" + usuario.toUpperCase() + "/scans/" + nombreImagen;
-    
+
     FXMLLoader loader = new FXMLLoader(getClass().getResource(_Ruta.FXML.getRuta() + "/FxROIEditor.fxml"));
     Parent root = loader.load();
-    
+
     FxROIEditorController fxCtrl = loader.getController();
     fxCtrl.cargarImagen(rutaImagen);
-    
-    // Crear Stage temporal para mostrar el editor  
+    fxCtrl.cargarBloquesDespuesDeImagen(); // Cargar bloques después de cargar la imagen, para que se normalicen correctamente
+
+    // Crear Stage temporal para mostrar el editor
     stage.setTitle("Editor de ROIs");
     stage.setScene(new Scene(root));
     stage.show();

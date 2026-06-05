@@ -1,4 +1,4 @@
-package presentation.fxcontrollers;
+package presentation.gui.fxcontrollers;
 
 import app.core.AppContext;
 import infrastructure.servicios.config.Config;

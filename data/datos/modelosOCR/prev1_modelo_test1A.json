@@ -1,0 +1,59 @@
+{
+  "nombre": "TEST1A_BLOQUES",
+  "version": "1.0",
+  "rutaImagen": "data/datos/ADMIN/scans/test1.png",
+  "dpi": 600,
+  "zonas": {
+    "bloque": {
+      "x1": 61.0,
+      "y1": 944.0,
+      "x2": 272.0,
+      "y2": 1024.0
+    },
+    "bloqueExtractos": {
+      "x1": 32.0,
+      "y1": 319.0,
+      "x2": 723.0,
+      "y2": 489.0
+    },
+    "finalExtractos": {
+      "x1": 38.0,
+      "y1": 462.0,
+      "x2": 716.0,
+      "y2": 485.0
+    },
+    "lineaExtracto": {
+      "x1": 44.0,
+      "y1": 381.0,
+      "x2": 718.0,
+      "y2": 410.0
+    },
+    "bloqueTotales": {
+      "x1": 462.0,
+      "y1": 494.0,
+      "x2": 725.0,
+      "y2": 604.0
+    },
+    "cabeceraExtractos": {
+      "x1": 39.0,
+      "y1": 322.0,
+      "x2": 719.0,
+      "y2": 379.0
+    },
+    "[PARAM] alturaLineaExtracto": {
+      "x1": 48.0,
+      "y1": 382.0,
+      "x2": 125.0,
+      "y2": 409.0
+    }
+  },
+  "ocrPorZona": {
+    "bloque": "BANCO SANTANDER\nIBAN: ES12 3456 7891\nSWIFT/BIC: ABCDESMIOX\n",
+    "bloqueExtractos": "CANT. DESCRIPCIÓN PRECIO UNITARIO IMPORTE\n1 TALLA PEQUEÑA TRAJE DE LUCES EN ROJO 100.00 100.00\n2 MUI GRANDE CHURROLITO 25.00 50.00\n3 EQUIPAJE DE FÚTBOL 5.00 15.00\n",
+    "finalExtractos": "",
+    "lineaExtracto": "1 TALLA PEQUEÑA TRAJE DE LUCES EN ROJO 100.00 100.00\n",
+    "bloqueTotales": "SUBTOTAL 165.00\nINA21.0% 3465\nTOTAL 199.65 €\n",
+    "cabeceraExtractos": "CANT. DESCRIPCIÓN PRECIO UNITARIO IMPORTE\n",
+    "[PARAM] alturaLineaExtracto": "1"
+  }
+}

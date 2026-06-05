@@ -1,4 +1,4 @@
-package presentation.viewmodels;
+package presentation.gui.viewmodels;
 
 import domain.records.*;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class FacturaFX {
     private final IntegerProperty ret = new SimpleIntegerProperty();
     private final DoubleProperty retenciones = new SimpleDoubleProperty();
     private final DoubleProperty total = new SimpleDoubleProperty();
-    private ObservableList<ExtractoFX> extractos = FXCollections.observableArrayList();
+    private ObservableList<ExtractoFX> extractosFX = FXCollections.observableArrayList();
     private final BooleanProperty notaExiste = new SimpleBooleanProperty(false);
 
   // -------------------------
@@ -105,7 +105,7 @@ public class FacturaFX {
         this.retenciones.set(0);
         this.total.set(0);
 
-        this.extractos = FXCollections.observableArrayList();
+        this.extractosFX = FXCollections.observableArrayList();
     }
 
     public int getId() {
@@ -331,11 +331,11 @@ public class FacturaFX {
     }
 
     public ObservableList<ExtractoFX> getExtractos() {
-        return extractos;
+        return extractosFX;
     }
 
     public void setExtractos(List<ExtractoFX> lista) {
-        this.extractos = FXCollections.observableArrayList(lista);
+        this.extractosFX = FXCollections.observableArrayList(lista);
     }
 
     // -------------------------
@@ -356,9 +356,8 @@ public class FacturaFX {
         fx.setNota(f.nota != null ? f.nota.getTexto() : "");
 
         for (Extracto e : f.extractos) {
-            fx.addExtracto(ExtractoFX.fromDomain(e)); // o ExtractoFX si lo tienes separado
+        fx.extractosFX.add(ExtractoFX.fromDomain(e));
         }
-
 
         // Totales
         fx.setBase(f.totales.getBase());
@@ -431,8 +430,21 @@ public class FacturaFX {
         }
     }
 
+  public void aplicarDevolucionEnCascada() {
+
+    boolean dev = this.devolucionProperty().get();
+
+    for (ExtractoFX e : getExtractos()) {
+      e.setDevolucion(dev);
+      e.normalizarSignos();
+    }
+
+    // Y la propia factura también:
+    this.normalizarSignos();
+  }
+
     public void addExtracto(ExtractoFX e) {
-        extractos.add(e);
+        extractosFX.add(e);
     }
 
   public void normalizarSignos() {

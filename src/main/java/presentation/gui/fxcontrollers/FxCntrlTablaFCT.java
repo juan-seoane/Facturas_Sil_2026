@@ -1,4 +1,4 @@
-package presentation.fxcontrollers;
+package presentation.gui.fxcontrollers;
 
 import app.core.AppContext;
 import domain.records.Factura;
@@ -21,10 +21,10 @@ import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.layout.HBox;
 import javafx.util.converter.NumberStringConverter;
 import presentation.config.UIDataConfig;
+import presentation.gui.helpers.TableScaler;
+import presentation.gui.viewmodels.ExtractoFX;
+import presentation.gui.viewmodels.FacturaFX;
 import presentation.helpers.Debug;
-import presentation.helpers.TableScaler;
-import presentation.viewmodels.ExtractoFX;
-import presentation.viewmodels.FacturaFX;
 
 public class FxCntrlTablaFCT implements Initializable {
 
@@ -613,96 +613,97 @@ public class FxCntrlTablaFCT implements Initializable {
 
     private void configurarAcciones() {
 
-    colAcciones.setCellFactory(
-        col ->
-            new TreeTableCell<Object, Void>() {
+        colAcciones.setCellFactory(
+            col ->
+                new TreeTableCell<Object, Void>() {
 
-              private final Button btnAddFactura = new Button("+Factura");
-              // private final Button btnAddExtracto = new Button("+Extracto");
-              private final Button btnBorrar = new Button("-Borrar");
-              private final HBox contFacturaVacia = new HBox(5, btnAddFactura);
-              private final HBox contFactura = new HBox(5, btnBorrar);
+                private final Button btnAddFactura = new Button("+Factura");
+                // private final Button btnAddExtracto = new Button("+Extracto");
+                private final Button btnBorrar = new Button("-Borrar");
+                private final HBox contFacturaVacia = new HBox(5, btnAddFactura);
+                private final HBox contFactura = new HBox(5, btnBorrar);
 
-              // private final HBox contExtracto = new HBox(5, btnBorrar);
+                // private final HBox contExtracto = new HBox(5, btnBorrar);
 
-              {
+                {
                 // +Factura → insertar nueva factura
                 btnAddFactura.setOnAction(
                     e -> {
-                      Object rowItem = getTreeTableView().getTreeItem(getIndex()).getValue();
-                      if (!(rowItem instanceof FacturaFX fx)) return;
+                        Object rowItem = getTreeTableView().getTreeItem(getIndex()).getValue();
+                        if (!(rowItem instanceof FacturaFX fx)) return;
                     //   LogCacheFacturaVacia();
-                      insertarFacturaDesdeTabla(fx);
-                      facturaVaciaEnEdicion = FacturaFX.filaVacia();
-                      cargarDatos();
+                        insertarFacturaDesdeTabla(fx);
+                        facturaVaciaEnEdicion = FacturaFX.filaVacia();
+                        cargarDatos();
                     });
 
                 // +Extracto → insertar extracto en factura
                 /*
                 btnAddExtracto.setOnAction(
                         e -> {
-                          Object rowItem = getTreeTableView().getTreeItem(getIndex()).getValue();
-                          if (!(rowItem instanceof FacturaFX fxFactura)) return;
-                          ExtractoFX nuevo = crearExtractoVacio();
-                          insertarExtractoDesdeTabla(fxFactura, nuevo);
+                            Object rowItem = getTreeTableView().getTreeItem(getIndex()).getValue();
+                            if (!(rowItem instanceof FacturaFX fxFactura)) return;
+                            ExtractoFX nuevo = crearExtractoVacio();
+                            insertarExtractoDesdeTabla(fxFactura, nuevo);
                         });
                     */
                 // Borrar → según si es factura o extracto
                 btnBorrar.setOnAction(
                     e -> {
-                      Object rowItem = getTreeTableView().getTreeItem(getIndex()).getValue();
-                      if (rowItem instanceof FacturaFX fxFactura) {
+                        Object rowItem = getTreeTableView().getTreeItem(getIndex()).getValue();
+                        if (rowItem instanceof FacturaFX fxFactura) {
                         borrarFacturaDesdeTabla(fxFactura);
-                      } else if (rowItem instanceof ExtractoFX fxExtracto) {
+                        } else if (rowItem instanceof ExtractoFX fxExtracto) {
                         borrarExtractoDesdeTabla(fxExtracto);
-                      }
+                        }
                     });
-              }
+                }
 
-              @Override
-              protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
+        @Override
+        protected void updateItem(Void item, boolean empty) {
+        super.updateItem(item, empty);
 
                 if (empty) {
-                  setGraphic(null);
-                  return;
+                    setGraphic(null);
+                    return;
                 }
 
                 @SuppressWarnings("deprecation")
                 TreeItem<Object> treeItem = getTreeTableRow().getTreeItem();
                 if (treeItem == null) {
-                  setGraphic(null);
-                  return;
+                    setGraphic(null);
+                    return;
                 }
 
                 Object value = treeItem.getValue();
                 if (value == null) {
-                  setGraphic(null);
-                  return;
+                    setGraphic(null);
+                    return;
                 }
 
                 // 1) Fila vacía → +Factura
                 if (value instanceof FacturaFX fx && fx.getId() == 0) {
-                  setGraphic(contFacturaVacia); // SOLO +Factura
-                  return;
+                    setGraphic(contFacturaVacia); // SOLO +Factura
+                    return;
                 }
 
                 // 2) Factura normal → Borrar
                 if (value instanceof FacturaFX) {
-                  setGraphic(contFactura); // SOLO Borrar
-                  return;
+                    setGraphic(contFactura); // SOLO Borrar
+                    return;
                 }
 
                 // 3) Extracto → nada
                 if (value instanceof ExtractoFX) {
-                  setGraphic(null);
-                  return;
+                    setGraphic(null);
+                    return;
                 }
 
                 setGraphic(null);
-              }
+                }
             });
-    }
+
+        }
 
     private void configurarEscalado() {
         Platform.runLater(
@@ -747,6 +748,12 @@ public class FxCntrlTablaFCT implements Initializable {
 
     // 4) Añadir facturas y extractos
     for (FacturaFX f : facturas) {
+
+      f.devolucionProperty()
+          .addListener(
+              (obs, oldVal, newVal) -> {
+                f.aplicarDevolucionEnCascada();
+              });
 
       TreeItem<Object> nodoFactura = new TreeItem<>(f);
 

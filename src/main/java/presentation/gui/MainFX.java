@@ -1,4 +1,4 @@
-package presentation;
+package presentation.gui;
 
 
 import app.core.AppContext;
@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 
-public class Main extends Application {
+public class MainFX extends Application {
 
    @Override
 public void start(Stage stageSplash) {
@@ -19,7 +19,7 @@ public void start(Stage stageSplash) {
             } // no necesita init
 
     );
-    
+
     splash.initStyle(StageStyle.UNDECORATED);
     splash.show();
 

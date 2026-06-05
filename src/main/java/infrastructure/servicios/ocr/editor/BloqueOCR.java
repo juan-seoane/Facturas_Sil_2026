@@ -1,16 +1,16 @@
 package infrastructure.servicios.ocr.editor;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-
 import java.util.ArrayList;
 import java.util.List;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 
 public class BloqueOCR {
 
     private final String id;        // Identificador único: "bloqueTotales", "bloque_1", etc.
     private String nombre;          // Nombre visible: "Totales", "Extractos", "Bloque 1"
-    private final String entity;    // "factura", "extracto", "totales", "generico"
+    private final String entity;
+
 
     // Coordenadas relativas (0..1) respecto a la imagen
     private final DoubleProperty x = new SimpleDoubleProperty();
@@ -22,10 +22,22 @@ public class BloqueOCR {
     private final List<BloqueOCR> hijos = new ArrayList<>();
     private final List<CampoOCR> campos = new ArrayList<>();
 
-    public BloqueOCR(String id, String nombre, String entity) {
+    public BloqueOCR(
+        String id, String nombre, String entity) {
         this.id = id;
         this.nombre = nombre;
         this.entity = entity;
+    }
+
+    public BloqueOCR(
+        String id, String nombre, String entity, double x, double y, double width, double height) {
+        this.id = id;
+        this.nombre = nombre;
+        this.entity = entity;
+        this.x.set(x);
+        this.y.set(y);
+        this.width.set(width);
+        this.height.set(height);
     }
 
     // -------------------------
@@ -88,5 +100,6 @@ public class BloqueOCR {
                 ", hijos=" + hijos.size() +
                 '}';
     }
+
 }
 

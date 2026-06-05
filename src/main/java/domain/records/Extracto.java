@@ -20,6 +20,10 @@ public class Extracto implements Comparable<Extracto> {
         this.concepto = concepto;
     }
 
+    public Extracto() {
+        //TODO Auto-generated constructor stub
+    }
+
     public int getTipoiva() {
         return tipoiva;
     }

@@ -1,4 +1,4 @@
-package presentation.config;
+package presentation.gui.config;
 
 import java.util.Map;
 

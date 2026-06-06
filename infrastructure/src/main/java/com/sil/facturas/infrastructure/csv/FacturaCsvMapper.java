@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sil.facturas.domain.records.*;
+import com.sil.facturas.infrastructure.records.LineaCsvDTO;
 
 public class FacturaCsvMapper {
 

@@ -1,4 +1,4 @@
-package com.sil.facturas.infrastructure.csv;
+package com.sil.facturas.infrastructure.records;
 
 public record LineaCsvDTO(String[] columnas) {
     public String get(int index) {

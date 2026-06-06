@@ -1,4 +1,4 @@
-package com.sil.facturas.infrastructure.servicios.ocr.aux_ocr;
+package com.sil.facturas.infrastructure.records;
 
 public record Rect(double x1, double y1, double x2, double y2) {
   public double width() {

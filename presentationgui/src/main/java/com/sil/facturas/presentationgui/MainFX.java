@@ -2,29 +2,20 @@ package com.sil.facturas.presentationgui;
 
 
 import com.sil.facturas.app.core.AppContext;
-import com.sil.facturas.app.helpers.VentanaID;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+
 
 
 public class MainFX extends Application {
 
    @Override
-public void start(Stage stageSplash) {
+    public void start(Stage stageSplash) {
 
-    Stage splash = AppContext.get().nav().crearVentana(
-        VentanaID.SPLASH,
-            controller -> {
-            } // no necesita init
-
-    );
-
-    splash.initStyle(StageStyle.UNDECORATED);
-    splash.show();
-
-
-}
+        AppContext.get().nav().mostrarSplash();
+        
+    }
 
     public static void main(String[] args) {
         launch(args);

@@ -5,7 +5,7 @@ import java.util.List;
 import com.sil.facturas.domain.records.ConfigData;
 import com.sil.facturas.domain.records.Factura;
 import com.sil.facturas.infrastructure.csv.FacturaCSVRepo;
-import com.sil.facturas.presentationgui.viewmodels.FacturaFX;
+
 
 public class FacturasService {
 
@@ -17,10 +17,6 @@ public class FacturasService {
 
   public List<Factura> leerFacturas() {
     return repo.leerListaFacturas();
-  }
-// TODO : 2026/06/05 : Cambiar FacturaFX por una Interfaz...
-  public List<FacturaFX> leerFacturasFX() {
-    return leerFacturas().stream().map(FacturaFX::fromDomain).toList();
   }
 
   public void guardarFacturas(List<Factura> lista) {

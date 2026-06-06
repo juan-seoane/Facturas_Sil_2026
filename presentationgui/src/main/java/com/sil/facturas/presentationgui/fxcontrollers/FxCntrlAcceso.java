@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.sil.facturas.app.api.IaccesoUI;
 import com.sil.facturas.app.core.AppContext;
 import com.sil.facturas.app.core.AppController;
 import javafx.animation.PauseTransition;
@@ -22,7 +23,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
-public class FxCntrlAcceso implements Initializable {
+public class FxCntrlAcceso implements Initializable, IaccesoUI{
 
 //#region campos fxml
     @FXML private TextField txtUsuario;
@@ -180,45 +181,26 @@ public class FxCntrlAcceso implements Initializable {
 
     //#endregion
 
-//#region post-auth
+    //#region post-auth
     public void fallo() {
-        scene_acceso2 = AppContext.get().nav().crearEscena("FxAcceso2");
-        AppContext.get().nav().cambiarEscena(stage, scene_acceso2, handlerTeclas);
-        System.out.println("[Acceso>fallo] intentos>=5 y AUTH_FAIL] El proceso de Autenticación ha fallado!");
-        System.out.println("[Acceso>fallo] El programa se cerrará!");
-        imprimir("\nEl proceso de Autenticación ha fallado!");
-        imprimir("\nEl programa se cerrará!\nPulse cualquier tecla para continuar...");
-        ventanaAcceso.requestFocus();
-        System.exit(0);
+        imprimirMensaje("El proceso de autenticación ha fallado.\nEl programa se cerrará.");
+        PauseTransition pausa = new PauseTransition(Duration.seconds(1));
+        pausa.setOnFinished(e -> {
+            AppContext.get().nav().cerrarLoginPorFallo();
+        });
+        pausa.play();
+
     }
 
     public void acierto() {
-        FxCntrlAcceso.usuario = txtUsuario.getText();
-        AppContext.setUsuarioActual(FxCntrlAcceso.usuario);
-        FxCntrlAcceso.aceptado = true;
-        // TODO : 26-03-16 : La nueva Config no se debería cargar desde el FxController...
-
-        scene_acceso2 = AppContext.get().nav().crearEscena("FxAcceso2");
-        AppContext.get().nav().cambiarEscena(stage, scene_acceso2, handlerTeclas);
-        //System.out.println("[FxAcceso>acierto] intentos<5 y cred OK]...OK, entrando...pulse una tecla para continuar");
-        imprimir("Ok...Entrando!\nBienvenido a FacturasSIL 24!\nPor favor espere...");
-        ventanaAcceso.requestFocus();
-        // NOTE : 26-03-17 : En vez de un Thread.sleep -> PauseTransition
-        PauseTransition pausa = new PauseTransition(Duration.seconds(2));
+        String usuario = txtUsuario.getText();
+        imprimirMensaje("Bienvenido, " + usuario + " a FacturasSil 2.6");
+        PauseTransition pausa = new PauseTransition(Duration.seconds(1));
         pausa.setOnFinished(e -> {
-            // lo que quieras hacer después de los 3 segundos
-            if (!FxCntrlAcceso.entrando) {
-                FxCntrlAcceso.entrando = true;
-                try{
-                    pulsartecla();
-                    System.out.println("[Acceso] Acierto - Entrando...!!!!");
-                } catch (IOException ex) {
-                    System.out.println("Error " + ex.getClass() + " en FxCntrlAcceso, lin 125");
-                }
-            }
+            AppContext.get().nav().loginCorrecto(usuario); 
         });
         pausa.play();
-        // TODO : 26-03-17 : A partir de aquí se cierra esta escena, solamente, y por otro lado (AuthService) arranca el Controlador Principal, y con él el programa  en si...
+
     }
 
     public void reintentar() throws InterruptedException {
@@ -232,4 +214,8 @@ public class FxCntrlAcceso implements Initializable {
     }
     //#endregion
 
+    @Override
+    public void imprimirMensaje(String mensaje) {
+        imprimir(mensaje);
+    }
 }

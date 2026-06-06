@@ -1,10 +1,9 @@
 package com.sil.facturas.app.core;
 
-import com.sil.facturas.app.helpers.VentanaID;
 import com.sil.facturas.app.services.FacturasService;
 import com.sil.facturas.infrastructure.servicios.config.Config;
+
 import javafx.stage.Stage;
-import com.sil.facturas.presentationgui.fxcontrollers.FxCntrlTablaFCT;
 
 
 public class AppController {
@@ -22,45 +21,21 @@ public class AppController {
 
     public void iniciarAplicacion() {
 
-        Stage acceso = AppContext.get().nav().crearVentana(
-                VentanaID.LOGIN,
-                controller -> {
-                } // si no necesitas inicializar nada
-        );
+        AppContext.get().nav().mostrarLogin();
 
-        acceso.show();
     }
 
     public static void loginExitoso(String usuario) {
+
         AppContext.setUsuarioActual(usuario);
-        // Debug.print(
-                // "[AppController>loginExitoso] Usuario '" + usuario + "' ha iniciado sesión exitosamente.");
-        // 1. Cargar Configuración del Usuario
+
         AppContext.configActual = Config.getConfig(usuario);
-        // Debug.print(
-        //         "[AppController>loginExitoso] Configuración cargada para el usuario '"
-        //                 + usuario
-        //                 + "': "
-        //                 + AppContext.configActual.getConfigData().toJSON());
-        // 2. Inicializar servicio de facturas con la configuración personal
+
         FacturasService facturas = new FacturasService(AppContext.configActual.getConfigData());
         AppContext.setFacturasService(facturas);
-        // 3. Crear la tablaFCT
-        Stage tablaFCT = AppContext.get().nav().crearVentana(
-        VentanaID.TABLA_FCT,
-        controller -> ((FxCntrlTablaFCT) controller).cargarDatos()
-    );
 
-    AppContext.setTablaFCT(tablaFCT);
-
-        //   Debug.print("AppContext en loginExitoso: " + AppContext.getTablaFCT().hashCode());
-        // 4. Cargar el Panel de Control
-        Stage pc = AppContext.get().nav().crearVentana(
-                VentanaID.PANEL_CONTROL,
-                controller -> {
-                } // si no necesitas inicializar nada
-        );
-
-        pc.show();
+        AppContext.get().nav().mostrarTablaFacturas();
+        AppContext.get().nav().mostrarPanelControl();
     }
+
 }

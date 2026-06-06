@@ -1,4 +1,4 @@
-package com.sil.facturas.infrastructure.filesystem;
+package com.sil.facturas.infrastructure.helpers;
 
 public enum _Ruta {
     // Datos en filesystem (fuera de src/main/resources)

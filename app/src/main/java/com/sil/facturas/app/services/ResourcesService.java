@@ -1,6 +1,6 @@
-package app.src.main.java.com.sil.facturas.app.services;
+package com.sil.facturas.app.services;
 
-import infrastructure.src.main.java.com.sil.facturas.infrastructure.filesystem._Ruta;
+import com.sil.facturas.infrastructure.helpers._Ruta;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

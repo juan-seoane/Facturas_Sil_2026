@@ -7,6 +7,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 import com.sil.facturas.domain.records.Factura;
+import com.sil.facturas.infrastructure.records.LineaCsvDTO;
 
 public class CsvWriter {
 

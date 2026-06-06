@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.sil.facturas.domain.records.Factura;
+import com.sil.facturas.infrastructure.records.LineaCsvDTO;
 
 public class CsvReader {
 

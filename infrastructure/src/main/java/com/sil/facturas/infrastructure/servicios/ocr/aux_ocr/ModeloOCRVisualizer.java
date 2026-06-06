@@ -6,7 +6,9 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 import com.sil.facturas.domain.records.ROI;
+import com.sil.facturas.infrastructure.records.Rect;
 import com.sil.facturas.infrastructure.servicios.ocr.ModeloOCR;
+
 
 public class ModeloOCRVisualizer {
 

@@ -1,4 +1,4 @@
-package presentationgui.src.main.java.com.sil.facturas.presentationgui.fxcontrollers;
+package com.sil.facturas.presentationgui.fxcontrollers;
 /*
 import domain.records.Extracto;
 import domain.records.Factura;

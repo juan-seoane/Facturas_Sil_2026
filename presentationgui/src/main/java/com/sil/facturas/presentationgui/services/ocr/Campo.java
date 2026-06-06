@@ -1,4 +1,4 @@
-package com.sil.facturas.infrastructure.servicios.ocr.aux_ocr;
+package com.sil.facturas.presentationgui.services.ocr;
 
 import com.sil.facturas.infrastructure.records.Rect;
 

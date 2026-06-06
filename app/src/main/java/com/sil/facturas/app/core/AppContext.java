@@ -1,10 +1,15 @@
 package com.sil.facturas.app.core;
 
+import com.sil.facturas.app.api.INavService;
+import com.sil.facturas.app.api.IaccesoUI;
+import com.sil.facturas.app.api.ItablaFCT;
 import com.sil.facturas.app.services.FacturasService;
 import com.sil.facturas.infrastructure.servicios.AuthService;
-import com.sil.facturas.presentationgui.services.NavService;
+import com.sil.facturas.infrastructure.servicios.config.Config;
 
-import java.io.ObjectInputFilter.Config;
+import javafx.stage.Stage;
+
+
 
 public class AppContext {
 
@@ -14,47 +19,52 @@ public class AppContext {
 
   private final AuthService authService = new AuthService();
   public static FacturasService facturasService;
-  public static Stage tablaFCT;
-  private final NavService navService = new NavService();
+  private static ItablaFCT tablaFCT;
+  private INavService navService;
   public static Config configActual;
-
+  private IaccesoUI accesoUI;
+  
   private AppContext() {}
-
+  
   public static synchronized AppContext get() {
-    if (instance == null) instance = new AppContext();
+    if (instance == null)
+      instance = new AppContext();
     return instance;
   }
-
+  
   public AuthService auth() {
     return this.authService;
   }
-
+  
   public FacturasService fact() {
     return facturasService;
   }
-
-  public NavService nav() {
+  
+  public INavService nav() {
     return this.navService;
   }
-
+  
   public static void setUsuarioActual(String user) {
     usuarioActual = user;
   }
-
+  
   public static void setFacturasService(FacturasService fService) {
     facturasService = fService;
   }
-
-  public static Stage getTablaFCT() {
-    // System.out.println(
-    //     "[AppContext>getTablaFCT] tablaFCT devuelta con hashCode " + tablaFCT.hashCode());
+  
+  public void setTablaFCT(ItablaFCT tabla) {
+    this.tablaFCT = tabla;
+  }
+  
+  public ItablaFCT getTablaFCT() {
     return tablaFCT;
   }
-
-  public static void setTablaFCT(Stage tabla) {
-    tablaFCT = tabla;
-    // System.out.println(
-    //     "[AppContext>setTablaFCT] tablaFCT guardada "
-    //         + (tablaFCT == null ? "NULL" : String.valueOf(tablaFCT.hashCode())));
-  }
+  
+    public void setAccesoUI(IaccesoUI acceso) {
+        this.accesoUI = acceso;
+    }
+  
+    public IaccesoUI getAccesoUI() {
+        return accesoUI;
+    }
 }

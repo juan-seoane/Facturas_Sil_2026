@@ -1,13 +1,17 @@
 package com.sil.facturas.presentationgui.fxcontrollers;
 
-
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.sil.facturas.infrastructure.config.UIDataConfig;
 import com.sil.facturas.infrastructure.debug.Debug;
+import com.sil.facturas.infrastructure.helpers._Ruta;
 import com.sil.facturas.infrastructure.servicios.config.Config;
 import com.sil.facturas.infrastructure.servicios.ocr.ModeloOCR;
 import com.sil.facturas.infrastructure.servicios.ocr.ModeloOCRService;
-import com.sil.facturas.infrastructure.servicios.ocr.editor.BloqueOCR;
+import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.OCRItem;
+import com.sil.facturas.presentationgui.services.ocr.BloqueDTO;
+import com.sil.facturas.presentationgui.services.ocr.BloqueOCR;
 
 import java.io.File;
 import java.io.FileInputStream;

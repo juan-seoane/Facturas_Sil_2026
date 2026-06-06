@@ -193,9 +193,7 @@ public class FxCntrlPanelControl implements Initializable {
       botonactivo = 1;
       botonpulsado = true;
 
-      Stage tabla = AppContext.getTablaFCT();
-      tabla.show();
-      tabla.toFront();
+    AppContext.get().nav().mostrarTablaFacturas();
     //   Debug.print(
     //       "[FxCntrlPanelControl>btnFCTpulsado] TablaFCT desde AppContext = "
     //           + AppContext.getTablaFCT().hashCode());
@@ -208,8 +206,7 @@ public class FxCntrlPanelControl implements Initializable {
       botonactivo = 11;
       botonpulsado = true;
 
-      Stage tabla = AppContext.getTablaFCT();
-      tabla.hide();
+      AppContext.get().nav().ocultarTablaFacturas();
     }
 
     // REVIEW - 24-05-29 : Hay que desactivar el botón mientras está en uso, y colorearlo de

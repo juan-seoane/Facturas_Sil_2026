@@ -4,6 +4,7 @@ import com.sil.facturas.domain.interfaces.IfacturasRepo;
 import com.sil.facturas.domain.records.Extracto;
 import com.sil.facturas.domain.records.Factura;
 import com.sil.facturas.infrastructure.debug.Debug;
+import com.sil.facturas.infrastructure.records.LineaCsvDTO;
 import com.sil.facturas.infrastructure.servicios.config.Config;
 
 import java.io.IOException;

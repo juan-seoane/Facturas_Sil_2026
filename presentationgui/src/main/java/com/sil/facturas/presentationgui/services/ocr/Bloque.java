@@ -1,4 +1,4 @@
-package com.sil.facturas.infrastructure.servicios.ocr.aux_ocr;
+package com.sil.facturas.presentationgui.services.ocr;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

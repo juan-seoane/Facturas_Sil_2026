@@ -1,15 +1,14 @@
 package com.sil.facturas.presentationgui.fxcontrollers;
 
 import com.sil.facturas.app.core.AppContext;
-import com.sil.facturas.app.helpers.VentanaID;
-import com.sil.facturas.infrastructure.filesystem._Ruta;
+import com.sil.facturas.infrastructure.helpers._Ruta;
+
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 
@@ -50,13 +49,7 @@ public class FxCntrlSplash {
         splashStage.close();
 
         // Abrir el Stage de Acceso sin marco
-        Stage acceso = AppContext.get().nav().crearVentana(
-            VentanaID.LOGIN,
-            controller -> {} // si no necesitas inicializar nada
-        );
-
-        acceso.initStyle(StageStyle.UNDECORATED);
-        acceso.show();
+        AppContext.get().nav().mostrarLogin();
     });
     ft.play();
     }

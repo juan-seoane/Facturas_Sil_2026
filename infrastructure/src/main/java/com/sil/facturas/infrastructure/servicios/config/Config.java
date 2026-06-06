@@ -2,7 +2,7 @@ package com.sil.facturas.infrastructure.servicios.config;
 
 import com.sil.facturas.domain.records.ConfigData;
 import com.sil.facturas.domain.records.RutasConfig;
-import com.sil.facturas.infrastructure.filesystem._Ruta;
+import com.sil.facturas.infrastructure.helpers._Ruta;
 import com.sil.facturas.infrastructure.json.JsonParser;
 import java.io.File;
 import java.io.FileWriter;

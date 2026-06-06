@@ -6,6 +6,7 @@ import java.util.Map;
 import com.sil.facturas.domain.records.ROI;
 import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.Bloque;
 
+
 public class ModeloOCR {
 
   private String nombre;

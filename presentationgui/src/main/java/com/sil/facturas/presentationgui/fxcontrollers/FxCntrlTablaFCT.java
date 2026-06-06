@@ -739,7 +739,10 @@ public class FxCntrlTablaFCT implements Initializable {
   public void cargarDatos() {
 
     // 1) Leer facturas
-    List<FacturaFX> facturas = new ArrayList<>(AppContext.get().fact().leerFacturasFX());
+    List<FacturaFX> facturas =
+    AppContext.get().fact().leerFacturas().stream()
+        .map(FacturaFX::fromDomain)
+        .toList();
 
     // 2) Ordenar por ID
     facturas.sort(Comparator.comparingInt(FacturaFX::getId));

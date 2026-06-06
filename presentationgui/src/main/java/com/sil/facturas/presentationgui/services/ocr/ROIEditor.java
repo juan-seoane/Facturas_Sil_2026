@@ -1,6 +1,6 @@
-package com.sil.facturas.infrastructure.servicios.ocr.editor;
+package com.sil.facturas.presentationgui.services.ocr;
 
-import com.sil.facturas.infrastructure.filesystem._Ruta;
+import com.sil.facturas.infrastructure.helpers._Ruta;
 import com.sil.facturas.presentationgui.fxcontrollers.FxROIEditorController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

@@ -1,8 +1,8 @@
-package com.sil.facturas.app.helpers;
+package com.sil.facturas.presentationgui.helpers;
 
 import javafx.stage.StageStyle;
 
-public enum VentanaID {
+public enum _VentanaFX {
 
     TABLA_FCT("FxTablaFCT", "Tabla FCT", StageStyle.DECORATED, true),
     PANEL_CONTROL("FxPanelControl", "Panel de Control", StageStyle.DECORATED, false),
@@ -14,7 +14,7 @@ public enum VentanaID {
   private final StageStyle style;
   private final boolean resizable;
 
-  VentanaID(String fxml, String titulo, StageStyle style, boolean resizable) {
+  _VentanaFX(String fxml, String titulo, StageStyle style, boolean resizable) {
     this.fxml = fxml;
     this.titulo = titulo;
     this.style = style;

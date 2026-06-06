@@ -13,7 +13,7 @@ import java.util.*;
 public class UIDataConfig {
 
   private TablaFCTConfig tablaFCT;
-  private List<OCRItem> ocr;
+  public List<OCRItem> ocr;
 
   public TablaFCTConfig getTablaFCT() {
     return tablaFCT;

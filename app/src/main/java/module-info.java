@@ -25,5 +25,6 @@ module com.sil.facturas.app {
   // Exporta los paquetes del módulo app
   exports com.sil.facturas.app.core;
   exports com.sil.facturas.app.services;
-  exports com.sil.facturas.app.helpers;
+  exports com.sil.facturas.app.api;
+
 }

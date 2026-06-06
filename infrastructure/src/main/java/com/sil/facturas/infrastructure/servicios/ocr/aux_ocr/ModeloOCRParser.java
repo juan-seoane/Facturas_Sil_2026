@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sil.facturas.domain.records.Extracto;
 import com.sil.facturas.domain.records.ROI;
 import com.sil.facturas.infrastructure.debug.Debug;
+import com.sil.facturas.infrastructure.records.Rect;
 import com.sil.facturas.infrastructure.servicios.ocr.ModeloOCR;
+import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.Bloque;
 
 import java.io.File;
 import java.net.URI;

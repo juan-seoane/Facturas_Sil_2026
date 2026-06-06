@@ -6,12 +6,13 @@ import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.sil.facturas.app.core.AppContext;
 import com.sil.facturas.domain.records.Credenciales;
 import com.sil.facturas.domain.records.Creds;
-import com.sil.facturas.infrastructure.filesystem._Ruta;
+import com.sil.facturas.infrastructure.helpers._Ruta;
 import com.sil.facturas.infrastructure.servicios.AuthService;
 import com.sil.facturas.infrastructure.servicios.config.Config;
-import com.sil.facturas.presentationgui.fxcontrollers.FxCntrlAcceso;
+
 
 public class ComprobacionesAcceso {
 
@@ -29,7 +30,7 @@ public class ComprobacionesAcceso {
         //String rutaDirPers = _Ruta.DATOS.getRuta() + "/" + user.toUpperCase();
         //String rutasCFG = _Ruta.CONFIG.getRuta() + "/" + user.toUpperCase() + "/" + "rutasconfig.json";
 
-        FxCntrlAcceso.imprimir("\nDatos introducidos : " + user + " - " + pass + "\n(...espere..)");
+        AppContext.get().getAccesoUI().imprimirMensaje("\nDatos introducidos : " + user + " - " + pass + "\n(...espere..)");
 
         // STUB : 26-03-11 : [ComprobarCredenciales.java > comprobarCredenciales(String user, String pass)] Arreglar este boolean... Ahora mismo no es exacto... solamente chequea creds
         boolean existen = (getClass().getResource(rutaCreds) != null);
@@ -40,7 +41,7 @@ public class ComprobacionesAcceso {
             // REVIEW - 24-04-11 : Escribir un método estático para leer las credenciales del archivo config base
             for (Creds contr : ((Credenciales)(AuthService.leerCredenciales(rutaCreds))).getCreds()){
                 // REVIEW : Revisar el modo de comprobación de credenciales
-                FxCntrlAcceso.imprimir(
+                AppContext.get().getAccesoUI().imprimirMensaje(
                     "[ComprobacionesAcceso.java>comprobarCredenciales()]\nDatos obtenidos de Config: " +
                     contr.usuario() +
                     " - " +

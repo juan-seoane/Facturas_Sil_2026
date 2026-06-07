@@ -40,7 +40,9 @@ public class FacturaCSVRepo implements IfacturasRepo {
     return listaFCT;
   }
 
-    public static List<Factura> leerTodasLasFacturas() {
+  public static List<Factura> leerTodasLasFacturas() {
+      if (Config.usuario == null)
+        return null;
     // STUB : 26-03-18
     String ruta = Config.getConfig(Config.usuario).getConfigData().getRutas().getFCT();
     // System.out.println(

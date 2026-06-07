@@ -6,6 +6,9 @@ public class Credenciales {
 
     public List<Creds> creds;
 
+    public Credenciales() {
+    }
+    
     public List<Creds> getCreds() {
         return creds;
     }

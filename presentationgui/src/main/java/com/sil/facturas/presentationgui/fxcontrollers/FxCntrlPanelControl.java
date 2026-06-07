@@ -65,11 +65,11 @@ public class FxCntrlPanelControl implements Initializable {
   static int botonactivo = 1;
   static Stage GUIpanel;
 
-  // Config configActual;
+   Config configActual;
   // Controlador_prev ctrlPpal;
   // ControladorFacturas ctrlFct;
   // NOTE : 26-03-30 : El usuario actual se establece en el AppContext, no aquí...
-  // String usuarioActual;
+   String usuarioActual;
   // #endregion
 
   // REVIEW - 24-04-12 : ¿Porqué no puede seguir siendo un Singleton?
@@ -77,12 +77,12 @@ public class FxCntrlPanelControl implements Initializable {
 
   // #region CONSTR
   public FxCntrlPanelControl() {
-    // this.usuarioActual = AppContext.usuarioActual.toLowerCase();
+     this.usuarioActual = AppContext.usuarioActual.toLowerCase();
     // System.out.println("[FxCntrlPanelControl] En el constructor del FxCntrlPanelControl,
     // estableciendo el usuario actual en : " + AppContext.usuarioActual);
     // Luego habrá que cambiar esto de abajo a modo NAV por defecto...
     // PanelControl.modo = Controlador_prev.INGR;
-    // this.configActual = Config.getConfig(this.usuarioActual);
+    this.configActual = Config.getConfig(this.usuarioActual);
     // REVIEW - 24-06-21 : Estas asignaciones me hacen falta
     // this.ctrlPpal = Controlador_prev.getControlador();
     // this.ctrlFct = Controlador_prev.getControladorFacturas();

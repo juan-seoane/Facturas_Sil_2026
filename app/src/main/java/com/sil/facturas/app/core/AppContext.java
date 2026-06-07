@@ -7,7 +7,7 @@ import com.sil.facturas.app.services.FacturasService;
 import com.sil.facturas.infrastructure.servicios.AuthService;
 import com.sil.facturas.infrastructure.servicios.config.Config;
 
-import javafx.stage.Stage;
+
 
 
 
@@ -53,7 +53,7 @@ public class AppContext {
   }
   
   public void setTablaFCT(ItablaFCT tabla) {
-    this.tablaFCT = tabla;
+    tablaFCT = tabla;
   }
   
   public ItablaFCT getTablaFCT() {
@@ -67,4 +67,12 @@ public class AppContext {
     public IaccesoUI getAccesoUI() {
         return accesoUI;
     }
+
+    public void setNav(INavService nav) {
+        this.navService = nav;
+    }
+
+	public static String getUsuarioActual() {
+      return usuarioActual;
+	}
 }

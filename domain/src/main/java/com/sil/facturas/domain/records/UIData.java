@@ -7,6 +7,9 @@ public class UIData {
   private Map<String, CampoConfig> factura;
   private Map<String, CampoConfig> extracto;
 
+  public UIData() {
+  }
+  
   public Map<String, CampoConfig> getFactura() {
     return factura;
   }

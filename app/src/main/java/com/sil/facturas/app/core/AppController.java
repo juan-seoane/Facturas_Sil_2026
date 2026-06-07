@@ -1,6 +1,7 @@
 package com.sil.facturas.app.core;
 
 import com.sil.facturas.app.services.FacturasService;
+import com.sil.facturas.infrastructure.debug.Debug;
 import com.sil.facturas.infrastructure.servicios.config.Config;
 
 import javafx.stage.Stage;
@@ -27,8 +28,10 @@ public class AppController {
 
     public static void loginExitoso(String usuario) {
 
-        AppContext.setUsuarioActual(usuario);
+        Debug.print("[AppController>loginExitoso] usuario : " + usuario);
 
+        AppContext.setUsuarioActual(usuario);
+    
         AppContext.configActual = Config.getConfig(usuario);
 
         FacturasService facturas = new FacturasService(AppContext.configActual.getConfigData());

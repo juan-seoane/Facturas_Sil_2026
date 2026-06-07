@@ -11,8 +11,6 @@ module com.sil.facturas.presentationgui {
     exports com.sil.facturas.presentationgui;
     exports com.sil.facturas.presentationgui.viewmodels;
 
-    opens com.sil.facturas.presentationgui.fxcontrollers to
-        javafx.fxml;
-    opens com.sil.facturas.presentationgui to
-        javafx.fxml;
+    opens com.sil.facturas.presentationgui.fxcontrollers to javafx.fxml;
+    opens com.sil.facturas.presentationgui to javafx.fxml;
     }

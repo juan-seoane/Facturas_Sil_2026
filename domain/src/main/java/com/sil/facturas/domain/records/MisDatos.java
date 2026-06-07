@@ -17,6 +17,9 @@ public class MisDatos implements Comparable<RazonSocial> {
     // private String categoria;
     // private ArrayList<Integer> tiposIVA;
 
+    public MisDatos() {
+    }
+    
     public MisDatos(String user, NIF nif,String razon) {
         this.user = user;
         this.nif = nif;

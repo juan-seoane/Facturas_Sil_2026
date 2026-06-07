@@ -11,6 +11,8 @@ public class ConfigData{
 	public ArrayList<Integer> tiposIVA;
 	public ArrayList<String> origenesCaja;
 //#endregion
+public ConfigData() {
+}
 
 //#region Constructor
 	public ConfigData(String user, Anho anho, RutasTrabajo rutas, ArrayList<Integer> tiposIVA, ArrayList<String> origenesCaja ){

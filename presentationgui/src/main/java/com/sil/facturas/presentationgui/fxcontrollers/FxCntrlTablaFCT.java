@@ -69,12 +69,20 @@ public class FxCntrlTablaFCT implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+        if (AppContext.getUsuarioActual() == null) {
+            Debug.printError("[FxCntrlTablaFCT>initialize()] Usuario null, no cargo config todavía");
+            return;
+        }
+        Debug.print("FxCntrlTablaFCT>initialize()] usuarioActual = " + AppContext.getUsuarioActual());
+
         cargarConfigUI();
         configurarColumnas();
         configurarColumnasEditables(); // ← añadimos edición SIN tocar nada
-        cargarDatos();
-        configurarAcciones();
-        configurarEscalado();
+        if (Config.usuario != null) {
+            cargarDatos();
+            configurarAcciones();
+            configurarEscalado();
+        }
 
 
         treeFct.setEditable(true);
@@ -107,7 +115,7 @@ public class FxCntrlTablaFCT implements Initializable {
     }
 
     private void cargarConfigUI() {
-        cfgPath = Path.of(Config.getConfig(Config.usuario).getRutasconfig().getRutaUIData());
+        cfgPath = Path.of(Config.getConfig(AppContext.getUsuarioActual()).getRutasconfig().getRutaUIData());
         try {
             uiCfg = UIDataConfig.fromJson(cfgPath);
             // System.out.println("[FxCntrlTablaFCT>cargarConfigUI] UIDataConfig cargado:");

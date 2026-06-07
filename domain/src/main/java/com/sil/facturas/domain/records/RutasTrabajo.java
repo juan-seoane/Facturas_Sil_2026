@@ -5,6 +5,9 @@ public class RutasTrabajo {
     private String RS;
     private String CJA;
 
+    public RutasTrabajo() {
+    }
+    
     public RutasTrabajo(String FCT, String RS, String CJA) {
         this.FCT = FCT;
         this.RS = RS;

@@ -6,6 +6,9 @@ public class CampoConfig {
   private String ocr; // obligatorio
   private TablaConfig tabla; // opcional
 
+  public CampoConfig() {
+  }
+  
   public String getNOTA() {
     return NOTA;
   }

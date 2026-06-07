@@ -3,12 +3,12 @@ module com.sil.facturas.infrastructure {
   // Librerías externas
   requires tess4j;
   requires com.fasterxml.jackson.databind;
-  requires com.google.gson;
+  requires transitive com.google.gson;
   requires com.opencsv;
   requires jasperreports;
   requires java.desktop;
   requires java.logging;
-  requires com.sil.facturas.domain;
+  requires transitive com.sil.facturas.domain;
   requires javafx.controls;
   requires javafx.swing;
   requires javafx.fxml;
@@ -24,6 +24,6 @@ module com.sil.facturas.infrastructure {
   exports com.sil.facturas.infrastructure.servicios.ocr;
   exports com.sil.facturas.infrastructure.servicios.ocr.aux_ocr;
   // Para permitir que Gson lea records
-  opens com.sil.facturas.infrastructure.records to
-      gson;
+  opens com.sil.facturas.infrastructure.records to gson;
+  
 }

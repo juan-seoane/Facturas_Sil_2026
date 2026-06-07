@@ -2,6 +2,7 @@ package com.sil.facturas.infrastructure.servicios.config;
 
 import com.sil.facturas.domain.records.ConfigData;
 import com.sil.facturas.domain.records.RutasConfig;
+import com.sil.facturas.infrastructure.debug.Debug;
 import com.sil.facturas.infrastructure.helpers._Ruta;
 import com.sil.facturas.infrastructure.json.JsonParser;
 import java.io.File;
@@ -27,8 +28,8 @@ public class Config {
   public String rutaCFG;
   public String dirPers;
   public static Config configActual;
-  private ConfigData configData;
-  private RutasConfig rutasconfig;
+  public ConfigData configData;
+  public RutasConfig rutasconfig;
 
   // TODO : 26-03-15 : El plan era guardar un ArrayList<Config> con todas las configuraciones
   // guardadas, para hacerlas intercambiables
@@ -37,7 +38,8 @@ public class Config {
   // #endregion
 
   private Config(String user) {
-    usuario = user;
+
+    usuario = (usuario == null ? "" : user);
 
     // TODO : 26-03-15 : chequear la existencia de todas estas rutas o su creación (en un archivo
     // aparte?)
@@ -72,6 +74,12 @@ public class Config {
   }
 
   public static Config getConfig(String user) {
+    Debug.print("[Config>getConfig(usuario)] usuario recibido = " + usuario);
+    if (user == null) {
+      Debug.printError("[Config>getConfig()]ERROR: Config llamada con usuario NULL");
+      return null;
+    }
+    
     if ((configActual == null) || (!(usuario.equals(user)))) {
       configActual = new Config(user);
     }

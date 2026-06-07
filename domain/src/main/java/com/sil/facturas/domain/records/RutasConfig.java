@@ -6,6 +6,8 @@ public class RutasConfig {
     private String rutamisdatos;
     private String rutauidata;
 
+    public RutasConfig(){}
+
     public RutasConfig(String user, String rutaconfigdata, String rutamisdatos, String rutauidata) {
         this.user = user;
         this.rutaconfigdata = rutaconfigdata;

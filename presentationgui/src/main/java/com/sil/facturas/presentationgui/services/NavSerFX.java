@@ -169,16 +169,33 @@ public class NavSerFX  implements INavService{
 
   @Override
   public void mostrarSplash() {
-    Stage ventana = ventanas.get(_VentanaFX.SPLASH);
+      Stage ventana = crearVentana("FxSplash.fxml", "Cargando...");
 
-    if (ventana == null) {
-      // Crear la ventana si no existe
-      ventana = crearVentana(_VentanaFX.SPLASH, controller -> {
-      });
+      if (ventana == null) {
+          System.err.println("ERROR: No se pudo crear la ventana Splash");
+          return;
+      }
+
+      ventana.show();
+  }
+
+  private Stage crearVentana(String fxml, String titulo) {
+    try {
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("/fxml/" + fxml)
+        );
+
+        Parent root = loader.load();
+
+        Stage stage = new Stage();
+        stage.setTitle(titulo);
+        stage.setScene(new Scene(root));
+        return stage;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
     }
-
-    ventana.show();
-    ventana.toFront();
   }
 
   private Stage obtenerOVentana(_VentanaFX id, Consumer<Object> initController) {

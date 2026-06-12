@@ -3,6 +3,9 @@ package com.sil.facturas.presentationgui.viewmodels;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sil.facturas.domain.pojos.Extracto;
+import com.sil.facturas.domain.pojos.Factura;
+import com.sil.facturas.domain.pojos.RazonSocial;
 import com.sil.facturas.domain.records.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -353,8 +356,8 @@ public class FacturaFX {
         fx.setConcepto(f.concepto.getTipo());
         fx.setDevolucion(f.esDevolucion);
         fx.setNumExtractos(f.extractos.size());
-        fx.setNotaExiste(f.nota != null && !f.nota.getTexto().isBlank());
-        fx.setNota(f.nota != null ? f.nota.getTexto() : "");
+        fx.setNotaExiste(f.nota != null && !f.nota.texto().isBlank());
+        fx.setNota(f.nota != null ? f.nota.texto() : "");
 
         for (Extracto e : f.extractos) {
         fx.extractosFX.add(ExtractoFX.fromDomain(e));

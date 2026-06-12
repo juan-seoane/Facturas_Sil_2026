@@ -1,30 +1,30 @@
 package app;
-// /*
-//  * import static org.junit.Assert.assertNotNull; import static
-//  * org.junit.jupiter.api.Assertions.assertEquals; import static
-//  * org.junit.jupiter.api.Assertions.assertTrue; import static
-//  * org.testfx.api.FxAssert.verifyThat; import controladores.Controlador; import
-//  * controladores.ControladorFacturas; import java.io.IOException; import
-//  * java.util.concurrent.TimeoutException; import java.util.function.Predicate;
-//  * import javafx.application.Platform; import javafx.collections.ObservableList;
-//  * import javafx.fxml.FXMLLoader; import javafx.scene.Parent; import
-//  * javafx.scene.Scene; import javafx.scene.control.Label; import
-//  * javafx.scene.control.TableView; import javafx.scene.control.TextArea; import
-//  * javafx.scene.control.ToggleButton; import javafx.scene.input.KeyCode; import
-//  * javafx.scene.robot.Robot; import javafx.stage.Stage; import
-//  * modelo.ModeloFacturas; import modelo.base.Config; import
-//  * modelo.records.Factura; import vista.fxcontrollers.FxCntrlTablaFCT; import
-//  * vista.fxcontrollers.FxCntrlVisorFCT; import vista.fxcontrollers.PanelControl;
-//  * import vista.fxcontrollers.SplashFX; import vista.helpers.FxmlHelper; import
-//  * org.junit.jupiter.api.AfterAll; import org.junit.jupiter.api.BeforeAll;
-//  * import org.junit.jupiter.api.MethodOrderer; import
-//  * org.junit.jupiter.api.Order; import org.junit.jupiter.api.Test; import
-//  * org.junit.jupiter.api.TestMethodOrder; import org.testfx.api.FxRobot; import
-//  * org.testfx.api.FxToolkit; import org.testfx.framework.junit5.ApplicationTest;
-//  * import org.testfx.framework.junit5.Start; import
-//  * org.testfx.service.query.NodeQuery; import org.testfx.util.WaitForAsyncUtils;
-//  */
-// /*
+/* 
+ * import static org.junit.Assert.assertNotNull; import static
+ * org.junit.jupiter.api.Assertions.assertEquals; import static
+ * org.junit.jupiter.api.Assertions.assertTrue; import static
+ * org.testfx.api.FxAssert.verifyThat; import controladores.Controlador; import
+ * controladores.ControladorFacturas; import java.io.IOException; import
+ * java.util.concurrent.TimeoutException; import java.util.function.Predicate;
+ * import javafx.application.Platform; import javafx.collections.ObservableList;
+ * import javafx.fxml.FXMLLoader; import javafx.scene.Parent; import
+ * javafx.scene.Scene; import javafx.scene.control.Label; import
+ * javafx.scene.control.TableView; import javafx.scene.control.TextArea; import
+ * javafx.scene.control.ToggleButton; import javafx.scene.input.KeyCode; import
+ * javafx.scene.robot.Robot; import javafx.stage.Stage; import
+ * modelo.ModeloFacturas; import modelo.base.Config; import
+ * modelo.records.Factura; import vista.fxcontrollers.FxCntrlTablaFCT; import
+ * vista.fxcontrollers.FxCntrlVisorFCT; import vista.fxcontrollers.PanelControl;
+ * import vista.fxcontrollers.SplashFX; import vista.helpers.FxmlHelper; import
+ * org.junit.jupiter.api.AfterAll; import org.junit.jupiter.api.BeforeAll;
+ * import org.junit.jupiter.api.MethodOrderer; import
+ * org.junit.jupiter.api.Order; import org.junit.jupiter.api.Test; import
+ * org.junit.jupiter.api.TestMethodOrder; import org.testfx.api.FxRobot; import
+ * org.testfx.api.FxToolkit; import org.testfx.framework.junit5.ApplicationTest;
+ * import org.testfx.framework.junit5.Start; import
+ * org.testfx.service.query.NodeQuery; import org.testfx.util.WaitForAsyncUtils;
+ */
+/*
 // @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 // public class FxApplicationTest extends ApplicationTest {
 
@@ -197,9 +197,9 @@ package app;
 //         assertNotNull(modTablaFCT);
 //         System.out.println("[FxApplicationTest>tablaFCTcargaOK]******FINAL*****");
 //         //#endregion
-        
+
 //         //#region parte5_tablaFCTfunciona
-        
+
 //         System.out.println("[FxApplicationTest>tablaFCTfunciona]******INICIO*****");
 //         /*Platform.runLater(new Runnable(){
 //         	@Override

@@ -1,4 +1,4 @@
-package com.sil.facturas.domain.records;
+package com.sil.facturas.domain.pojos;
 
 import java.util.Map;
 
@@ -9,7 +9,7 @@ public class UIData {
 
   public UIData() {
   }
-  
+
   public Map<String, CampoConfig> getFactura() {
     return factura;
   }

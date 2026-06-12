@@ -1,9 +1,11 @@
 module com.sil.facturas.domain {
-  requires java.desktop;
+  requires transitive java.desktop;
 
   exports com.sil.facturas.domain.records;
   exports com.sil.facturas.domain.interfaces;
-  
-  opens com.sil.facturas.domain.records to com.google.gson;
+  exports com.sil.facturas.domain.pojos;
+  exports com.sil.facturas.domain.enums;
 
+  opens com.sil.facturas.domain.records to com.google.gson;
+  opens com.sil.facturas.domain.pojos to com.google.gson;
 }

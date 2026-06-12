@@ -1,4 +1,4 @@
-package com.sil.facturas.presentationgui.services.ocr;
+package com.sil.facturas.infrastructure.servicios.ocr;
 
 import java.util.Map;
 

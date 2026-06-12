@@ -1,4 +1,4 @@
-package com.sil.facturas.domain.records;
+package com.sil.facturas.domain.pojos;
 
 public class TablaConfig {
 
@@ -7,7 +7,7 @@ public class TablaConfig {
 
   public TablaConfig() {
   }
-  
+
   public String getColumna() {
     return columna;
   }

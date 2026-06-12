@@ -102,7 +102,7 @@ public class Controlador_prev extends Thread {
 
         Scene escena = new Scene(root);
         Stage vPC = Controlador_prev.setStage(escena, true);
-        vPC.setResizable(false);
+        vPC.setResizable(true);
         // REVIEW - 24-05-30 : Aquí se ajusta el modo de la ventana de P/C
 
         vPC.setOnCloseRequest(e -> System.exit(0));
@@ -285,7 +285,7 @@ public class Controlador_prev extends Thread {
         Stage st = new Stage();
 
         st.setScene(escena);
-        st.setResizable(false);
+        st.setResizable(AOT);
         st.initModality(Modality.NONE);
         st.setAlwaysOnTop(AOT);
         //		st.show();

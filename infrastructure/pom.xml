@@ -51,7 +51,7 @@
             <artifactId>javafx-swing</artifactId>
             <version>23.0.2</version>
         </dependency>
-        
+
         <!-- Tess4J -->
         <dependency>
             <groupId>net.sourceforge.tess4j</groupId>

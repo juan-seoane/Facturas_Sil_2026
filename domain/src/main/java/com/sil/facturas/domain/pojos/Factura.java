@@ -1,4 +1,4 @@
-package com.sil.facturas.domain.records;
+package com.sil.facturas.domain.pojos;
 
 // TODO: 26-03-14 : Hay que separar la lógica de dominio de la lógica de negocio en los records
 
@@ -6,6 +6,11 @@ package com.sil.facturas.domain.records;
 
 import java.util.ArrayList;
 //import java.util.Vector;
+
+import com.sil.facturas.domain.records.Fecha;
+import com.sil.facturas.domain.records.Nota;
+import com.sil.facturas.domain.records.TipoGasto;
+import com.sil.facturas.domain.records.Totales;
 
 public class Factura {
 
@@ -34,7 +39,7 @@ public class Factura {
         this.extractos = extractos;
         this.totales = totales;
         this.nota = (nota == null ? new Nota("") : nota);
-        this.notaExiste = (this.nota.getTexto().equals("") ? false : true);
+        this.notaExiste = (this.nota.texto().equals("") ? false : true);
         this.normalizarSignos();
     }
 
@@ -187,7 +192,7 @@ public class Factura {
             + ","
             + this.totales.getTotal()
             + ","
-            + ((this.nota != null) ? this.nota.getTexto() : "sinNOTA");
+            + ((this.nota != null) ? this.nota.texto() : "sinNOTA");
         // ojo que sólo puede haber una Nota...
         if (this.extractos.size() > 1) {
             for (int i = 0; i < this.extractos.size(); i++) {

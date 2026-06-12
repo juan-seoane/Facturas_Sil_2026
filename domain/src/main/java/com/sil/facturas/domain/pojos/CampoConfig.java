@@ -1,4 +1,4 @@
-package com.sil.facturas.domain.records;
+package com.sil.facturas.domain.pojos;
 
 public class CampoConfig {
 
@@ -8,7 +8,7 @@ public class CampoConfig {
 
   public CampoConfig() {
   }
-  
+
   public String getNOTA() {
     return NOTA;
   }

@@ -1,12 +1,14 @@
 package com.sil.facturas.presentationgui.fxcontrollers;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import com.sil.facturas.app.api.IaccesoUI;
 import com.sil.facturas.app.core.AppContext;
 import com.sil.facturas.app.core.AppController;
+import com.sil.facturas.domain.interfaces.IDebugService;
+import com.sil.facturas.presentationgui.helpers._VentanaFX;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.animation.PauseTransition;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -21,7 +23,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 
 public class FxCntrlAcceso implements Initializable, IaccesoUI{
 
@@ -45,40 +46,41 @@ public class FxCntrlAcceso implements Initializable, IaccesoUI{
     public static int intentos = 1;
     private static boolean entrando = false;
 
+  // --- NUEVO LISTENER SEGURO ---
+  public EventHandler<KeyEvent> handlerTeclas =
+      (KeyEvent ke) -> {
+        if (ke.getCode() == KeyCode.ENTER
+            || ke.getCode().isLetterKey()
+            || ke.getCode().isDigitKey()) {
 
-    //private boolean credsOK;
-    public static boolean aceptado = false;
+          // System.out.println("[FxAcceso>HandlerTeclas] Key Pressed: " + ke.getCode());
 
+          // 1. Si el nodo ya no está en escena → salir
+          if (txtUsuario.getScene() == null) return;
 
-    // --- NUEVO LISTENER SEGURO ---
-    public EventHandler<KeyEvent> handlerTeclas = (KeyEvent ke) -> {
-        if (ke.getCode() == KeyCode.ENTER || ke.getCode().isLetterKey() || ke.getCode().isDigitKey()) {
+          // 2. Obtener la ventana de forma segura
+          Stage ventana = (Stage) txtUsuario.getScene().getWindow();
+          if (ventana == null || !ventana.isShowing()) return;
 
-            //System.out.println("[FxAcceso>HandlerTeclas] Key Pressed: " + ke.getCode());
+          // 3. Ejecutar la acción
+          try {
+            pulsarbotonOK();
+          } catch (Exception e) {
+            IDebugService.printError(
+                "[FxAcceso>HandlerTeclas] Error tipo "
+                    + e.getClass()
+                    + " al pulsar tecla "
+                    + ke.getCode()
+                    + " : "
+                    + e.getMessage());
+          }
 
-            // 1. Si el nodo ya no está en escena → salir
-            if (txtUsuario.getScene() == null)
-                return;
-
-            // 2. Obtener la ventana de forma segura
-            Stage ventana = (Stage) txtUsuario.getScene().getWindow();
-            if (ventana == null || !ventana.isShowing())
-                return;
-
-            // 3. Ejecutar la acción
-            try {
-                pulsartecla();
-            } catch (IOException e) {
-                System.out.println("[FxAcceso>HandlerTeclas] Error al pulsar tecla: " + e.getMessage());
-            }
-
-            ke.consume();
+          ke.consume();
         }
-    };
+      };
 
-//#endregion
+    //#endregion
 
-//#region inicializacion
     // REVIEW: Lo de abajo sólo funciona si se implementa el Interfaz "Inicializable" (implements Initilizable)
     @FXML
     @Override
@@ -94,41 +96,28 @@ public class FxCntrlAcceso implements Initializable, IaccesoUI{
             }
         });
 
-    // Obtener el Stage cuando la escena esté lista
-    txtArea.sceneProperty().addListener((obs, oldScene, newScene) -> {
-        if (newScene != null) {
-            stage = (Stage) newScene.getWindow();
-        }
-    });
+        // Obtener el Stage cuando la escena esté lista
+        txtArea.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                stage = (Stage) newScene.getWindow();
+            }
+        });
 
-
-        //System.out.println("[Acceso - initialize()] canvasAcceso activado: " + (canvasAcceso!=null) );
+    // IDebugService.print(
+    //     "[FxCntrlAcceso - initialize()] canvasAcceso activado: " + (canvasAcceso != null));
     }
-//#endregion
 
-//#region botones de eventos
-    private void pulsartecla() throws IOException {
-
-        AppController.loginExitoso(usuario);
-        stage.close();
-
-    }
 
     @FXML
-    private void pulsarbotonOK() throws InterruptedException, IOException{
-        if (aceptado&&!FxCntrlAcceso.entrando) {
-            FxCntrlAcceso.entrando = true;
-            try{
-                pulsartecla();
-                //System.out.println("[Acceso] Tecla Pulsada, entrando...");
-            } catch (IOException ex) {
-                System.out.println("Error " + ex.getClass() + " en FxCntrlAcceso, lin 125");
-            }
-        }else{
-            probar();
-        }
+    private void pulsarbotonOK() throws InterruptedException, IOException {
+        probar();
     }
-// NOTE : 26-03-16 : pulsar Enter equivale a pulsar el botón OK
+
+    private String getPass() {
+        return txtPassword.getText();
+    }
+
+    // NOTE : 26-03-16 : pulsar Enter equivale a pulsar el botón OK
     @FXML
     private void pulsarEnter(KeyEvent ke) throws InterruptedException, IOException{
         if(ke.getCode()==KeyCode.ENTER){
@@ -145,7 +134,10 @@ public class FxCntrlAcceso implements Initializable, IaccesoUI{
         String user = userF.getText();
         String pass = passF.getText();
 
-        int resp = AppContext.get().auth().autenticar(user, pass, intentos);
+        if (pass.isBlank() || pass.isEmpty())
+            return;
+
+        int resp = AppContext.auth().autenticar(user, pass, intentos);
 
         switch (resp) {
             case 1 -> {
@@ -165,10 +157,10 @@ public class FxCntrlAcceso implements Initializable, IaccesoUI{
     }
     //#endregion
 
-//#region setters,getters y demás
-    public static String getUsuario() {
+    //#region setters,getters y demás
+    public String getUsuario() {
         //Este procedimiento tiene que leer el usuario antes de cerrarse la ventana...
-        return FxCntrlAcceso.usuario;
+        return this.txtUsuario.getText();
     }
 
     public static TextArea getCanvas() {
@@ -179,14 +171,13 @@ public class FxCntrlAcceso implements Initializable, IaccesoUI{
         getCanvas().appendText("\n" + cont);
     }
 
-    //#endregion
 
     //#region post-auth
     public void fallo() {
         imprimirMensaje("El proceso de autenticación ha fallado.\nEl programa se cerrará.");
         PauseTransition pausa = new PauseTransition(Duration.seconds(1));
         pausa.setOnFinished(e -> {
-            AppContext.get().nav().cerrarLoginPorFallo();
+            AppContext.get().nav().cerrarPorFallo(_VentanaFX.LOGIN);
         });
         pausa.play();
 
@@ -196,16 +187,28 @@ public class FxCntrlAcceso implements Initializable, IaccesoUI{
         String usuario = txtUsuario.getText();
         imprimirMensaje("Bienvenido, " + usuario + " a FacturasSil 2.6");
         PauseTransition pausa = new PauseTransition(Duration.seconds(1));
-        pausa.setOnFinished(e -> {
-            AppContext.get().nav().loginCorrecto(usuario); 
-        });
+        pausa.setOnFinished(
+                e -> {
+                    try {
+                        AppController.loginExitoso(usuario);
+                    } catch (Exception ex) {
+                        IDebugService.printError(
+                                "[FxCntrlAcceso>acierto] ERROR tipo " + ex.getClass() + ": " + ex.getMessage());
+                    }
+                }
+        );
         pausa.play();
-
     }
 
     public void reintentar() throws InterruptedException {
-        imprimir("\nDatos incorrectos: " + this.txtUsuario.getText() + " - " + this.txtPassword.getText()
-                + "\n...Por favor vuelva a intentarlo... (intentos: " + intentos + ")");
+    imprimir(
+        "\nDatos incorrectos: "
+            + this.txtUsuario.getText()
+            + " - "
+            + this.txtPassword.getText()
+            + "\n...Por favor vuelva a intentarlo... (intentos: "
+            + intentos
+            + ")");
         intentos++;
 
         this.txtUsuario.clear();

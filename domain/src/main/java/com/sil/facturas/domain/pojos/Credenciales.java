@@ -1,6 +1,8 @@
-package com.sil.facturas.domain.records;
+package com.sil.facturas.domain.pojos;
 
 import java.util.List;
+
+import com.sil.facturas.domain.records.Creds;
 
 public class Credenciales {
 
@@ -8,7 +10,7 @@ public class Credenciales {
 
     public Credenciales() {
     }
-    
+
     public List<Creds> getCreds() {
         return creds;
     }

@@ -1,6 +1,10 @@
-package com.sil.facturas.domain.records;
+package com.sil.facturas.domain.pojos;
 
 import java.util.HashMap;
+
+import com.sil.facturas.domain.records.NIF;
+import com.sil.facturas.domain.records.Nota;
+import com.sil.facturas.domain.records.Totales;
 
 public class RazonSocial implements Comparable<RazonSocial> {
     private int ID;
@@ -71,7 +75,7 @@ public class RazonSocial implements Comparable<RazonSocial> {
 
   public RazonSocial(String nombre, String cif) {
     this.nombre = nombre;
-    this.nif = new NIF(cif);
+    this.nif = NIF.fromRaw(cif);
     this.direccion = "";
   }
 

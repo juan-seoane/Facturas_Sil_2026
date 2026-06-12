@@ -1,6 +1,7 @@
 package com.sil.facturas.presentationgui.viewmodels;
 
-import com.sil.facturas.domain.records.Extracto;
+import com.sil.facturas.domain.pojos.Extracto;
+
 import javafx.beans.property.*;
 
 public class ExtractoFX {

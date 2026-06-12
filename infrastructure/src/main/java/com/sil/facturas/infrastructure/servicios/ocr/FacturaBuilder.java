@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.sil.facturas.domain.records.Extracto;
-import com.sil.facturas.domain.records.Factura;
+import com.sil.facturas.domain.pojos.Extracto;
+import com.sil.facturas.domain.pojos.Factura;
 
 public class FacturaBuilder {
 

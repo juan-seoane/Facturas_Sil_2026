@@ -2,18 +2,17 @@ package com.sil.facturas.app.services;
 
 import java.util.List;
 
-import com.sil.facturas.domain.records.ConfigData;
-import com.sil.facturas.domain.records.Factura;
-import com.sil.facturas.infrastructure.csv.FacturaCSVRepo;
+import com.sil.facturas.domain.interfaces.IFacturaRepo;
+import com.sil.facturas.domain.pojos.Factura;
 
 
 public class FacturasService {
 
-  private final FacturaCSVRepo repo;
+  private final IFacturaRepo repo;
 
-  public FacturasService(ConfigData cfgdata) {
-    this.repo = new FacturaCSVRepo(cfgdata.getRutas().getFCT());
-  }
+  public FacturasService(IFacturaRepo repo) {
+    this.repo = repo;
+}
 
   public List<Factura> leerFacturas() {
     return repo.leerListaFacturas();

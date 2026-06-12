@@ -3,6 +3,8 @@ package com.sil.facturas.infrastructure.csv;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sil.facturas.domain.pojos.Factura;
+import com.sil.facturas.domain.pojos.RazonSocial;
 import com.sil.facturas.domain.records.*;
 import com.sil.facturas.infrastructure.records.LineaCsvDTO;
 
@@ -81,7 +83,7 @@ public class FacturaCsvMapper {
 
         // 5) Nota
         arr[18] = f.notaExiste() ? "1" : "0";
-        arr[19] = f.notaExiste() ? f.getNota().getTexto() : "";
+        arr[19] = f.notaExiste() ? f.getNota().texto() : "";
 
         return new LineaCsvDTO(arr);
     }

@@ -1,4 +1,4 @@
-package com.sil.facturas.presentationgui.services.ocr;
+package com.sil.facturas.infrastructure.servicios.ocr;
 
 public class CampoDTO {
   public String id;

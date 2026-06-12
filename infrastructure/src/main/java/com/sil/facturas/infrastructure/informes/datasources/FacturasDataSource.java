@@ -3,7 +3,8 @@ package com.sil.facturas.infrastructure.informes.datasources;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sil.facturas.domain.records.Factura;
+import com.sil.facturas.domain.pojos.Factura;
+
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;

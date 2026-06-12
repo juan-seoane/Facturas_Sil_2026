@@ -1,6 +1,7 @@
 package com.sil.facturas.app.services;
 
-import com.sil.facturas.infrastructure.helpers._Ruta;
+import com.sil.facturas.domain.enums._Ruta;
+
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

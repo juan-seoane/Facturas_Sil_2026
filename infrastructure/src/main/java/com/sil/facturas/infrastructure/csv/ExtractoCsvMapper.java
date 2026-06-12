@@ -1,6 +1,6 @@
 package com.sil.facturas.infrastructure.csv;
 
-import com.sil.facturas.domain.records.Extracto;
+import com.sil.facturas.domain.pojos.Extracto;
 import com.sil.facturas.infrastructure.records.LineaCsvDTO;
 
 public class ExtractoCsvMapper {

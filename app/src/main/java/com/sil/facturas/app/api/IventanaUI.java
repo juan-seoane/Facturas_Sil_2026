@@ -4,5 +4,6 @@ public interface IventanaUI {
 	IventanaUI crear();
 	void mostrar();
 	void ocultar();
-	void cerrar();
+
+    void cerrar();
 }

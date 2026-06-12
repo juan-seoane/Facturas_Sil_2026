@@ -12,10 +12,10 @@
 
     <modules>
         <module>domain</module>
-        <module>infrastructure</module>
-        <module>presentationgui</module>
-        <module>presentationcli</module>
         <module>app</module>
+        <module>infrastructure</module>
+        <module>presentationcli</module>
+        <module>presentationgui</module>
     </modules>
 
     <properties>

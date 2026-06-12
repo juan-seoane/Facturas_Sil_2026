@@ -1,20 +1,21 @@
 package com.sil.facturas.presentationgui.fxcontrollers;
 
-import com.sil.facturas.domain.records.Factura;
+import com.sil.facturas.app.core.AppContext;
+import com.sil.facturas.domain.interfaces.IDebugService;
+import com.sil.facturas.domain.pojos.Factura;
 import com.sil.facturas.domain.records.Fecha;
 import com.sil.facturas.infrastructure.config.UIDataConfig;
-import com.sil.facturas.infrastructure.debug.Debug;
-import com.sil.facturas.infrastructure.servicios.config.Config;
-
-import java.io.IOException;
+import com.sil.facturas.presentationgui.helpers.TableScaler;
+import com.sil.facturas.presentationgui.viewmodels.ExtractoFX;
+import com.sil.facturas.presentationgui.viewmodels.FacturaFX;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.*;
-
-import com.sil.facturas.app.core.AppContext;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,307 +25,316 @@ import javafx.scene.control.cell.CheckBoxTreeTableCell;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.layout.HBox;
 import javafx.util.converter.NumberStringConverter;
-import com.sil.facturas.presentationgui.helpers.TableScaler;
-import com.sil.facturas.presentationgui.viewmodels.ExtractoFX;
-import com.sil.facturas.presentationgui.viewmodels.FacturaFX;
 
 public class FxCntrlTablaFCT implements Initializable {
 
-    @FXML private TreeTableView<Object> treeFct;
+  @FXML private TreeTableView<Object> treeFct;
 
-    @FXML private TreeTableColumn<FacturaFX, Number> colID;
-    @FXML private TreeTableColumn<FacturaFX, String> colNumFact;
-    @FXML private TreeTableColumn<FacturaFX, String> colFecha;
-    @FXML private TreeTableColumn<FacturaFX, String> colRS;
-    @FXML private TreeTableColumn<Object, String> colConcepto;
-    @FXML private TreeTableColumn<FacturaFX, Boolean> colDev;
-    @FXML private TreeTableColumn<FacturaFX, Number> colCantidad;
+  @FXML private TreeTableColumn<FacturaFX, Number> colID;
+  @FXML private TreeTableColumn<FacturaFX, String> colNumFact;
+  @FXML private TreeTableColumn<FacturaFX, String> colFecha;
+  @FXML private TreeTableColumn<FacturaFX, String> colRS;
+  @FXML private TreeTableColumn<Object, String> colConcepto;
+  @FXML private TreeTableColumn<FacturaFX, Boolean> colDev;
+  @FXML private TreeTableColumn<FacturaFX, Number> colCantidad;
 
-    @FXML private TreeTableColumn<Object, Number> colBase;
-    @FXML private TreeTableColumn<Object, Number> colTipoIVA;
-    @FXML private TreeTableColumn<Object, Number> colIVA;
-    @FXML private TreeTableColumn<Object, Number> colST;
-    @FXML private TreeTableColumn<FacturaFX, Number> colBaseNI;
-    @FXML private TreeTableColumn<FacturaFX, Number> colTipoRet;
-    @FXML private TreeTableColumn<FacturaFX, Number> colRetenc;
-    @FXML private TreeTableColumn<FacturaFX, Number> colTotal;
+  @FXML private TreeTableColumn<Object, Number> colBase;
+  @FXML private TreeTableColumn<Object, Number> colTipoIVA;
+  @FXML private TreeTableColumn<Object, Number> colIVA;
+  @FXML private TreeTableColumn<Object, Number> colST;
+  @FXML private TreeTableColumn<FacturaFX, Number> colBaseNI;
+  @FXML private TreeTableColumn<FacturaFX, Number> colTipoRet;
+  @FXML private TreeTableColumn<FacturaFX, Number> colRetenc;
+  @FXML private TreeTableColumn<FacturaFX, Number> colTotal;
 
-    @FXML private TreeTableColumn<FacturaFX, String> colNota;
+  @FXML private TreeTableColumn<FacturaFX, String> colNota;
 
-    @FXML private TreeTableColumn<Object, Void> colAcciones;
+  @FXML private TreeTableColumn<Object, Void> colAcciones;
 
-    @FXML private Label lblBase;
-    @FXML private Label lblIVA;
-    @FXML private Label lblST;
-    @FXML private Label lblBaseNI;
-    @FXML private Label lblRetenc;
-    @FXML private Label lblTotal;
-    @FXML private Label lblNumFact;
-    @FXML private Label lblIndexFCT;
+  @FXML private Label lblBase;
+  @FXML private Label lblIVA;
+  @FXML private Label lblST;
+  @FXML private Label lblBaseNI;
+  @FXML private Label lblRetenc;
+  @FXML private Label lblTotal;
+  @FXML private Label lblNumFact;
+  @FXML private Label lblIndexFCT;
 
-    private UIDataConfig uiCfg;
-    private Path cfgPath;
+  private UIDataConfig uiCfg;
+  private Path cfgPath;
   private FacturaFX facturaVaciaEnEdicion = FacturaFX.filaVacia();
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
+  @Override
+  public void initialize(URL url, ResourceBundle rb) {
+      //IDebugService.print("[FxCntrlTablaFCT] Entrando en initialize()");
+    if (AppContext.getUsuarioActual() == null) {
+      IDebugService.printError(
+          "[FxCntrlTablaFCT>initialize()] Usuario null, no cargo config todavía");
+      return;
+    }
+    IDebugService.print(
+        "FxCntrlTablaFCT>initialize()] usuarioActual = " + AppContext.getUsuarioActual());
 
-        if (AppContext.getUsuarioActual() == null) {
-            Debug.printError("[FxCntrlTablaFCT>initialize()] Usuario null, no cargo config todavía");
-            return;
-        }
-        Debug.print("FxCntrlTablaFCT>initialize()] usuarioActual = " + AppContext.getUsuarioActual());
+    cargarConfigUIAsync(() -> {
 
-        cargarConfigUI();
         configurarColumnas();
-        configurarColumnasEditables(); // ← añadimos edición SIN tocar nada
-        if (Config.usuario != null) {
-            cargarDatos();
-            configurarAcciones();
-            configurarEscalado();
-        }
+        configurarColumnasEditables();
 
+        cargarDatos();          // ya es async
+        configurarAcciones();
+        configurarEscalado();
 
         treeFct.setEditable(true);
+     });
 
-        treeFct
-                .sceneProperty()
-                .addListener(
-                        (obs, oldScene, newScene) -> {
-                            if (newScene != null) {
-                                Platform.runLater(
-                                        () -> {
-                                            aplicarAnchosDesdeJSON(); // ← aquí se aplican
-                                            recalcularColumnas(); // ← aquí se ajustan
-                                            //verificarColumnas(); // ← aquí SÍ tienen tamaño
-                                            actualizarDatosPanelControl();
-                                        });
-                            }
-                        });
+    treeFct.setEditable(true);
 
-        treeFct
-                .widthProperty()
-                .addListener(
-                        (o, ov, nv) -> {
-                            Platform.runLater(
-                                    () -> {
-                                        recalcularColumnas(); // ← aquí se ajustan
-                                        //verificarColumnas(); // ← aquí SÍ tienen tamaño
-                                    });
-                        });
-    }
+    treeFct
+        .sceneProperty()
+        .addListener(
+            (obs, oldScene, newScene) -> {
+              if (newScene != null) {
+                Platform.runLater(
+                    () -> {
+                      aplicarAnchosDesdeJSON(); // ← aquí se aplican
+                      recalcularColumnas(); // ← aquí se ajustan
+                      // verificarColumnas(); // ← aquí SÍ tienen tamaño
 
-    private void cargarConfigUI() {
-        cfgPath = Path.of(Config.getConfig(AppContext.getUsuarioActual()).getRutasconfig().getRutaUIData());
-        try {
-            uiCfg = UIDataConfig.fromJson(cfgPath);
-            // System.out.println("[FxCntrlTablaFCT>cargarConfigUI] UIDataConfig cargado:");
-            // System.out.println(uiCfg);
-        } catch (IOException e) {
-      Debug.printError(
-          "[FxCntrlTablaFCT>initialize] Error " + e.getClass() + " al cargar la UIDataConfig");
-        }
-    }
-
-    private void recalcularColumnas() {
-        Map<String, Double> nuevos = TableScaler.resizeColumns(treeFct, uiCfg);
-        nuevos.forEach((colId, ancho) -> uiCfg.updateAncho(colId, (int)Double.parseDouble(String.valueOf(ancho))));
-    }
-
-    private void aplicarAnchosDesdeJSON() {
-        treeFct
-        .getColumns()
-        .forEach(
-            col -> {
-                double ancho = uiCfg.getAncho(col.getId());
-                if (ancho > 0) {
-                    col.setPrefWidth(ancho);
-                }
+                    });
+              }
             });
-        }
 
-    private void verificarColumnas() {
-        System.out.println("=== VERIFICACIÓN COLUMNAS FACTURA ===");
-        treeFct
-        .getColumns()
-        .forEach(
-            col -> {
-                String id = col.getId();
-                double pref = col.getPrefWidth();
-                double cfg = uiCfg.getAncho(id);
-                Debug.print(id + " | Actual=" + pref + " | json=" + cfg);
+    treeFct
+        .widthProperty()
+        .addListener(
+            (o, ov, nv) -> {
+              Platform.runLater(
+                  () -> {
+                    recalcularColumnas(); // ← aquí se ajustan
+                    // verificarColumnas(); // ← aquí SÍ tienen tamaño
+                  });
             });
-            Debug.print("=====================================");
-        }
+  }
 
-    private void actualizarDatosPanelControl() {
-        int numFacturas = treeFct.getRoot().getChildren().size();
+  private void cargarConfigUIAsync(Runnable onReady) {
 
-       FxCntrlPanelControl.getPanelControl().setNumFacturasLbl(String.valueOf(numFacturas));
+    Task<UIDataConfig> task =
+        new Task<>() {
+          @Override
+          protected UIDataConfig call() throws Exception {
+            Path cfgPath =
+                Path.of(
+                    AppContext.getConfigService()
+                        .getRutasConfig(AppContext.getUsuarioActual())
+                        .getRutaUIData());
+            return UIDataConfig.fromJson(cfgPath);
+          }
+        };
 
-        // si quieres contar extractos:
-        // long numExtractos =
-        //     treeFct.getRoot().getChildren().stream().flatMap(f -> f.getChildren().stream()).count();
-
-        // si quieres totales:
-        // actualizarTotales(); // si ya tienes este método
-    }
-
-    private void configurarColumnas() {
-
-        // =========================
-        // COLUMNAS SOLO FACTURA
-        // =========================
-
-        colID.setCellValueFactory(
-                c -> {
-                    Object v = c.getValue().getValue();
-                    if (v instanceof FacturaFX f)
-                        return f.idProperty();
-                    return null;
-                });
-
-        colNumFact.setCellValueFactory(
-                c -> {
-                    Object v = c.getValue().getValue();
-                    if (v instanceof FacturaFX f)
-                        return f.numeroProperty();
-                    return null;
-                });
-
-        colFecha.setCellValueFactory(
-                c -> {
-                    Object v = c.getValue().getValue();
-                    if (v instanceof FacturaFX f)
-                        return new SimpleStringProperty(f.getFecha().toString());
-                    return null;
-                });
-
-        colRS.setCellValueFactory(
-                c -> {
-                    Object v = c.getValue().getValue();
-                    if (v instanceof FacturaFX f)
-                        return f.razonSocialProperty();
-                    return null;
-                });
-
-        colConcepto.setCellValueFactory(
-                c -> {
-                    Object v = c.getValue().getValue();
-                    if (v instanceof FacturaFX f)
-                        return f.conceptoProperty();
-                    return null;
-                });
-
-        colDev.setCellValueFactory(c -> {
-            Object v = c.getValue().getValue();
-
-            if (v instanceof FacturaFX f)
-                return f.devolucionProperty();
-
-            // ExtractoFX → devolver un BooleanProperty falso (pero observable)
-            return new SimpleBooleanProperty(false);
+    task.setOnSucceeded(
+        e -> {
+          uiCfg = task.getValue();
+          onReady.run();
         });
 
-        colCantidad.setCellValueFactory(
-            c -> {
-            Object v = c.getValue().getValue();
+    task.setOnFailed(e -> task.getException().printStackTrace());
 
-            if (v instanceof FacturaFX f) return f.numExtractosProperty();
+    new Thread(task).start();
+  }
 
-            if (v instanceof ExtractoFX e) return e.cantidadProperty();
-
-            return null;
-            });
-
-        colBaseNI.setCellValueFactory(
-                c -> {
-                    Object v = c.getValue().getValue();
-                    if (v instanceof FacturaFX f)
-                        return f.baseNIProperty();
-                    return null;
-                });
-
-        colTipoRet.setCellValueFactory(
-                c -> {
-                    Object v = c.getValue().getValue();
-                    if (v instanceof FacturaFX f)
-                        return f.retProperty();
-                    return null;
-                });
-
-        colRetenc.setCellValueFactory(
-                c -> {
-                    Object v = c.getValue().getValue();
-                    if (v instanceof FacturaFX f)
-                        return f.retencionesProperty();
-                    return null;
-                });
-
-        colTotal.setCellValueFactory(
-                c -> {
-                    Object v = c.getValue().getValue();
-                    if (v instanceof FacturaFX f)
-                        return f.totalProperty();
-                    return null;
-                });
-
-        colNota.setCellValueFactory(
-            param -> {
-            Object v = param.getValue().getValue();
-
-            if (v instanceof FacturaFX fx)
-                return new SimpleStringProperty(fx.notaExiste() ? "*" : "");
-
-            // ExtractoFX no tiene nota
-            return new SimpleStringProperty("");
-                });
-
-
-        // =========================
-        // COLUMNAS COMPARTIDAS (FacturaFX + ExtractoFX)
-        // =========================
-
-        colBase.setCellValueFactory(
-                c -> {
-                    Object v = c.getValue().getValue();
-                    if (v instanceof FacturaFX f)
-                        return f.baseProperty();
-                    if (v instanceof ExtractoFX e)
-                        return e.baseProperty();
-                    return null;
-                });
-
-        colTipoIVA.setCellValueFactory(
-                c -> {
-                    Object v = c.getValue().getValue();
-                    if (v instanceof FacturaFX f)
-                        return f.tipoIVAProperty();
-                    if (v instanceof ExtractoFX e)
-                        return e.tipoIVAProperty();
-                    return null;
-                });
-
-        colIVA.setCellValueFactory(
-                c -> {
-                    Object v = c.getValue().getValue();
-                    if (v instanceof FacturaFX f)
-                        return f.ivaProperty();
-                    if (v instanceof ExtractoFX e)
-                        return e.ivaProperty();
-                    return null;
-                });
-
-        colST.setCellValueFactory(
-                c -> {
-                    Object v = c.getValue().getValue();
-                    if (v instanceof FacturaFX f)
-                        return f.subtotalProperty();
-                    if (v instanceof ExtractoFX e)
-                        return e.subtotalProperty();
-                    return null;
-                });
+  private void recalcularColumnas() {
+    if (uiCfg == null) {
+      //IDebugService.printError("[FxCntrlTablaFCT] uiCfg null → no recalculo columnas");
+      return;
     }
+    Map<String, Double> nuevos = TableScaler.resizeColumns(treeFct, uiCfg);
+    nuevos.forEach(
+        (colId, ancho) ->
+            uiCfg.updateAncho(colId, (int) Double.parseDouble(String.valueOf(ancho))));
+  }
+
+  private void aplicarAnchosDesdeJSON() {
+    if (uiCfg == null) {
+      //IDebugService.printError("[FxCntrlTablaFCT] uiCfg aún es null, no aplico anchos");
+      return;
+    }
+    treeFct
+        .getColumns()
+        .forEach(
+            col -> {
+              double ancho = uiCfg.getAncho(col.getId());
+              if (ancho > 0) {
+                col.setPrefWidth(ancho);
+              }
+            });
+  }
+
+  private void verificarColumnas() {
+    IDebugService.print("=== VERIFICACIÓN COLUMNAS FACTURA ===");
+    treeFct
+        .getColumns()
+        .forEach(
+            col -> {
+              String id = col.getId();
+              double pref = col.getPrefWidth();
+              double cfg = uiCfg.getAncho(id);
+              IDebugService.print(id + " | Actual=" + pref + " | json=" + cfg);
+            });
+    IDebugService.print("=====================================");
+  }
+
+  private void actualizarDatosPanelControl() {
+    TreeItem<Object> root = treeFct.getRoot();
+    if (root == null) {
+      //IDebugService.printError("[FxCntrlTablaFCT] Root null → no actualizo PanelControl");
+      return;
+    }
+    int numFacturas =
+    (int)
+    root.getChildren().stream()
+    .filter(item -> item.getValue() instanceof FacturaFX)
+    .count();
+    IDebugService.print("[FxCntrlTablaFCT>actualizarDatosPanelControl] numEntradas: " + numFacturas);
+    FxCntrlPanelControl.getPanelControl().setNumFacturasLbl(" " + (numFacturas-1));
+  }
+
+  private void configurarColumnas() {
+
+    // =========================
+    // COLUMNAS SOLO FACTURA
+    // =========================
+
+    colID.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+          if (v instanceof FacturaFX f) return f.idProperty();
+          return null;
+        });
+
+    colNumFact.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+          if (v instanceof FacturaFX f) return f.numeroProperty();
+          return null;
+        });
+
+    colFecha.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+          if (v instanceof FacturaFX f) return new SimpleStringProperty(f.getFecha().toString());
+          return null;
+        });
+
+    colRS.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+          if (v instanceof FacturaFX f) return f.razonSocialProperty();
+          return null;
+        });
+
+    colConcepto.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+          if (v instanceof FacturaFX f) return f.conceptoProperty();
+          return null;
+        });
+
+    colDev.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+
+          if (v instanceof FacturaFX f) return f.devolucionProperty();
+
+          // ExtractoFX → devolver un BooleanProperty falso (pero observable)
+          return new SimpleBooleanProperty(false);
+        });
+
+    colCantidad.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+
+          if (v instanceof FacturaFX f) return f.numExtractosProperty();
+
+          if (v instanceof ExtractoFX e) return e.cantidadProperty();
+
+          return null;
+        });
+
+    colBaseNI.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+          if (v instanceof FacturaFX f) return f.baseNIProperty();
+          return null;
+        });
+
+    colTipoRet.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+          if (v instanceof FacturaFX f) return f.retProperty();
+          return null;
+        });
+
+    colRetenc.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+          if (v instanceof FacturaFX f) return f.retencionesProperty();
+          return null;
+        });
+
+    colTotal.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+          if (v instanceof FacturaFX f) return f.totalProperty();
+          return null;
+        });
+
+    colNota.setCellValueFactory(
+        param -> {
+          Object v = param.getValue().getValue();
+
+          if (v instanceof FacturaFX fx)
+            return new SimpleStringProperty(fx.notaExiste() ? "*" : "");
+
+          // ExtractoFX no tiene nota
+          return new SimpleStringProperty("");
+        });
+
+    // =========================
+    // COLUMNAS COMPARTIDAS (FacturaFX + ExtractoFX)
+    // =========================
+
+    colBase.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+          if (v instanceof FacturaFX f) return f.baseProperty();
+          if (v instanceof ExtractoFX e) return e.baseProperty();
+          return null;
+        });
+
+    colTipoIVA.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+          if (v instanceof FacturaFX f) return f.tipoIVAProperty();
+          if (v instanceof ExtractoFX e) return e.tipoIVAProperty();
+          return null;
+        });
+
+    colIVA.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+          if (v instanceof FacturaFX f) return f.ivaProperty();
+          if (v instanceof ExtractoFX e) return e.ivaProperty();
+          return null;
+        });
+
+    colST.setCellValueFactory(
+        c -> {
+          Object v = c.getValue().getValue();
+          if (v instanceof FacturaFX f) return f.subtotalProperty();
+          if (v instanceof ExtractoFX e) return e.subtotalProperty();
+          return null;
+        });
+  }
 
   private void configurarColumnasEditables() {
 
@@ -339,7 +349,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setNumero(event.getNewValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-            //   LogCacheFacturaVacia();
+              //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -357,7 +367,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setFecha(Fecha.fromString(event.getNewValue()));
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-            //   LogCacheFacturaVacia();
+              //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -375,7 +385,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setRazonSocial(event.getNewValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-            //   LogCacheFacturaVacia();
+              //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -393,7 +403,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setConcepto(event.getNewValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-            //   LogCacheFacturaVacia();
+              //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -412,7 +422,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setDevolucion(event.getNewValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-            //   LogCacheFacturaVacia();
+              //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -457,7 +467,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setNota(event.getNewValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-            //   LogCacheFacturaVacia();
+              //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -476,7 +486,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setBase(n.doubleValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-            //   LogCacheFacturaVacia();
+              //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -496,7 +506,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setTipoIVA(n.intValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-            //   LogCacheFacturaVacia();
+              //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -515,7 +525,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setIVA(n.doubleValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-            //   LogCacheFacturaVacia();
+              //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -534,7 +544,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setSubtotal(n.doubleValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-            //   LogCacheFacturaVacia();
+              //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -554,7 +564,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setBaseNI(n.doubleValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-            //   LogCacheFacturaVacia();
+              //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -574,7 +584,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setRet(n.intValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-            //   LogCacheFacturaVacia();
+              //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -594,7 +604,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setRetenciones(n.doubleValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-            //   LogCacheFacturaVacia();
+              //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -613,7 +623,7 @@ public class FxCntrlTablaFCT implements Initializable {
             fx.setTotal(n.doubleValue());
             if (fx.getId() == 0) {
               facturaVaciaEnEdicion = fx;
-            //   LogCacheFacturaVacia();
+              //   LogCacheFacturaVacia();
               return;
             }
             actualizarFacturaDesdeTabla(fx);
@@ -621,30 +631,30 @@ public class FxCntrlTablaFCT implements Initializable {
         });
   }
 
-    private void configurarAcciones() {
+  private void configurarAcciones() {
 
-        colAcciones.setCellFactory(
-            col ->
-                new TreeTableCell<Object, Void>() {
+    colAcciones.setCellFactory(
+        col ->
+            new TreeTableCell<Object, Void>() {
 
-                private final Button btnAddFactura = new Button("+Factura");
-                // private final Button btnAddExtracto = new Button("+Extracto");
-                private final Button btnBorrar = new Button("-Borrar");
-                private final HBox contFacturaVacia = new HBox(5, btnAddFactura);
-                private final HBox contFactura = new HBox(5, btnBorrar);
+              private final Button btnAddFactura = new Button("+Factura");
+              // private final Button btnAddExtracto = new Button("+Extracto");
+              private final Button btnBorrar = new Button("-Borrar");
+              private final HBox contFacturaVacia = new HBox(5, btnAddFactura);
+              private final HBox contFactura = new HBox(5, btnBorrar);
 
-                // private final HBox contExtracto = new HBox(5, btnBorrar);
+              // private final HBox contExtracto = new HBox(5, btnBorrar);
 
-                {
+              {
                 // +Factura → insertar nueva factura
                 btnAddFactura.setOnAction(
                     e -> {
-                        Object rowItem = getTreeTableView().getTreeItem(getIndex()).getValue();
-                        if (!(rowItem instanceof FacturaFX fx)) return;
-                    //   LogCacheFacturaVacia();
-                        insertarFacturaDesdeTabla(fx);
-                        facturaVaciaEnEdicion = FacturaFX.filaVacia();
-                        cargarDatos();
+                      Object rowItem = getTreeTableView().getTreeItem(getIndex()).getValue();
+                      if (!(rowItem instanceof FacturaFX fx)) return;
+                      //   LogCacheFacturaVacia();
+                      insertarFacturaDesdeTabla(fx);
+                      facturaVaciaEnEdicion = FacturaFX.filaVacia();
+                      cargarDatos();
                     });
 
                 // +Extracto → insertar extracto en factura
@@ -660,336 +670,354 @@ public class FxCntrlTablaFCT implements Initializable {
                 // Borrar → según si es factura o extracto
                 btnBorrar.setOnAction(
                     e -> {
-                        Object rowItem = getTreeTableView().getTreeItem(getIndex()).getValue();
-                        if (rowItem instanceof FacturaFX fxFactura) {
+                      Object rowItem = getTreeTableView().getTreeItem(getIndex()).getValue();
+                      if (rowItem instanceof FacturaFX fxFactura) {
                         borrarFacturaDesdeTabla(fxFactura);
-                        } else if (rowItem instanceof ExtractoFX fxExtracto) {
+                      } else if (rowItem instanceof ExtractoFX fxExtracto) {
                         borrarExtractoDesdeTabla(fxExtracto);
-                        }
+                      }
                     });
-                }
+              }
 
-        @Override
-        protected void updateItem(Void item, boolean empty) {
-        super.updateItem(item, empty);
+              @Override
+              protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
 
                 if (empty) {
-                    setGraphic(null);
-                    return;
+                  setGraphic(null);
+                  return;
                 }
 
                 @SuppressWarnings("deprecation")
                 TreeItem<Object> treeItem = getTreeTableRow().getTreeItem();
                 if (treeItem == null) {
-                    setGraphic(null);
-                    return;
+                  setGraphic(null);
+                  return;
                 }
 
                 Object value = treeItem.getValue();
                 if (value == null) {
-                    setGraphic(null);
-                    return;
+                  setGraphic(null);
+                  return;
                 }
 
                 // 1) Fila vacía → +Factura
                 if (value instanceof FacturaFX fx && fx.getId() == 0) {
-                    setGraphic(contFacturaVacia); // SOLO +Factura
-                    return;
+                  setGraphic(contFacturaVacia); // SOLO +Factura
+                  return;
                 }
 
                 // 2) Factura normal → Borrar
                 if (value instanceof FacturaFX) {
-                    setGraphic(contFactura); // SOLO Borrar
-                    return;
+                  setGraphic(contFactura); // SOLO Borrar
+                  return;
                 }
 
                 // 3) Extracto → nada
                 if (value instanceof ExtractoFX) {
-                    setGraphic(null);
-                    return;
+                  setGraphic(null);
+                  return;
                 }
 
                 setGraphic(null);
-                }
+              }
             });
+  }
 
-        }
-
-    private void configurarEscalado() {
-        Platform.runLater(
-            () -> {
-                treeFct.getColumns().forEach(col -> col.setSortable(false));
+  private void configurarEscalado() {
+    Platform.runLater(
+        () -> {
+            treeFct.getColumns().forEach(col -> col.setSortable(false));
+            if (uiCfg != null) {
                 TableScaler.resizeColumns(treeFct, uiCfg);
-            });
+            }
         }
+    );
+  }
 
-        private void actualizarTotales(List<FacturaFX> facturas) {
+  private void actualizarTotales(List<FacturaFX> facturas) {
 
-        // ✔ Normalizar TODAS las facturas antes de sumar
-        facturas.forEach(FacturaFX::normalizarSignos);
+    // ✔ Normalizar TODAS las facturas antes de sumar
+    facturas.forEach(FacturaFX::normalizarSignos);
 
-        double totalBase = facturas.stream().mapToDouble(FacturaFX::getBase).sum();
-        double totalIVA = facturas.stream().mapToDouble(FacturaFX::getIVA).sum();
-        double totalST = facturas.stream().mapToDouble(FacturaFX::getSubtotal).sum();
-        double totalNI = facturas.stream().mapToDouble(FacturaFX::getBaseNI).sum();
-        double totalRet = facturas.stream().mapToDouble(FacturaFX::getRetenciones).sum();
-        double totalTot = facturas.stream().mapToDouble(FacturaFX::getTotal).sum();
+    double totalBase = facturas.stream().mapToDouble(FacturaFX::getBase).sum();
+    double totalIVA = facturas.stream().mapToDouble(FacturaFX::getIVA).sum();
+    double totalST = facturas.stream().mapToDouble(FacturaFX::getSubtotal).sum();
+    double totalNI = facturas.stream().mapToDouble(FacturaFX::getBaseNI).sum();
+    double totalRet = facturas.stream().mapToDouble(FacturaFX::getRetenciones).sum();
+    double totalTot = facturas.stream().mapToDouble(FacturaFX::getTotal).sum();
 
-        lblBase.setText(String.format("%.2f", totalBase));
-        lblIVA.setText(String.format("%.2f", totalIVA));
-        lblST.setText(String.format("%.2f", totalST));
-        lblBaseNI.setText(String.format("%.2f", totalNI));
-        lblRetenc.setText(String.format("%.2f", totalRet));
-        lblTotal.setText(String.format("%.2f", totalTot));
-        lblNumFact.setText(String.valueOf(facturas.size()));
-    }
+    lblBase.setText(String.format("%.2f", totalBase));
+    lblIVA.setText(String.format("%.2f", totalIVA));
+    lblST.setText(String.format("%.2f", totalST));
+    lblBaseNI.setText(String.format("%.2f", totalNI));
+    lblRetenc.setText(String.format("%.2f", totalRet));
+    lblTotal.setText(String.format("%.2f", totalTot));
+    lblNumFact.setText(String.valueOf(facturas.size()));
+  }
 
   public void cargarDatos() {
 
-    // 1) Leer facturas
-    List<FacturaFX> facturas =
-    AppContext.get().fact().leerFacturas().stream()
-        .map(FacturaFX::fromDomain)
-        .toList();
+    Task<List<FacturaFX>> task =
+        new Task<>() {
+          @Override
+          protected List<FacturaFX> call() throws Exception {
+            return AppContext.get().fact().leerFacturas().stream()
+                .map(FacturaFX::fromDomain)
+                .collect(Collectors.toList());
+          }
+        };
 
-    // 2) Ordenar por ID
-    facturas.sort(Comparator.comparingInt(FacturaFX::getId));
+    task.setOnSucceeded(
+        e -> {
+          List<FacturaFX> facturas = task.getValue();
 
-    // 3) Crear raíz
-    TreeItem<Object> root = new TreeItem<>();
-    root.setExpanded(true);
+          // 1) Ordenar
+          facturas.sort(Comparator.comparingInt(FacturaFX::getId));
 
-    // 4) Añadir facturas y extractos
-    for (FacturaFX f : facturas) {
+          // 2) Crear raíz
+          TreeItem<Object> root = new TreeItem<>();
+          root.setExpanded(true);
 
-      f.devolucionProperty()
-          .addListener(
-              (obs, oldVal, newVal) -> {
-                f.aplicarDevolucionEnCascada();
-              });
+          // 3) Añadir facturas y extractos
+          for (FacturaFX f : facturas) {
 
-      TreeItem<Object> nodoFactura = new TreeItem<>(f);
+              f.devolucionProperty()
+              .addListener(
+                  (obs, oldVal, newVal) -> {
+                      f.aplicarDevolucionEnCascada();
+                    });
 
-      for (ExtractoFX extr : f.getExtractos()) {
-        nodoFactura.getChildren().add(new TreeItem<>(extr));
-      }
+            TreeItem<Object> nodoFactura = new TreeItem<>(f);
 
-      root.getChildren().add(nodoFactura);
-    }
+            for (ExtractoFX extr : f.getExtractos()) {
+                nodoFactura.getChildren().add(new TreeItem<>(extr));
+            }
 
-    // 5) Añadir fila vacía SIEMPRE al final
-    TreeItem<Object> filaVacia = new TreeItem<>(FacturaFX.filaVacia());
-    root.getChildren().add(filaVacia);
+            root.getChildren().add(nodoFactura);
+        }
 
-    // 6) Aplicar a la tabla
-    treeFct.setRoot(root);
-    treeFct.setShowRoot(false);
+        // 4) Fila vacía
+        TreeItem<Object> filaVacia = new TreeItem<>(FacturaFX.filaVacia());
+        root.getChildren().add(filaVacia);
 
-    // 7) Totales
-    actualizarTotales(facturas);
+        // 5) Aplicar a la tabla
+        treeFct.setRoot(root);
+        treeFct.setShowRoot(false);
+
+        // 6) Actualizar los datos en el PanelControl
+              IDebugService.print("[FxCntrlTablaFCT>cargarDatos] Actualizando datos en el PanelControl");
+                actualizarDatosPanelControl();
+              
+        // 7) Totales
+        actualizarTotales(facturas);
+    });
+
+    task.setOnFailed(e -> task.getException().printStackTrace());
+
+    new Thread(task).start();
   }
 
-    //region EVENTOS FXML
-    @FXML
-    private void btnVisorFctPulsado(ActionEvent ev) {
-        Debug.print("[FxCntrlTablaFCT] VISOR pulsado");
-    }
+  // region EVENTOS FXML
+  @FXML
+  private void btnVisorFctPulsado(ActionEvent ev) {
+    IDebugService.print("[FxCntrlTablaFCT] VISOR pulsado");
+  }
 
-    @FXML
-    private void btnNuevaFctPulsado(ActionEvent ev) {
-        Debug.print("[FxCntrlTablaFCT] NUEVA FCT pulsado");
-    }
+  @FXML
+  private void btnNuevaFctPulsado(ActionEvent ev) {
+    IDebugService.print("[FxCntrlTablaFCT] NUEVA FCT pulsado");
+  }
 
-    @FXML
-    private void btnEditarFctPulsado(ActionEvent ev) {
-        Debug.print("[FxCntrlTablaFCT] EDITAR pulsado");
-    }
+  @FXML
+  private void btnEditarFctPulsado(ActionEvent ev) {
+    IDebugService.print("[FxCntrlTablaFCT] EDITAR pulsado");
+  }
 
-    @FXML
-    private void btnFiltrosFctPulsado(ActionEvent ev) {
-        Debug.print("[FxCntrlTablaFCT] FILTROS pulsado");
-    }
+  @FXML
+  private void btnFiltrosFctPulsado(ActionEvent ev) {
+    IDebugService.print("[FxCntrlTablaFCT] FILTROS pulsado");
+  }
 
-    @FXML
-    private void btnBorrarFctPulsado(ActionEvent ev) {
-        Debug.print("[FxCntrlTablaFCT] BORRAR pulsado");
-    }
+  @FXML
+  private void btnBorrarFctPulsado(ActionEvent ev) {
+    IDebugService.print("[FxCntrlTablaFCT] BORRAR pulsado");
+  }
 
-    @FXML
-    private void btnScanFctPulsado(ActionEvent ev) {
-        Debug.print("[FxCntrlTablaFCT] SCAN pulsado");
-    }
+  @FXML
+  private void btnScanFctPulsado(ActionEvent ev) {
+    IDebugService.print("[FxCntrlTablaFCT] SCAN pulsado");
+  }
 
-    @FXML
-    private void btnImprimirFctPulsado(ActionEvent ev) {
-        Debug.print("[FxCntrlTablaFCT] IMPRIMIR pulsado");
-    }
+  @FXML
+  private void btnImprimirFctPulsado(ActionEvent ev) {
+    IDebugService.print("[FxCntrlTablaFCT] IMPRIMIR pulsado");
+  }
 
   // endregion
 
   // region OPERACIONES DESDE TABLA
 
-    private void actualizarFacturaDesdeTabla(FacturaFX fx) {
+  private void actualizarFacturaDesdeTabla(FacturaFX fx) {
 
-        // CASO 1: Es la fila vacía → INSERTAR FACTURA NUEVA
-        if (fx.getId() == 0) {
+    // CASO 1: Es la fila vacía → INSERTAR FACTURA NUEVA
+    if (fx.getId() == 0) {
 
-        // 1) Generar ID nueva
-        int nuevaID = AppContext.get().fact().generarID();
-        fx.setId(nuevaID);
+      // 1) Generar ID nueva
+      int nuevaID = AppContext.get().fact().generarID();
+      fx.setId(nuevaID);
 
-        // 2) Convertir a dominio
-        Factura nueva = fx.toDomain();
+      // 2) Convertir a dominio
+      Factura nueva = fx.toDomain();
 
-        // 3) Guardar en CSV
-        AppContext.get().fact().introducirFactura(nueva);
+      // 3) Guardar en CSV
+      AppContext.get().fact().introducirFactura(nueva);
 
-        // 4) Crear nueva fila vacía (ID=0)
-        facturaVaciaEnEdicion = FacturaFX.filaVacia();
+      // 4) Crear nueva fila vacía (ID=0)
+      facturaVaciaEnEdicion = FacturaFX.filaVacia();
 
-        // 5) Recargar tabla (ya con la nueva fila vacía)
-        cargarDatos();
+      // 5) Recargar tabla (ya con la nueva fila vacía)
+      cargarDatos();
 
-        return;
-        }
-
-        // CASO 2: Es una factura real → EDITAR
-        Factura factura = fx.toDomain();
-        boolean ok = AppContext.get().fact().editarFactura(factura);
-
-        if (!ok) {
-        Debug.printError("[FxCntrlTablaFCT] No se pudo actualizar la factura " + factura.getID());
-        }
+      return;
     }
 
-    private void insertarFacturaDesdeTabla(FacturaFX fx) {
+    // CASO 2: Es una factura real → EDITAR
+    Factura factura = fx.toDomain();
+    boolean ok = AppContext.get().fact().editarFactura(factura);
 
-        // 1. Convertir FX → dominio
-        fx.setId(AppContext.get().fact().generarID());
-        Factura factura = fx.toDomain();
-        //vaciar la Factura en memoria
-        //TODO : 26-05-09 : Esto hará que cuando edites otra factura se pierda la edición de la filaVaciaEnEDicion
-        facturaVaciaEnEdicion = FacturaFX.filaVacia();
+    if (!ok) {
+      IDebugService.printError(
+          "[FxCntrlTablaFCT] No se pudo actualizar la factura " + factura.getID());
+    }
+  }
 
-        // 2. Guardar en CSV
-        boolean ok = AppContext.get().fact().introducirFactura(factura);
+  private void insertarFacturaDesdeTabla(FacturaFX fx) {
 
-        if (!ok) {
-            Debug.printError("No se pudo insertar la factura " + factura.getID());
-            return;
-        }
+    // 1. Convertir FX → dominio
+    fx.setId(AppContext.get().fact().generarID());
+    Factura factura = fx.toDomain();
+    // vaciar la Factura en memoria
+    // TODO : 26-05-09 : Esto hará que cuando edites otra factura se pierda la edición de la
+    // filaVaciaEnEDicion
+    facturaVaciaEnEdicion = FacturaFX.filaVacia();
 
-        // 3. Añadir a la tabla
-        TreeItem<Object> item = new TreeItem<>(fx);
-        treeFct.getRoot().getChildren().add(item);
+    // 2. Guardar en CSV
+    boolean ok = AppContext.get().fact().introducirFactura(factura);
+
+    if (!ok) {
+      IDebugService.printError("No se pudo insertar la factura " + factura.getID());
+      return;
     }
 
-    private void borrarFacturaDesdeTabla(FacturaFX fxFactura) {
-        // 1) Llamar al servicio de dominio
-        boolean ok = AppContext.get().fact().borrarFactura(fxFactura.toDomain());
-        if (!ok) {
-            Debug.printError("No se pudo borrar la factura");
-            return;
-        }
+    // 3. Añadir a la tabla
+    TreeItem<Object> item = new TreeItem<>(fx);
+    treeFct.getRoot().getChildren().add(item);
+  }
 
-        // 2) Quitar nodo del árbol
-        TreeItem<Object> root = treeFct.getRoot();
-        TreeItem<Object> nodoABorrar = null;
-
-        for (TreeItem<Object> item : root.getChildren()) {
-            if (item.getValue() == fxFactura) {
-                nodoABorrar = item;
-                break;
-            }
-        }
-
-        if (nodoABorrar != null) {
-            root.getChildren().remove(nodoABorrar);
-        }
+  private void borrarFacturaDesdeTabla(FacturaFX fxFactura) {
+    // 1) Llamar al servicio de dominio
+    boolean ok = AppContext.get().fact().borrarFactura(fxFactura.toDomain());
+    if (!ok) {
+      IDebugService.printError("No se pudo borrar la factura");
+      return;
     }
 
-    private void insertarExtractoDesdeTabla(FacturaFX fxFactura, ExtractoFX fxExtracto) {
+    // 2) Quitar nodo del árbol
+    TreeItem<Object> root = treeFct.getRoot();
+    TreeItem<Object> nodoABorrar = null;
 
-        // 1) Añadir extracto a la factura FX
-        fxFactura.getExtractos().add(fxExtracto);
+    for (TreeItem<Object> item : root.getChildren()) {
+      if (item.getValue() == fxFactura) {
+        nodoABorrar = item;
+        break;
+      }
+    }
 
-        // 2) Añadir nodo hijo en la tabla
-        TreeItem<Object> nodoFactura = buscarNodo(fxFactura);
-        if (nodoFactura != null) {
-            nodoFactura.getChildren().add(new TreeItem<>(fxExtracto));
+    if (nodoABorrar != null) {
+      root.getChildren().remove(nodoABorrar);
+    }
+  }
+
+  private void insertarExtractoDesdeTabla(FacturaFX fxFactura, ExtractoFX fxExtracto) {
+
+    // 1) Añadir extracto a la factura FX
+    fxFactura.getExtractos().add(fxExtracto);
+
+    // 2) Añadir nodo hijo en la tabla
+    TreeItem<Object> nodoFactura = buscarNodo(fxFactura);
+    if (nodoFactura != null) {
+      nodoFactura.getChildren().add(new TreeItem<>(fxExtracto));
+    }
+
+    // 3) Guardar factura actualizada en el CSV
+    Factura factura = fxFactura.toDomain();
+    AppContext.get().fact().introducirFactura(factura);
+  }
+
+  private void borrarExtractoDesdeTabla(ExtractoFX fxExtracto) {
+
+    // 1) Encontrar la factura padre
+    TreeItem<Object> root = treeFct.getRoot();
+    FacturaFX fxFacturaPadre = null;
+    TreeItem<Object> nodoExtracto = null;
+
+    for (TreeItem<Object> itemFactura : root.getChildren()) {
+      if (!(itemFactura.getValue() instanceof FacturaFX fxF)) continue;
+
+      for (TreeItem<Object> itemExt : itemFactura.getChildren()) {
+        if (itemExt.getValue() == fxExtracto) {
+          fxFacturaPadre = fxF;
+          nodoExtracto = itemExt;
+          break;
         }
-
-        // 3) Guardar factura actualizada en el CSV
-        Factura factura = fxFactura.toDomain();
-        AppContext.get().fact().introducirFactura(factura);
+      }
+      if (fxFacturaPadre != null) break;
     }
 
-    private void borrarExtractoDesdeTabla(ExtractoFX fxExtracto) {
+    if (fxFacturaPadre == null || nodoExtracto == null) return;
 
-        // 1) Encontrar la factura padre
-        TreeItem<Object> root = treeFct.getRoot();
-        FacturaFX fxFacturaPadre = null;
-        TreeItem<Object> nodoExtracto = null;
+    // 2) Quitar de la lista de extractos de la factura FX
+    fxFacturaPadre.getExtractos().remove(fxExtracto);
 
-        for (TreeItem<Object> itemFactura : root.getChildren()) {
-            if (!(itemFactura.getValue() instanceof FacturaFX fxF))
-                continue;
-
-            for (TreeItem<Object> itemExt : itemFactura.getChildren()) {
-                if (itemExt.getValue() == fxExtracto) {
-                    fxFacturaPadre = fxF;
-                    nodoExtracto = itemExt;
-                    break;
-                }
-            }
-            if (fxFacturaPadre != null)
-                break;
-        }
-
-        if (fxFacturaPadre == null || nodoExtracto == null)
-            return;
-
-        // 2) Quitar de la lista de extractos de la factura FX
-        fxFacturaPadre.getExtractos().remove(fxExtracto);
-
-        // 3) Quitar nodo del árbol
-        TreeItem<Object> nodoFactura = buscarNodo(fxFacturaPadre);
-        if (nodoFactura != null) {
-            nodoFactura.getChildren().remove(nodoExtracto);
-        }
-
-        // 4) Guardar factura actualizada
-        AppContext.get().fact().introducirFactura(fxFacturaPadre.toDomain());
+    // 3) Quitar nodo del árbol
+    TreeItem<Object> nodoFactura = buscarNodo(fxFacturaPadre);
+    if (nodoFactura != null) {
+      nodoFactura.getChildren().remove(nodoExtracto);
     }
 
-    //endregion
+    // 4) Guardar factura actualizada
+    AppContext.get().fact().introducirFactura(fxFacturaPadre.toDomain());
+  }
 
-    private ExtractoFX crearExtractoVacio() {
-        return new ExtractoFX(
-                0.0, // base
-                21, // IVA
-                0.0, // cuota
-                0.0, // total
-                "Nuevo extracto");
-    }
+  // endregion
 
-    private TreeItem<Object> buscarNodo(FacturaFX fx) {
-        for (TreeItem<Object> item : treeFct.getRoot().getChildren()) {
-            if (item.getValue() == fx) {
-                return item;
-            }
-        }
-        return null;
-    }
+  private ExtractoFX crearExtractoVacio() {
+    return new ExtractoFX(
+        0.0, // base
+        21, // IVA
+        0.0, // cuota
+        0.0, // total
+        "Nuevo extracto");
+  }
 
-    private void LogCacheFacturaVacia() {
-        Debug.print("[FxCntrlTablaFCT>LogCacheFacturaVacia] facturaVaciaEnEdicion ahora es:");
-        Debug.print("  Numero: " + facturaVaciaEnEdicion.getNumero());
-        Debug.print("  Fecha: " + facturaVaciaEnEdicion.getFecha());
-        Debug.print("  RS: " + facturaVaciaEnEdicion.getRazonSocial());
-        Debug.print("  Concepto: " + facturaVaciaEnEdicion.getConcepto());
-        Debug.print("  Base: " + facturaVaciaEnEdicion.getBase());
-        Debug.print("  Total: " + facturaVaciaEnEdicion.getTotal());
-        Debug.print("  Nota: " + facturaVaciaEnEdicion.getNota());
+  private TreeItem<Object> buscarNodo(FacturaFX fx) {
+    for (TreeItem<Object> item : treeFct.getRoot().getChildren()) {
+      if (item.getValue() == fx) {
+        return item;
+      }
     }
+    return null;
+  }
+
+  private void LogCacheFacturaVacia() {
+    IDebugService.print("[FxCntrlTablaFCT>LogCacheFacturaVacia] facturaVaciaEnEdicion ahora es:");
+    IDebugService.print("  Numero: " + facturaVaciaEnEdicion.getNumero());
+    IDebugService.print("  Fecha: " + facturaVaciaEnEdicion.getFecha());
+    IDebugService.print("  RS: " + facturaVaciaEnEdicion.getRazonSocial());
+    IDebugService.print("  Concepto: " + facturaVaciaEnEdicion.getConcepto());
+    IDebugService.print("  Base: " + facturaVaciaEnEdicion.getBase());
+    IDebugService.print("  Total: " + facturaVaciaEnEdicion.getTotal());
+    IDebugService.print("  Nota: " + facturaVaciaEnEdicion.getNota());
+  }
 }

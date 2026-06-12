@@ -1,9 +1,10 @@
 package com.sil.facturas.infrastructure.servicios.config;
 
-import com.sil.facturas.domain.records.ConfigData;
-import com.sil.facturas.domain.records.RutasConfig;
-import com.sil.facturas.infrastructure.debug.Debug;
-import com.sil.facturas.infrastructure.helpers._Ruta;
+import com.sil.facturas.domain.enums._Ruta;
+import com.sil.facturas.domain.interfaces.IConfigService;
+import com.sil.facturas.domain.interfaces.IDebugService;
+import com.sil.facturas.domain.pojos.ConfigData;
+import com.sil.facturas.domain.pojos.RutasConfig;
 import com.sil.facturas.infrastructure.json.JsonParser;
 import java.io.File;
 import java.io.FileWriter;
@@ -16,7 +17,7 @@ import javafx.scene.control.ButtonType;
 // REVIEW - 24-04-22 : configdata.json y misdatos.json deberían contener un JsonArray de sus
 // respectivos objetos
 
-public class Config {
+public class Config implements IConfigService{
 
   // #region CAMPOS DE LA CLASE
   public static String usuario;
@@ -73,13 +74,13 @@ public class Config {
 
   }
 
-  public static Config getConfig(String user) {
-    Debug.print("[Config>getConfig(usuario)] usuario recibido = " + usuario);
+  public static IConfigService getConfig(String user) {
+    IDebugService.print("[Config>getConfig(usuario)] usuario recibido = " + usuario);
     if (user == null) {
-      Debug.printError("[Config>getConfig()]ERROR: Config llamada con usuario NULL");
+      IDebugService.printError("[Config>getConfig()]ERROR: Config llamada con usuario NULL");
       return null;
     }
-    
+
     if ((configActual == null) || (!(usuario.equals(user)))) {
       configActual = new Config(user);
     }
@@ -159,6 +160,16 @@ public class Config {
     return result.isPresent() && result.get() == ButtonType.OK;
   }
 
+  @Override
+  public ConfigData loadConfig(String usuario) {
+    return Config.getConfig(usuario).getConfigData();
+  }
+
+  @Override
+  public void saveConfig(String usuario, ConfigData data) {
+    Config.saveConfig(usuario, data);
+  }
+
   // #region TOSTR()
   @Override
   public String toString() {
@@ -179,10 +190,6 @@ public class Config {
 
   // #endregion
 
-  public ConfigData getConfigData() {
-
-    return this.configData;
-  }
 
   // public MisDatos getMisDatos() {
   //     return misDatos;
@@ -206,5 +213,22 @@ public class Config {
 
   public void setRutasconfig(RutasConfig rutasconfig) {
     this.rutasconfig = rutasconfig;
+  }
+
+  @Override
+  public ConfigData getConfigData(String usuario) {
+    return this.configData;
+  }
+
+  @Override
+  public RutasConfig getRutas(String usuario) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getRutas'");
+  }
+
+  @Override
+  public IConfigService get() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'get'");
   }
 }

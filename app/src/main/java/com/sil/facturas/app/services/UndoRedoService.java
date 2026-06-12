@@ -2,7 +2,7 @@ package com.sil.facturas.app.services;
 /* CONTROLA LAS PILAS DEL HISTORIAL */
 import java.util.Stack;
 
-import com.sil.facturas.domain.records.Factura;
+import com.sil.facturas.domain.pojos.Factura;
 
 public class UndoRedoService {
 

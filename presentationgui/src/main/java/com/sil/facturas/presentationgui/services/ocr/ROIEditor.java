@@ -1,7 +1,8 @@
 package com.sil.facturas.presentationgui.services.ocr;
 
-import com.sil.facturas.infrastructure.helpers._Ruta;
+import com.sil.facturas.domain.enums._Ruta;
 import com.sil.facturas.presentationgui.fxcontrollers.FxROIEditorController;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

@@ -1,13 +1,12 @@
 package com.sil.facturas.presentationgui.fxcontrollers;
 
-import com.sil.facturas.infrastructure.debug.Debug;
-import com.sil.facturas.infrastructure.servicios.config.Config;
-
+import com.sil.facturas.app.core.AppContext;
+import com.sil.facturas.domain.interfaces.IDebugService;
+import com.sil.facturas.domain.pojos.ConfigData;
+import com.sil.facturas.presentationgui.helpers._VentanaFX;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.BrokenBarrierException;
-
-import com.sil.facturas.app.core.AppContext;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -33,12 +32,14 @@ public class FxCntrlPanelControl implements Initializable {
   @FXML private ToggleButton toggleModo;
 
   @FXML private Label lblEntradas;
+
   public Label getLblEntradas() {
     return lblEntradas;
-}
+  }
 
   public void setNumFacturasLbl(String numFact) {
-    this.lblEntradas.setText(numFact);;
+    this.lblEntradas.setText(numFact);
+    ;
   }
 
   @FXML private Label lblTrimestre;
@@ -65,28 +66,23 @@ public class FxCntrlPanelControl implements Initializable {
   static int botonactivo = 1;
   static Stage GUIpanel;
 
-   Config configActual;
+  ConfigData configActual;
   // Controlador_prev ctrlPpal;
   // ControladorFacturas ctrlFct;
   // NOTE : 26-03-30 : El usuario actual se establece en el AppContext, no aquí...
-   String usuarioActual;
+  String usuarioActual;
+
   // #endregion
 
   // REVIEW - 24-04-12 : ¿Porqué no puede seguir siendo un Singleton?
   // REVIEW - 24-04-12 : Hay que definir un usuariActual, y una configActual
 
   // #region CONSTR
-  public FxCntrlPanelControl() {
-     this.usuarioActual = AppContext.usuarioActual.toLowerCase();
-    // System.out.println("[FxCntrlPanelControl] En el constructor del FxCntrlPanelControl,
-    // estableciendo el usuario actual en : " + AppContext.usuarioActual);
-    // Luego habrá que cambiar esto de abajo a modo NAV por defecto...
-    // PanelControl.modo = Controlador_prev.INGR;
-    this.configActual = Config.getConfig(this.usuarioActual);
-    // REVIEW - 24-06-21 : Estas asignaciones me hacen falta
-    // this.ctrlPpal = Controlador_prev.getControlador();
-    // this.ctrlFct = Controlador_prev.getControladorFacturas();
-  }
+public FxCntrlPanelControl() {
+    this.usuarioActual = AppContext.usuarioActual.toLowerCase();
+    this.configActual = AppContext.getConfigService().loadConfig(this.usuarioActual);
+}
+
 
   // #endregion
 
@@ -98,19 +94,18 @@ public class FxCntrlPanelControl implements Initializable {
     // REVIEW - 24-04-09 : Crear un Controlador general, y decidir cómo abrirá las tablas, etc...
     // REVIEW : Cambiar el diseño de los ToggleButton al pulsarse y el mensaje que arrojan
     // REVIEW : Arreglar la inicialización de la GUI del PanelControl... No funciona
-    setAnho((Integer) Config.configActual.getConfigData().getAnho().getAnho());
-    setTrimestre(((Integer) (Config.configActual.getConfigData().getAnho().getTrimestre())));
+    setAnho((Integer) configActual.getAnho().anho());
+    setTrimestre(((Integer) (configActual.getAnho().trimestre())));
     // System.out.println(
     //     "[FxCntrlPanelControl] Inicializando, estableciendo la etiqueta de usuario en : "
     //         + AppContext.usuarioActual);
     // System.out.println(
     //     "[FxCntrlPanelControl] Anho y trimestre establecidos en : "
-            // + Config.configActual.getConfigData().getAnho().getAnho()
-            // + " - "
-            // + Config.configActual.getConfigData().getAnho().getTrimestre());
+    // + Config.configActual.getConfigData().getAnho().getAnho()
+    // + " - "
+    // + Config.configActual.getConfigData().getAnho().getTrimestre());
 
     FxCntrlPanelControl.instancia_pc = this;
-
   }
 
   // #endregion
@@ -155,58 +150,62 @@ public class FxCntrlPanelControl implements Initializable {
   @FXML
   private void btnCFGpulsado(Event evt) throws InterruptedException, BrokenBarrierException {
     // this.ctrlPpal = Controlador_prev.getControlador();
-    Debug.print(" [FxCntrlPanelControl] Boton CFG pulsado!");
+    IDebugService.print(" [FxCntrlPanelControl] Boton CFG pulsado!");
     // botonactivo = 4;
     // botonpulsado = true;
   }
 
   @FXML
   private void btnNTSpulsado(Event evt) {
-    Debug.print(" [FxCntrlPanelControl] Boton NTS pulsado!");
+    IDebugService.print(" [FxCntrlPanelControl] Boton NTS pulsado!");
     botonactivo = 3;
     botonpulsado = true;
   }
 
   @FXML
   private void btnRSpulsado(Event evt) {
-    Debug.print(" [FxCntrlPanelControl] Boton DIST pulsado!");
+    IDebugService.print(" [FxCntrlPanelControl] Boton DIST pulsado!");
     botonactivo = 2;
     botonpulsado = true;
   }
 
   @FXML
   private void btnVisorFctPulsado(Event evt) {
-    Debug.print(" [FxCntrlPanelControl] Boton VisorFCT pulsado!");
-    //botonactivo = 2;
+    IDebugService.print(" [FxCntrlPanelControl] Boton VisorFCT pulsado!");
+    // botonactivo = 2;
     botonpulsado = true;
   }
 
   @FXML
   private void btnFCTpulsado(Event evt) throws InterruptedException, BrokenBarrierException {
-    // Debug.print(" [PanelControl] Boton FCT pulsado!");
+    // IDebugService.print(" [PanelControl] Boton FCT pulsado!");
     // this.ctrlFct = Controlador_prev.getControladorFacturas();
     if (((ToggleButton) (evt.getSource())).isSelected()) {
       btnFCT.setStyle(
           "-fx-background-color: yellow; -fx-border-color: #063970; -fx-border-radius: 10;"
               + " -fx-border-width: 3");
-    //   Debug.print("[FxCntrlPanelControl>btnFCTpulsado] FCT activo!");
+      //   IDebugService.print("[FxCntrlPanelControl>btnFCTpulsado] FCT activo!");
       botonactivo = 1;
       botonpulsado = true;
 
-    AppContext.get().nav().mostrarTablaFacturas();
-    //   Debug.print(
-    //       "[FxCntrlPanelControl>btnFCTpulsado] TablaFCT desde AppContext = "
-    //           + AppContext.getTablaFCT().hashCode());
+      AppContext.get()
+          .nav()
+          .mostrar(
+              _VentanaFX.TABLA_FCT,
+              controller -> {
+                FxCntrlTablaFCT c = (FxCntrlTablaFCT) controller;
+                c.cargarDatos();
+              });
 
     } else if (!((ToggleButton) (evt.getSource())).isSelected()) {
       btnFCT.setStyle(
           "-fx-background-color: transparent; -fx-border-color: #063970; -fx-border-radius: 10;"
               + " -fx-border-width: 3");
-    //   Debug.print("[FxCntrlPanelControl>btnFCTpulsado] FCT desactivado!");
+      //   IDebugService.print("[FxCntrlPanelControl>btnFCTpulsado] FCT desactivado!");
       botonactivo = 11;
       botonpulsado = true;
 
-      AppContext.get().nav().ocultarTablaFacturas();
+      AppContext.get().nav().ocultar(_VentanaFX.TABLA_FCT);
     }
 
     // REVIEW - 24-05-29 : Hay que desactivar el botón mientras está en uso, y colorearlo de
@@ -215,26 +214,25 @@ public class FxCntrlPanelControl implements Initializable {
 
   @FXML
   private void btnCJApulsado(Event evt) {
-    Debug.print(" [FxCntrlPanelControl] Boton CJA pulsado!");
+    IDebugService.print(" [FxCntrlPanelControl] Boton CJA pulsado!");
     botonactivo = 5;
     botonpulsado = true;
   }
 
   @FXML
   private void btnAutosavepulsado(Event evt) {
-    Debug.print(" [FxCntrlPanelControl] Boton AutoSave pulsado!");
-    botonactivo = 6;
-    botonpulsado = true;
   }
 
   @FXML
   private void btnAutosavePressed(Event evt) {
-    Debug.print(" [FxCntrlPanelControl] Boton AutoSave pulsado!");
+    IDebugService.print(" [FxCntrlPanelControl] Boton AutoSave pulsado!");
     btnAutosavepulsado(evt);
     ((Button) evt.getSource())
         .setStyle(
             "-fx-background-color: yellow; -fx-border-color: #063970; -fx-border-radius: 10;"
-                + " -fx-border-width: 3");
+                            + " -fx-border-width: 3");
+    botonactivo = 6;
+    botonpulsado = true;
   }
 
   @FXML
@@ -247,20 +245,20 @@ public class FxCntrlPanelControl implements Initializable {
 
   @FXML
   private void toggleModopulsado(Event evt) {
-     Debug.print(" [FxCntrlPanelControl] Boton MODO pulsado!");
+    IDebugService.print(" [FxCntrlPanelControl] Boton MODO pulsado!");
     if (((ToggleButton) (evt.getSource())).isSelected()) {
       toggleModo.setText("MODO INGR");
       toggleModo.setStyle(
           "-fx-background-color: yellow; -fx-border-color: #063970; -fx-border-radius: 10;"
               + " -fx-border-width: 3");
-      Debug.print(" [FxCntrlPanelControl] modo: INGR");
+      IDebugService.print(" [FxCntrlPanelControl] modo: INGR");
       // modo = Controlador_prev.INGR;
     } else if (!((ToggleButton) (evt.getSource())).isSelected()) {
       toggleModo.setText("MODO NAV");
       toggleModo.setStyle(
           "-fx-background-color: transparent; -fx-border-color: #063970; -fx-border-radius: 10;"
               + " -fx-border-width: 3");
-      Debug.print(" [FxCntrlPanelControl] modo: NAV");
+      IDebugService.print(" [FxCntrlPanelControl] modo: NAV");
       // modo = Controlador_prev.NAV;
     }
     botonactivo = 7;
@@ -284,7 +282,7 @@ public class FxCntrlPanelControl implements Initializable {
 
   // #region RESET
   public static void reset() {
-    // Debug.print("[PanelControl>reset] Reseteando P/C");
+    // IDebugService.print("[PanelControl>reset] Reseteando P/C");
     botonpulsado = false;
   }
 

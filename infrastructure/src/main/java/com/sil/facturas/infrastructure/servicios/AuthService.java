@@ -1,57 +1,68 @@
 package com.sil.facturas.infrastructure.servicios;
 
 import com.google.gson.Gson;
-import com.sil.facturas.domain.records.Credenciales;
+import com.sil.facturas.domain.enums._Ruta;
+import com.sil.facturas.domain.interfaces.IAuthService;
+import com.sil.facturas.domain.interfaces.IDebugService;
+import com.sil.facturas.domain.pojos.Credenciales;
 import com.sil.facturas.domain.records.Creds;
-import com.sil.facturas.infrastructure.debug.Debug;
 import com.sil.facturas.infrastructure.helpers._Auth;
-import com.sil.facturas.infrastructure.helpers._Ruta;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
 /* CONTROLA EL PROCESO DE AUTENTICACIÓN */
-public class AuthService {
+public class AuthService implements IAuthService {
+  @Override
+  public boolean autenticar(String user, String pass) {
+    String rutaCreds = _Ruta.CONFIG.getRuta() + "/creds.json";
+
+    if (!Files.exists(Path.of(rutaCreds))) {
+      return false;
+    }
+
+    Credenciales creds = leerCredenciales(rutaCreds);
+    List<Creds> listaCreds = creds.getCreds();
+
+    return listaCreds.stream().anyMatch(c -> c.usuario().equals(user) && c.pass().equals(pass));
+  }
 
   public int autenticar(String user, String pass, int intentos) {
-    // DONE : 26-03-18 // STUB : 26-03-16 : completar el método autenticar
-    int resp = 3;
-    boolean valido = false;
-    String rutaCreds = _Ruta.CONFIG.getRuta() + "/creds.json";
-    // Debug.print("[AuthService>autenticar] Chequeando la existencia de archivo de credenciales en
-    // ruta: " + rutaCreds);
-    boolean existenCreds = Files.exists(Path.of(rutaCreds));
-    // Debug.print("existe el archivo: " + existenCreds);
-    if (existenCreds) {
-      Credenciales creds = leerCredenciales(rutaCreds);
 
-      List<Creds> listaCreds = creds.getCreds();
-      valido = listaCreds.stream().anyMatch(c -> c.usuario().equals(user) && c.pass().equals(pass));
-      // Debug.print("Credenciales válidas: " + valido);
+    // Si ya superó el límite → fallo directo
+    if (intentos >= 5) {
+      return _Auth.AUTH_FAIL.getCode();
     }
-    if (valido) resp = _Auth.AUTH_OK.getCode();
-    else if (!valido && (intentos >= 5)) resp = _Auth.AUTH_FAIL.getCode();
-    return resp;
+
+    // Llamada al método real
+    boolean valido = autenticar(user, pass);
+
+    if (valido) {
+      return _Auth.AUTH_OK.getCode();
+    }
+
+    // No válido pero aún no superó el límite
+    return _Auth.AUTH_RETRY.getCode(); // o el que uses para "incorrecto pero quedan intentos"
   }
 
-  // #region LEER_CREDS()
-  public static synchronized Credenciales leerCredenciales(String ruta) {
+    // #region LEER_CREDS()
+    public static synchronized Credenciales leerCredenciales(String ruta) {
 
-    try {
-      Path p = Path.of(ruta);
-      String json = Files.readString(p);
+        try {
+            Path p = Path.of(ruta);
+            String json = Files.readString(p);
 
-      Gson gson = new Gson();
+            Gson gson = new Gson();
 
-      Credenciales c = gson.fromJson(json, Credenciales.class);
+            Credenciales c = gson.fromJson(json, Credenciales.class);
 
-      return c;
+            return c;
 
-    } catch (Exception e) {
-      Debug.printError("[AuthService] Excepc " + e.getClass() + " al leer Credenciales");
-      return null;
+        } catch (Exception e) {
+            IDebugService.printError("[AuthService] Excepc " + e.getClass() + " al leer Credenciales");
+            return null;
+        }
     }
-  }
-  // #endregion
+    // #endregion
 }

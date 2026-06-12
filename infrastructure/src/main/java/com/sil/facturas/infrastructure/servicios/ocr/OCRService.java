@@ -1,14 +1,14 @@
 package com.sil.facturas.infrastructure.servicios.ocr;
 
+import com.sil.facturas.domain.enums._Colores;
+import com.sil.facturas.domain.interfaces.IDebugService;
+import com.sil.facturas.domain.records.ROI;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.sil.facturas.domain.records.ROI;
-import com.sil.facturas.infrastructure.debug.Debug;
-import com.sil.facturas.infrastructure.debug._Colores;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
@@ -54,8 +54,8 @@ public class OCRService {
   // ============================
   public String leerROI(String rutaImagen, int x, int y, int w, int h) throws Exception {
     BufferedImage img = javax.imageio.ImageIO.read(new File(rutaImagen));
-    Debug.print("ROI REAL: x=" + x + " y=" + y + " w=" + w + " h=" + h);
-    Debug.print("IMG REAL: w=" + img.getWidth() + " h=" + img.getHeight());
+    IDebugService.print("ROI REAL: x=" + x + " y=" + y + " w=" + w + " h=" + h);
+    IDebugService.print("IMG REAL: w=" + img.getWidth() + " h=" + img.getHeight());
 
     BufferedImage sub = img.getSubimage(x, y, w, h);
     return normalizar(t.doOCR(sub));
@@ -101,25 +101,28 @@ public class OCRService {
   // OCR DE ROI REAL (ModeloOCR)
   // ============================
   public String ocrROIReal(Image imagenBase, ROI roiReal) {
-      try {
-          BufferedImage bimg = SwingFXUtils.fromFXImage(imagenBase, null);
+    try {
+      BufferedImage bimg = SwingFXUtils.fromFXImage(imagenBase, null);
 
-          int x = (int) Math.floor(roiReal.x1());
-          int y = (int) Math.floor(roiReal.y1());
-          int w = (int) Math.floor(roiReal.x2() - roiReal.x1());
-          int h = (int) Math.floor(roiReal.y2() - roiReal.y1());
+      int x = (int) Math.floor(roiReal.x1());
+      int y = (int) Math.floor(roiReal.y1());
+      int w = (int) Math.floor(roiReal.x2() - roiReal.x1());
+      int h = (int) Math.floor(roiReal.y2() - roiReal.y1());
 
-          if (w <= 1 || h <= 1) {
-              return "";
-          }
-
-          BufferedImage sub = bimg.getSubimage(x, y, w, h);
-
-          return normalizar(t.doOCR(sub));
-
-      } catch (Exception e) {
-          return (_Colores.RED.getANSICode() + "[ERROR OCRService>ocrROIReal] " + e.getMessage() + _Colores.RESET.getANSICode());
+      if (w <= 1 || h <= 1) {
+        return "";
       }
+
+      BufferedImage sub = bimg.getSubimage(x, y, w, h);
+
+      return normalizar(t.doOCR(sub));
+
+    } catch (Exception e) {
+      return (_Colores.RED.getANSICode()
+          + "[ERROR OCRService>ocrROIReal] "
+          + e.getMessage()
+          + _Colores.RESET.getANSICode());
+    }
   }
 
   public List<String> ocrListaROIs(Image img, List<ROI> rois) {
@@ -221,21 +224,20 @@ public class OCRService {
   }
 
   public static String extraerNumeros(String raw) {
-      if (raw == null)
-          return "";
+    if (raw == null) return "";
 
-      // 1. Reemplazar comas por puntos para unificar
-      String t = raw.replace(",", ".");
+    // 1. Reemplazar comas por puntos para unificar
+    String t = raw.replace(",", ".");
 
-      // 2. Regex para capturar números con decimales opcionales
-      Matcher m = Pattern.compile("(\\d+\\.\\d+|\\d+)").matcher(t);
+    // 2. Regex para capturar números con decimales opcionales
+    Matcher m = Pattern.compile("(\\d+\\.\\d+|\\d+)").matcher(t);
 
-      List<String> nums = new ArrayList<>();
-      while (m.find()) {
-          nums.add(m.group());
-      }
+    List<String> nums = new ArrayList<>();
+    while (m.find()) {
+      nums.add(m.group());
+    }
 
-      return nums.getLast();
+    return nums.getLast();
   }
 
   public static String normalizarCifraOCR(String raw) {

@@ -1,4 +1,6 @@
-package com.sil.facturas.domain.records;
+package com.sil.facturas.domain.pojos;
+
+import com.sil.facturas.domain.records.NIF;
 
 public class MisDatos implements Comparable<RazonSocial> {
     private String user;
@@ -19,7 +21,7 @@ public class MisDatos implements Comparable<RazonSocial> {
 
     public MisDatos() {
     }
-    
+
     public MisDatos(String user, NIF nif,String razon) {
         this.user = user;
         this.nif = nif;
@@ -179,7 +181,7 @@ public class MisDatos implements Comparable<RazonSocial> {
 */
     public String toJSON() {
 // REVIEW - 24-05-07 : Revisar esta salida comparándola con '/config/ADMIN/misdatos.json', y pensar si el archivo puede ser un JsonArray de objetos MisDatos...
-		String cadenaResp = "{\n\t\"user\": \"" + this.user + "\",\n\t\"nif\": { \"numero\": " + this.nif.getNumero() +", \"letra\": \"" + this.nif.getLetra() + "\", \"isCIF\": " + this.nif.isCIF() + "},\n\t\"nombreEmpresa\": \"" + this.nombreEmpresa + "\",\n\t\"nombre\": \"" + this.nombre + "\",\n\t\"apellidos\": \"" + this.apellidos + "\",\n\t\"razon\": \"" + this.razon + "\",\n\t\"direccion\": \"" + this.direccion + "\",\n\t\"CP\": \"" + this.CP + "\",\n\t\"poblacion\": \"" + this.poblacion + "\",\n\t\"telefono\": \"" + this.telefono + "\""+/*,\n\t\"otrosDatos\": " + this.otrosDatos +*/"\n}";
+		String cadenaResp = "{\n\t\"user\": \"" + this.user + "\",\n\t\"nif\": { \"numero\": " + this.nif.numero() +", \"letra\": \"" + this.nif.letra() + "\", \"isCIF\": " + this.nif.isCIF() + "},\n\t\"nombreEmpresa\": \"" + this.nombreEmpresa + "\",\n\t\"nombre\": \"" + this.nombre + "\",\n\t\"apellidos\": \"" + this.apellidos + "\",\n\t\"razon\": \"" + this.razon + "\",\n\t\"direccion\": \"" + this.direccion + "\",\n\t\"CP\": \"" + this.CP + "\",\n\t\"poblacion\": \"" + this.poblacion + "\",\n\t\"telefono\": \"" + this.telefono + "\""+/*,\n\t\"otrosDatos\": " + this.otrosDatos +*/"\n}";
         return cadenaResp;
     }
 

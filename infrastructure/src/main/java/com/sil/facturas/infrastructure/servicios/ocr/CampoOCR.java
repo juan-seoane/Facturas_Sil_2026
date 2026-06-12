@@ -1,5 +1,5 @@
 
-package com.sil.facturas.presentationgui.services.ocr;
+package com.sil.facturas.infrastructure.servicios.ocr;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

@@ -1,11 +1,13 @@
 package com.sil.facturas.app.api;
 
+import java.util.function.Consumer;
+
 public interface INavService {
-    void mostrarTablaFacturas();
-    void ocultarTablaFacturas();
-    void mostrarPanelControl();
-    void mostrarLogin();
-    void mostrarSplash();
-	void loginCorrecto(String usuario);
-	void cerrarLoginPorFallo();
+
+    void ocultar(IVentanaID v);
+    void cerrarPorFallo(IVentanaID v);
+    void cerrar(IVentanaID v);
+    void mostrar(IVentanaID id, Consumer<Object> initController);
+
+
 }

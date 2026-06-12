@@ -1,4 +1,4 @@
-package com.sil.facturas.domain.records;
+package com.sil.facturas.domain.pojos;
 // REVIEW - 24-05-07 : Hacer un método estático para chequear si los archivos de Trabajo de un Usuario determinado existen... public static archivosTrabajoExisten(String user)()
 public class RutasTrabajo {
     private String FCT;
@@ -7,7 +7,7 @@ public class RutasTrabajo {
 
     public RutasTrabajo() {
     }
-    
+
     public RutasTrabajo(String FCT, String RS, String CJA) {
         this.FCT = FCT;
         this.RS = RS;

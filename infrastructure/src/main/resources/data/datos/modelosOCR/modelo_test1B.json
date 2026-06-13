@@ -1,0 +1,198 @@
+{
+  "nombre": "TEST1A",
+  "version": "1.0",
+  "rutaImagen": "/data/datos/ADMIN/scans/test1.png",
+  "dpi": 600,
+
+  "bloques": [
+
+    {
+      "nombre": "bloqueCabecera",
+      "x1": 445.0,
+      "y1": 189.0,
+      "x2": 722.0,
+      "y2": 314.0,
+      "extensibleHacia": "ninguno",
+
+      "campos": [
+        {
+          "nombre": "factura.NumFact",
+          "parent": "bloqueCabecera",
+          "x1": 453.0,
+          "y1": 203.0,
+          "x2": 715.0,
+          "y2": 225.0,
+          "offsetX": 8.0,
+          "offsetY": 14.0
+        },
+        {
+          "nombre": "factura.Fecha",
+          "parent": "bloqueCabecera",
+          "x1": 456.0,
+          "y1": 229.0,
+          "x2": 716.0,
+          "y2": 257.0,
+          "offsetX": 11.0,
+          "offsetY": 40.0
+        }
+      ]
+    },
+
+    {
+      "nombre": "bloqueExtractos",
+      "x1": 32.0,
+      "y1": 319.0,
+      "x2": 723.0,
+      "y2": 489.0,
+      "extensibleHacia": "abajo",
+      "relativoA": "bloqueCabecera",
+      "offsetY": 5,
+
+      "cabecera": {
+        "x1": 39.0,
+        "y1": 322.0,
+        "x2": 719.0,
+        "y2": 379.0,
+        "offsetX": 7.0,
+        "offsetY": 3.0
+      },
+
+      "lineaBase": {
+        "x1": 44.0,
+        "y1": 381.0,
+        "x2": 718.0,
+        "y2": 410.0,
+        "offsetX": 12.0,
+        "offsetY": 62.0
+      },
+
+      "alturaLineaAprox": 29,
+
+      "finalExtractos": {
+        "x1": 38.0,
+        "y1": 462.0,
+        "x2": 716.0,
+        "y2": 485.0,
+        "offsetX": 6.0,
+        "offsetY": 143.0
+      },
+
+      "campos": [
+        {
+          "nombre": "extracto.Cantidad",
+          "parent": "bloqueExtractos",
+          "x1": 50.0,
+          "y1": 381.0,
+          "x2": 123.0,
+          "y2": 404.0,
+          "offsetX": 18.0,
+          "offsetY": 62.0
+        },
+        {
+          "nombre": "extracto.Concepto",
+          "parent": "bloqueExtractos",
+          "x1": 128.0,
+          "y1": 384.0,
+          "x2": 398.0,
+          "y2": 404.0,
+          "offsetX": 96.0,
+          "offsetY": 65.0
+        },
+        {
+          "nombre": "extracto.PrecioUnitario",
+          "parent": "bloqueExtractos",
+          "x1": 403.0,
+          "y1": 385.0,
+          "x2": 545.0,
+          "y2": 404.0,
+          "offsetX": 371.0,
+          "offsetY": 66.0
+        },
+        {
+          "nombre": "extracto.TotalExtracto",
+          "parent": "bloqueExtractos",
+          "x1": 635.0,
+          "y1": 381.0,
+          "x2": 712.0,
+          "y2": 403.0,
+          "offsetX": 603.0,
+          "offsetY": 62.0
+        }
+      ]
+    },
+
+    {
+      "nombre": "bloqueTotales",
+      "x1": 462.0,
+      "y1": 494.0,
+      "x2": 725.0,
+      "y2": 604.0,
+      "extensibleHacia": "ninguno",
+      "relativoA": "bloqueExtractos",
+      "offsetY": 5,
+
+      "campos": [
+        {
+          "nombre": "totales.subTotal",
+          "parent": "bloqueTotales",
+          "x1": 464.0,
+          "y1": 494.0,
+          "x2": 707.0,
+          "y2": 510.0,
+          "offsetX": 2.0,
+          "offsetY": 0.0
+        },
+        {
+          "nombre": "totales.IVA",
+          "parent": "bloqueTotales",
+          "x1": 466.0,
+          "y1": 515.0,
+          "x2": 712.0,
+          "y2": 547.0,
+          "offsetX": 4.0,
+          "offsetY": 21.0
+        },
+        {
+          "nombre": "totales.tipoIVA",
+          "parent": "bloqueTotales",
+          "x1": 467.0,
+          "y1": 520.0,
+          "x2": 542.0,
+          "y2": 548.0,
+          "offsetX": 5.0,
+          "offsetY": 26.0
+        },
+        {
+          "nombre": "totales.Total",
+          "parent": "bloqueTotales",
+          "x1": 470.0,
+          "y1": 553.0,
+          "x2": 715.0,
+          "y2": 582.0,
+          "offsetX": 8.0,
+          "offsetY": 59.0
+        }
+      ]
+    }
+  ],
+
+  "ocrPorZona": {
+    "factura.Fecha": "FECHA 29/01/2019\n",
+    "extracto.PrecioUnitario": "100.00",
+    "totales.tipoIVA": "IVA 21.0%\n",
+    "lineaExtracto": "1 TALLA PEQUEÑA TRAJE DE LUCES EN ROJO 100.00 100.00\n",
+    "extracto.Concepto": "TALLA PEQUEÑA TRAJE DE LUCES EN ROJO\n",
+    "bloqueTotales": "SUBTOTAL 165.00\nINA21.0% 3465\nTOTAL 199.65 €\n",
+    "bloqueExtractos": "CANT. DESCRIPCIÓN PRECIO UNITARIO IMPORTE\n1 TALLA PEQUEÑA TRAJE DE LUCES EN ROJO 100.00 100.00\n2 MUI GRANDE CHURROLITO 25.00 50.00\n3 EQUIPAJE DE FÚTBOL 5.00 15.00\n",
+    "extracto.Cantidad": "1",
+    "alturaLineaExtracto": "1",
+    "totales.subTotal": "SUBTOTAL 165.00\n",
+    "cabeceraExtractos": "CANT. DESCRIPCIÓN PRECIO UNITARIO IMPORTE\n",
+    "totales.Total": "TOTAL 199.65 €\n",
+    "bloque": "N”DE FACTURA ES-001\nFECHA 29/01/2019\nN\u0027DE PEDIDO 1730/2019\nFECHA VENCIMIENTO 29/01/2019\n",
+    "factura.NumFact": "N” DE FACTURA ES-001\n",
+    "totales.IVA": "IVA 21.0% 3465\n",
+    "finalExtractos": "",
+    "extracto.TotalExtracto": "100.00"
+  }
+}

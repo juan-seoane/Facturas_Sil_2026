@@ -1,6 +1,7 @@
 package com.sil.facturas.app.core;
 
 import com.sil.facturas.app.api.INavService;
+import com.sil.facturas.app.api.IPanelControlUI;
 import com.sil.facturas.app.api.IaccesoUI;
 import com.sil.facturas.app.api.ItablaFCT;
 import com.sil.facturas.app.services.FacturasService;
@@ -16,15 +17,17 @@ public class AppContext {
   private static IAuthService authService;
   public static IAuthService getAuthService() {
     return authService;
-}
+  }
 
-  public static FacturasService facturasService;
-  private static ItablaFCT tablaFCT;
-  private INavService navService;
-  public static IConfigService configService;
-  private IaccesoUI accesoUI;
+    public static FacturasService facturasService;
+    private static ItablaFCT tablaFCT;
+    private INavService navService;
+    public static IConfigService configService;
+    private IaccesoUI accesoUI;
+    private IPanelControlUI panelControlUI;
 
-  private AppContext() {}
+
+private AppContext() {}
 
   public static synchronized AppContext get() {
     if (instance == null)
@@ -40,52 +43,63 @@ public class AppContext {
     return authService;
   }
 
+  public static AppController app() {
+    return AppController.get();
+  }
+  
   public FacturasService fact() {
     return facturasService;
   }
-
+  
   public INavService nav() {
     return this.navService;
   }
-
+  
   public static void setUsuarioActual(String user) {
     usuarioActual = user;
   }
-
+  
   public static void setFacturasService(FacturasService fService) {
     facturasService = fService;
   }
-
+  
+  public void setPanelControlUI(IPanelControlUI ui) {
+      this.panelControlUI = ui;
+  }
+  
+  public IPanelControlUI pc() {
+    return panelControlUI;
+  }
+  
   public void setTablaFCT(ItablaFCT tabla) {
     tablaFCT = tabla;
   }
-
+  
   public ItablaFCT getTablaFCT() {
     return tablaFCT;
   }
 
-    public void setAccesoUI(IaccesoUI acceso) {
-        this.accesoUI = acceso;
-    }
+  public void setAccesoUI(IaccesoUI acceso) {
+      this.accesoUI = acceso;
+  }
 
-    public IaccesoUI getAccesoUI() {
-        return accesoUI;
-    }
+  public IaccesoUI getAccesoUI() {
+      return accesoUI;
+  }
 
-    public void setNav(INavService nav) {
-        this.navService = nav;
-    }
+  public void setNav(INavService nav) {
+      this.navService = nav;
+  }
 
-	public static String getUsuarioActual() {
+  public static String getUsuarioActual() {
       return usuarioActual;
-	}
+  }
 
-    public static void setConfigService(IConfigService s) {
-        configService = s;
-    }
+  public static void setConfigService(IConfigService s) {
+      configService = s;
+  }
 
-    public static IConfigService getConfigService() {
-        return configService;
-    }
-
+  public static IConfigService getConfigService() {
+      return configService;
+  }
 }

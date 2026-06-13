@@ -23,15 +23,15 @@ public class OCRService {
     t = new Tesseract();
 
     String os = System.getProperty("os.name").toLowerCase();
-    System.out.println("[OCRService] Sistema operativo detectado: " + os);
+    IDebugService.print(_Colores.BLUE,"[OCRService] Sistema operativo detectado: " + os);
     String datapath;
 
     if (os.contains("win")) {
       datapath = "C:/Program Files/Tesseract-OCR/tessdata";
-      System.out.println("[OCRService] Usando datapath para Windows: " + datapath);
+      IDebugService.print(_Colores.BLUE,"[OCRService] Usando datapath para Windows: " + datapath);
     } else {
       datapath = "/usr/share/tesseract-ocr/5/tessdata";
-      System.out.println("[OCRService] Usando datapath para Linux: " + datapath);
+      IDebugService.print(_Colores.BLUE,"[OCRService] Usando datapath para Linux: " + datapath);
     }
 
     t.setDatapath(datapath);
@@ -162,8 +162,37 @@ public class OCRService {
   }
 
   // ============================
-  // NORMALIZACIÓN
+  // NORMALIZACIÓN Y DEMÁS
   // ============================
+  public static List<Double> extraerTodosLosNumeros(String linea) {
+    List<Double> salida = new ArrayList<>();
+
+    if (linea == null || linea.isEmpty()) {
+        return salida;
+    }
+
+    // Normalizar comas → puntos
+    String norm = linea.replace(",", ".");
+
+    // Regex para números tipo:
+    //  - 123
+    //  - 123.45
+    //  - .45
+    //  - 123.
+    Pattern p = Pattern.compile("(?<![A-Za-z])\\d*\\.?\\d+");
+    Matcher m = p.matcher(norm);
+
+    while (m.find()) {
+        try {
+            double v = Double.parseDouble(m.group());
+            salida.add(v);
+        } catch (Exception ignored) {
+        }
+    }
+
+    return salida;
+}
+
   private Rectangle normalizar(Rectangle r) {
     double x1 = r.getX();
     double y1 = r.getY();

@@ -144,11 +144,30 @@ public FxCntrlPanelControl() {
     GUIpanel = vPC;
   }
 
+  public ToggleButton getBtnFCT() {
+    return btnFCT;
+  }
+
+  public Button getBtnRS() {
+    return btnRS;
+  }
+  
+  public Button getBtnCJA() {
+    return btnCJA;
+  }
+
+  public Button getBtnCFG() {
+    return btnCFG;
+  }
+
+  public Button getBtnNTS() {
+    return btnNTS;
+  }
   // #endregion
 
   // #region EVT_BTNS
   @FXML
-  private void btnCFGpulsado(Event evt) throws InterruptedException, BrokenBarrierException {
+public void btnCFGpulsado(Event evt) throws InterruptedException, BrokenBarrierException {
     // this.ctrlPpal = Controlador_prev.getControlador();
     IDebugService.print(" [FxCntrlPanelControl] Boton CFG pulsado!");
     // botonactivo = 4;
@@ -156,14 +175,14 @@ public FxCntrlPanelControl() {
   }
 
   @FXML
-  private void btnNTSpulsado(Event evt) {
+public void btnNTSpulsado(Event evt) {
     IDebugService.print(" [FxCntrlPanelControl] Boton NTS pulsado!");
     botonactivo = 3;
     botonpulsado = true;
   }
 
   @FXML
-  private void btnRSpulsado(Event evt) {
+public void btnRSpulsado(Event evt) {
     IDebugService.print(" [FxCntrlPanelControl] Boton DIST pulsado!");
     botonactivo = 2;
     botonpulsado = true;
@@ -177,7 +196,7 @@ public FxCntrlPanelControl() {
   }
 
   @FXML
-  private void btnFCTpulsado(Event evt) throws InterruptedException, BrokenBarrierException {
+public void btnFCTpulsado(Event evt) throws InterruptedException, BrokenBarrierException {
     // IDebugService.print(" [PanelControl] Boton FCT pulsado!");
     // this.ctrlFct = Controlador_prev.getControladorFacturas();
     if (((ToggleButton) (evt.getSource())).isSelected()) {
@@ -213,7 +232,7 @@ public FxCntrlPanelControl() {
   }
 
   @FXML
-  private void btnCJApulsado(Event evt) {
+public void btnCJApulsado(Event evt) {
     IDebugService.print(" [FxCntrlPanelControl] Boton CJA pulsado!");
     botonactivo = 5;
     botonpulsado = true;

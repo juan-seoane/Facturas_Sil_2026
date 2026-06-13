@@ -80,13 +80,14 @@ public class FxROIEditorController {
     screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
     targetHeight = screenHeight * 0.95;
 
-    // if (AppContext.config() == null || AppContext.getUsuarioActual() != "admin") {
-    //   try {
-    //     AppContext.setConfigService(new ConfigService());
-    //   } catch (Exception e) {
-    //     e.printStackTrace();
-    //   }
-    // }
+    if (AppContext.getConfigService() == null || AppContext.getUsuarioActual() != "admin") {
+      try {
+        AppContext.setUsuarioActual("admin");
+        AppContext.setConfigService(new ConfigService());
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
 
     cargarUIData(
         Paths.get(

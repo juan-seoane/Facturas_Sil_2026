@@ -5,6 +5,7 @@ import com.sil.facturas.app.api.INavService;
 import com.sil.facturas.app.core.AppContext;
 import com.sil.facturas.domain.interfaces.IDebugService;
 import com.sil.facturas.infrastructure.servicios.AuthService;
+import com.sil.facturas.presentationgui.helpers.PanelControlUI;
 import com.sil.facturas.presentationgui.helpers._VentanaFX;
 import com.sil.facturas.presentationgui.services.NavSerFX;
 import javafx.application.Application;
@@ -19,15 +20,19 @@ public class MainFX extends Application {
         IDebugService.print("[MainFX] >>> creando NavSerFX");
         INavService nav = new NavSerFX();
 
-    // 1b) Registrar en AppContext
+        // 1b) Registrar en AppContext
         IDebugService.print("[MainFX] >>> registrando NavSerFX");
         AppContext.get().setNav(nav);
 
-    // 2) Crear un Servicio de Autenticación
-        IDebugService.print("[MainFX] >>> creando y registrando AuthService");
+        // 2) Crear un Servicio de Autenticación
         AppContext.setAuthService(new AuthService());
+        IDebugService.print("[MainFX] >>> creando y registrando AuthService");
 
-        // 3) Llamar a mostrarSplash()
+        // 3) Crear un Servicio de Panel Control
+        AppContext.get().setPanelControlUI(new PanelControlUI());
+        IDebugService.print("[MainFX] >>> creando y registrando PanelControlUI");
+
+        // 4) Llamar a mostrarSplash()
         IDebugService.print("[MainFX] llamando al Splash");
         nav.mostrar(_VentanaFX.SPLASH, null);
         IDebugService.print("[MainFX] llamada a Splash terminada");

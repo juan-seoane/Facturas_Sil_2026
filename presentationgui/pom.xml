@@ -17,17 +17,17 @@
     <dependencies>
 
         <!-- Capa infrastructure -->
-        <dependency>
-            <groupId>com.sil.facturas</groupId>
-            <artifactId>infrastructure</artifactId>
-            <version>2.6</version>
-        </dependency>
+    <dependency>
+        <groupId>com.sil.facturas</groupId>
+        <artifactId>infrastructure</artifactId>
+        <version>${project.version}</version>
+    </dependency>
 
         <!-- Capa App -->
         <dependency>
             <groupId>com.sil.facturas</groupId>
             <artifactId>app</artifactId>
-            <version>2.6</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- JavaFX -->
         <dependency>

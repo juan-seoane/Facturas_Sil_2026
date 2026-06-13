@@ -637,9 +637,9 @@ public class FxCntrlTablaFCT implements Initializable {
         col ->
             new TreeTableCell<Object, Void>() {
 
-              private final Button btnAddFactura = new Button("+Factura");
+              private final Button btnAddFactura = new Button("+FCT");
               // private final Button btnAddExtracto = new Button("+Extracto");
-              private final Button btnBorrar = new Button("-Borrar");
+              private final Button btnBorrar = new Button(" - ");
               private final HBox contFacturaVacia = new HBox(5, btnAddFactura);
               private final HBox contFactura = new HBox(5, btnBorrar);
 

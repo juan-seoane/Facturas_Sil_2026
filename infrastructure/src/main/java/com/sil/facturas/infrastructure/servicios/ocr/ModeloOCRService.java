@@ -179,6 +179,7 @@ public class ModeloOCRService {
       Extracto ext = parser.parsearLineaExtracto(texto);
 
       if (ext != null) {
+        IDebugService.print("[ModeloOCRService>generarExtractos] -> " + ext.toString());
         salida.add(ext);
       }
     }
@@ -198,7 +199,7 @@ public class ModeloOCRService {
     this.builder.ocrPorZona.put(nombreZona, textoOCR);
     IDebugService.print(
         _Colores.BLUE,
-        ">>> [ModeloOCRService>addROI] Añadiendo ROI al builder: "
+        "[ModeloOCRService>addROI] Añadiendo ROI al builder: "
             + this.builder.hashCode()
             + " - Zonas en builder: "
             + this.builder.zonas);

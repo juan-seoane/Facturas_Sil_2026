@@ -179,7 +179,7 @@ public class Factura {
             + (this.esDevolucion ? "S" : "N")
             + ","
             + this.extractos.size()
-            + ", TOTS-> "
+            + ",\nTOTS-> "
             + this.totales.getBase()
             + ","
             + ((this.totales.isVariosIVAs()) ? "S" : "N," + this.totales.getTipoIVA())
@@ -210,6 +210,10 @@ public class Factura {
         }
 
         return cadenaResp;
+    }
+
+    public void addExtracto(Extracto e) {
+        this.extractos.add(e);
     }
 
 

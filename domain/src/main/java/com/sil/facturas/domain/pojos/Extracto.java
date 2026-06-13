@@ -7,7 +7,7 @@ public class Extracto implements Comparable<Extracto> {
     public double iva;
     public double subtotal;
     public int cantidad;
-    private int numExtracto;
+    public int numExtracto;
     public double precioUnitario;
 
     public Extracto( double precioUnitario, int cantidad, int tipoiva, double iva, double subtotal, String concepto) {
@@ -18,6 +18,14 @@ public class Extracto implements Comparable<Extracto> {
         this.iva = iva;
         this.subtotal = subtotal;
         this.concepto = concepto;
+    }
+
+    @Override
+    public String toString() {
+        return "Extracto [numExtracto=" + numExtracto + "], cantidad=" + cantidad + ", concepto="
+                + concepto + ", base=" + base + ", precioUnitario=" + precioUnitario
+                + ", tipoiva=" + tipoiva + ", iva=" + iva + ", subtotal=" + subtotal
+                + " ;";
     }
 
     public Extracto() {

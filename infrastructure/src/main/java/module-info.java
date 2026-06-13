@@ -12,6 +12,7 @@ module com.sil.facturas.infrastructure {
   requires javafx.controls;
   requires javafx.swing;
   requires javafx.fxml;
+  requires javafx.graphics;
 
   // Exporta adaptadores
   exports com.sil.facturas.infrastructure.config;

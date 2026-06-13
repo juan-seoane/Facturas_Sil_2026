@@ -31,12 +31,8 @@ public class TableScaler {
 
   public static Map<String, Double> resizeColumns(TreeTableView<?> table, UIDataConfig cfg) {
     double anchoDisponible = table.getWidth();
-    return resizeColumnsGeneric(table.getColumns(), cfg, anchoDisponible);
-  }
-
-  public static Map<String, Double> resizeColumns(TableView<?> tabla, UIDataConfig cfg) {
-    double anchoDisponible = tabla.getWidth();
-    return resizeColumnsGeneric(tabla.getColumns(), cfg, anchoDisponible);
+    double anchoReal = anchoDisponible - 21;
+    return resizeColumnsGeneric(table.getColumns(), cfg, anchoReal);
   }
 
   private static Map<String, Double> resizeColumnsGeneric(

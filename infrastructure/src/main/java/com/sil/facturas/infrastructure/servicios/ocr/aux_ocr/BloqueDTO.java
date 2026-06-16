@@ -1,8 +1,9 @@
-package com.sil.facturas.infrastructure.servicios.ocr.editor;
+package com.sil.facturas.infrastructure.servicios.ocr.aux_ocr;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;

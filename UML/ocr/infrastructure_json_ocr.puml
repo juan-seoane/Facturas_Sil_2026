@@ -1,0 +1,22 @@
+@startuml
+package "infrastructure.json" {
+
+  class ModeloOCRDTO
+  class BloqueDTO
+  class CampoDTO
+  class OffsetDTO
+  class RectDTO
+
+  class ModeloOCRParser {
+    + ModeloOCR parse(File)
+    + ModeloOCRDTO toDTO(ModeloOCR)
+    + ModeloOCR fromDTO(ModeloOCRDTO)
+  }
+
+  ModeloOCRDTO *-- BloqueDTO
+  BloqueDTO *-- CampoDTO
+  BloqueDTO *-- OffsetDTO
+  BloqueDTO *-- RectDTO
+}
+@enduml
+

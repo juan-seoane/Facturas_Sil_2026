@@ -1,0 +1,17 @@
+@startuml
+package "presentationgui.services" {
+
+  class ROIEditorService {
+    + normalizarPantalla(...)
+    + desnormalizarPantalla(...)
+    + calcularOffset(...)
+    + dibujarRect(...)
+  }
+
+  class ModeloOCRVisualizer {
+    + dibujarModelo(...)
+    + exportarPNG(...)
+  }
+}
+@enduml
+

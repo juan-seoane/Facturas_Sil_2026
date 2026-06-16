@@ -6,8 +6,9 @@ import com.sil.facturas.domain.enums._Colores;
 import com.sil.facturas.domain.interfaces.IDebugService;
 import com.sil.facturas.domain.pojos.Extracto;
 import com.sil.facturas.domain.records.ROI;
+import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.ModeloOCRDTO;
+import com.sil.facturas.infrastructure.servicios.ocr.editor.ModeloOCRParser;
 
-import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.ModeloOCRParser;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -215,15 +216,15 @@ public class ModeloOCRService {
   // ============================
   // GUARDAR JSON
   // ============================
-  public void guardarJSON(ModeloOCR modelo, Path destino) throws Exception {
+  public void guardarJSON(ModeloOCRDTO dto, Path destino) throws Exception {
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    String json = gson.toJson(modelo);
+    String json = gson.toJson(dto);
     IDebugService.print(
         _Colores.BLUE,
         "[ModeloOCRService>guardarJSON] ROIs en builder: "
             + this.builder.zonas
             + " - ROIs en modelo final: "
-            + modelo.zonas());
+            + dto.zonas);
     Files.writeString(destino, json);
   }
 }

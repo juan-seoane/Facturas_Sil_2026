@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import com.sil.facturas.domain.interfaces.IDebugService;
 import com.sil.facturas.infrastructure.servicios.ocr.ModeloOCR;
-import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.ModeloOCRParser;
-import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.ModeloOCRVisualizer;
+import com.sil.facturas.infrastructure.servicios.ocr.editor.ModeloOCRParser;
+import com.sil.facturas.infrastructure.servicios.ocr.editor.ModeloOCRVisualizer;
 
 public class ROIEditorTest {
 

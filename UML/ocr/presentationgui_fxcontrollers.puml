@@ -1,0 +1,24 @@
+@startuml
+package "presentationgui.fxcontrollers" {
+
+  class FxCntrlROIEditor {
+    + onCargarModelo()
+    + onGuardar()
+    + onAddROI()
+    + cargarBloques(...)
+    + cargarModeloOCR(...)
+  }
+
+  class FxCntrlModeloOCRVisualizer {
+    + cargarModelo(...)
+    + exportarDebug(...)
+  }
+
+  FxCntrlROIEditor --> ROIEditorService
+  FxCntrlROIEditor --> ModeloOCRService
+  FxCntrlROIEditor --> ModeloOCRParser
+
+  FxCntrlModeloOCRVisualizer --> ModeloOCRVisualizer
+  FxCntrlModeloOCRVisualizer --> ModeloOCRParser
+}
+@enduml

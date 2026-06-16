@@ -1,11 +1,10 @@
 package com.sil.facturas.infrastructure.servicios.ocr;
 
-import java.util.List;
-import java.util.Map;
-
 import com.sil.facturas.domain.records.ROI;
 import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.Bloque;
-
+import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.Campo;
+import java.util.List;
+import java.util.Map;
 
 public class ModeloOCR {
 
@@ -128,4 +127,29 @@ public class ModeloOCR {
     }
   }
 
+  public ROI getCampoPorNombre(String nombreCampo) {
+
+    for (Bloque bloque : bloques) {
+      for (Campo campo : bloque.campos) {
+
+        if (!campo.nombre.equals(nombreCampo)) continue;
+
+        // ROI relativo del campo
+        double cx1 = campo.x1;
+        double cy1 = campo.y1;
+        double cx2 = campo.x2;
+        double cy2 = campo.y2;
+
+        // ROI absoluto = bloque + campo + offset
+        double x1 = bloque.zona.x1() + cx1 + campo.offsetX;
+        double y1 = bloque.zona.y1() + cy1 + campo.offsetY;
+        double x2 = bloque.zona.x1() + cx2 + campo.offsetX;
+        double y2 = bloque.zona.y1() + cy2 + campo.offsetY;
+
+        return new ROI(x1, y1, x2, y2);
+      }
+    }
+
+    return null;
+  }
 }

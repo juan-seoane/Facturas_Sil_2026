@@ -1,7 +1,8 @@
-package com.sil.facturas.infrastructure.servicios.ocr.editor;
+package com.sil.facturas.infrastructure.servicios.ocr.aux_ocr;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 

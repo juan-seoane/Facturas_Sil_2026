@@ -1,0 +1,66 @@
+@startuml
+package "domain.ocr" {
+
+  class ModeloOCR {
+    - String nombre
+    - String version
+    - String rutaImagen
+    - int dpi
+    - Map<String, ROI> zonasSueltas
+    - List<Bloque> bloques
+  }
+
+  class Bloque {
+    - String nombre
+    - String referencia
+    - Offset offset
+    - Rect zona
+    - boolean growVertical
+    - boolean growHorizontal
+    - AnchorX anchorX
+    - AnchorY anchorY
+    - List<Campo> campos
+  }
+
+  class Campo {
+    - String nombre
+    - String parent
+    - String valorSemantico
+    - int offsetX
+    - int offsetY
+    - int w
+    - int h
+    - TipoContenido tipoContenido
+  }
+
+  class Offset {
+    - OffsetTipo tipo
+    - int dx
+    - int dy
+  }
+
+  class Rect {
+    - int x
+    - int y
+    - int w
+    - int h
+  }
+
+  class ROI {
+    - double x1
+    - double y1
+    - double x2
+    - double y2
+  }
+
+  enum TipoContenido
+  enum AnchorX
+  enum AnchorY
+  enum OffsetTipo
+
+  ModeloOCR "1" *-- "many" Bloque
+  Bloque "1" *-- "many" Campo
+  Bloque "1" *-- Offset
+  Bloque "1" *-- Rect
+}
+@enduml

@@ -19,8 +19,8 @@ import com.sil.facturas.domain.interfaces.IDebugService;
 import com.sil.facturas.domain.pojos.Extracto;
 import com.sil.facturas.domain.pojos.Factura;
 import com.sil.facturas.domain.records.ROI;
-import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.ModeloOCRParser;
-import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.ModeloOCRVisualizer;
+import com.sil.facturas.infrastructure.servicios.ocr.editor.ModeloOCRParser;
+import com.sil.facturas.infrastructure.servicios.ocr.editor.ModeloOCRVisualizer;
 
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.image.Image;
@@ -110,7 +110,7 @@ public class OCRTest {
         assertNotNull(urlImg2);
 
         BufferedImage img2 = ImageIO.read(urlImg2);
-        ModeloOCRVisualizer.dibujarROIs(img2, rois);
+        //ModeloOCRVisualizer.dibujarROIs(img2, rois);
 
         // Guardar en carpeta temporal
         File out = new File("target/debug_extractos.png");
@@ -163,7 +163,9 @@ public class OCRTest {
         FacturaBuilderOCR builder = new FacturaBuilderOCR(ocr, parser, modeloService);
 
         Factura factura = builder.construirFactura(img, modelo);
+        IDebugService.print(_Colores.YELLOW,"-------------FACTURA-------------");
         IDebugService.print(_Colores.YELLOW, factura.toString());
+        IDebugService.print(_Colores.YELLOW,"---------------------------------");
         assertNotNull(factura);
 
         // ============================
@@ -181,7 +183,7 @@ public class OCRTest {
         // ============================
         // 6. Asserts de totales
         // ============================
-        
+
         IDebugService.print("--------COMPROBACIONES DE TOTALES--------");
         assertNotNull(factura.getTotales());
         assertTrue(factura.getTotales().getTotal() > 0);
@@ -190,7 +192,7 @@ public class OCRTest {
         // Ejemplo de comprobación concreta
         // assertEquals(123.45, factura.getTotales().getTotal(), 0.01);
     }
-    
+
     // ============================================================
     // APLICAR OCR A UN MODELO COMPLETO (TESSERACT)
     // ============================================================

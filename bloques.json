@@ -1,0 +1,90 @@
+[
+  {
+    "id": "RS",
+    "nombre": "RS",
+    "entity": "generico",
+    "x": 0.07063033028933546,
+    "y": 0.11233617831120067,
+    "width": 0.2138529444871546,
+    "height": 0.07350391914189673,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "datosBancarios",
+    "nombre": "datosBancarios",
+    "entity": "generico",
+    "x": 0.07259228390848367,
+    "y": 0.8973025600907016,
+    "width": 0.2668256922041562,
+    "height": 0.06102212155176332,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "datosFactura",
+    "nombre": "datosFactura",
+    "entity": "generico",
+    "x": 0.6023197610784997,
+    "y": 0.1858400974530974,
+    "width": 0.3649233731615666,
+    "height": 0.12343110950243036,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "bloqueTotales",
+    "nombre": "bloqueTotales",
+    "entity": "generico",
+    "x": 0.6003578074593515,
+    "y": 0.45766591163822495,
+    "width": 0.3609994659232702,
+    "height": 0.10678871271558582,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "bloqueExtractos",
+    "nombre": "bloqueExtractos",
+    "entity": "generico",
+    "x": 0.07259228390848367,
+    "y": 0.30095000856210546,
+    "width": 0.8907269430932861,
+    "height": 0.14839470468269716,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "cabeceraExtractos",
+    "nombre": "cabeceraExtractos",
+    "entity": "generico",
+    "x": 0.08240205200422472,
+    "y": 0.30927120695552773,
+    "width": 0.8730693605209523,
+    "height": 0.04576659116382249,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "lineaExtracto",
+    "nombre": "lineaExtracto",
+    "entity": "generico",
+    "x": 0.08240205200422472,
+    "y": 0.3591983973160614,
+    "width": 0.8730693605209523,
+    "height": 0.024963595180266814,
+    "hijos": [],
+    "campos": []
+  },
+  {
+    "id": "finalExtractos",
+    "nombre": "finalExtractos",
+    "entity": "generico",
+    "x": 0.07455423752763188,
+    "y": 0.43547604925576555,
+    "width": 0.888764989474138,
+    "height": 0.01386866398903712,
+    "hijos": [],
+    "campos": []
+  }
+]

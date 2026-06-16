@@ -1,0 +1,34 @@
+@startuml
+package "infrastructure.servicios.ocr" {
+
+  class ModeloOCRService {
+    + addROI(...)
+    + build()
+    + guardarJSON(...)
+    + normalizar(...)
+    + desnormalizar(...)
+    + convertirBloqueOCR(...)
+    + convertirCampoOCR(...)
+  }
+
+  class OCRService {
+    + realizarOCR(Rect)
+  }
+
+  class OCRExtractor {
+    + extraerValorNumerico(String)
+    + extraerFecha(String)
+    + extraerLista(String)
+  }
+
+  class FacturaBuilderOCR {
+    + Factura build(ModeloOCR)
+  }
+
+  ModeloOCRService --> ModeloOCR
+  FacturaBuilderOCR --> ModeloOCR
+  FacturaBuilderOCR --> OCRService
+  FacturaBuilderOCR --> OCRExtractor
+}
+@enduml
+

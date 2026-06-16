@@ -239,6 +239,51 @@ AppContext	            Estado global, servicios, usuario autenticado	           
 AppController	        Orquestador del flujo (login → panel de control → etc.)	                                                        app/ o app/core/
 ControladorFxPrincipal	Controlador raíz de la UI si tienes un layout principal (menú lateral, barra superior, contenedor central)	    presentation.fxcontrollers
 
+<!-- #region OCR  -->
+com.sil.facturas.domain
+//Este paquete debe contener solo el modelo conceptual, sin dependencias externas.
+.pojo
+    ModeloOCR
+.records
+    Bloque
+    Campo
+    Offset
+    Rect
+    ROI
+.enums
+    _TipoContenido
+    _AnchorX
+    _AnchorY
+    _OffsetTipo
+com.sil.facturas.infrastructure.servicios.ocr
+//Aquí van las clases que procesan, convierten, extraen o construyen datos.
+    ModeloOCRService → normaliza, desnormaliza, convierte BloqueOCR → Bloque
+    OCRService → Tesseract
+    OCRExtractor → limpia texto, extrae números, fechas, listas
+    FacturaBuilderOCR  → genera Factura final a partir del OCR
+com.sil.facturas.infrastructure.servicios.ocr.aux_ocr
+//Estas clases NO forman parte del modelo final, solo sirven para el editor.
+    BloqueOCR
+    CampoOCR
+    OCRItem
+com.sil.facturas.infrastructure.json
+//Aquí van las clases que leen/escriben JSON, y los DTOs que reflejan el JSON.
+    ModeloOCRParser
+    ModeloOCRDTO
+    BloqueDTO
+    CampoDTO
+    OffsetDTO
+    RectDTO
+com.sil.facturas.presentationgui.services
+//servicios que ayudan a la UI pero no son controladores.
+    ROIEditorService
+    ModeloOCRVisualizer
+com.sil.facturas.presentationgui.fxcontrollers
+//Aquí van los controladores FX reales:
+    FxCntrlROIEditor
+    FxCntrlModeloOCRVisualizer
+<!-- #endregion -->
+
 <!-- #region TODO's -->
 ## TODO's y demás
 

@@ -5,13 +5,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import domain.src.main.java.com.sil.facturas.domain.records.Extracto;
 import domain.src.main.java.com.sil.facturas.domain.records.Factura;
 import domain.src.main.java.com.sil.facturas.domain.records.ROI;
-import infrastructure.src.main.java.com.sil.facturas.infrastructure.filesystem._Ruta;
-import infrastructure.src.main.java.com.sil.facturas.infrastructure.servicios.ocr.FacturaBuilder;
-import infrastructure.src.main.java.com.sil.facturas.infrastructure.servicios.ocr.ModeloOCR;
-import infrastructure.src.main.java.com.sil.facturas.infrastructure.servicios.ocr.ModeloOCRService;
-import infrastructure.src.main.java.com.sil.facturas.infrastructure.servicios.ocr.OCRService;
-import infrastructure.src.main.java.com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.ModeloOCRParser;
-import infrastructure.src.main.java.com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.ModeloOCRVisualizer;
+import com.sil.facturas.infrastructure.filesystem._Ruta;
+import com.sil.facturas.infrastructure.servicios.ocr.FacturaBuilderOCR;
+import com.sil.facturas.infrastructure.servicios.ocr.ModeloOCR;
+import com.sil.facturas.infrastructure.servicios.ocr.ModeloOCRService;
+import com.sil.facturas.infrastructure.servicios.ocr.OCRService;
+import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.ModeloOCRParser;
+import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.ModeloOCRVisualizer;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -81,7 +81,8 @@ public class OCRTest {
     Map<String, String> textos = ocr.ocrPorZonas(img, modelo);
 
     // 4. Construir Factura
-    Factura factura = FacturaBuilder.fromOCR(textos);
+    // TODO - 26-06-15 : Arreglar esta llamada -> FacturaBuilderOCR.construirFactura(...)
+    Factura factura = FacturaBuilderOCR.fromOCR(textos);
 
     // 5. Validaciones
     assertEquals("165.00", format2(factura.getTotales().getBase()));

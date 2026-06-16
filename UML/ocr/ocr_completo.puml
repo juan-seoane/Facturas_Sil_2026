@@ -1,0 +1,75 @@
+@startuml
+' ===== DOMAIN =====
+package "domain.ocr" {
+  class ModeloOCR
+  class Bloque
+  class Campo
+  class Offset
+  class Rect
+  class ROI
+  enum TipoContenido
+  enum AnchorX
+  enum AnchorY
+  enum OffsetTipo
+
+  ModeloOCR "1" *-- "many" Bloque
+  Bloque "1" *-- "many" Campo
+  Bloque "1" *-- Offset
+  Bloque "1" *-- Rect
+}
+
+' ===== DTOs =====
+package "infrastructure.json" {
+  class ModeloOCRDTO
+  class BloqueDTO
+  class CampoDTO
+  class OffsetDTO
+  class RectDTO
+  class ModeloOCRParser
+
+  ModeloOCRDTO *-- BloqueDTO
+  BloqueDTO *-- CampoDTO
+  BloqueDTO *-- OffsetDTO
+  BloqueDTO *-- RectDTO
+}
+
+' ===== AUX OCR =====
+package "infrastructure.servicios.ocr.aux_ocr" {
+  class BloqueOCR
+  class CampoOCR
+  class OCRItem
+}
+
+' ===== OCR SERVICES =====
+package "infrastructure.servicios.ocr" {
+  class ModeloOCRService
+  class OCRService
+  class OCRExtractor
+  class FacturaBuilderOCR
+
+  ModeloOCRService --> ModeloOCR
+  FacturaBuilderOCR --> ModeloOCR
+  FacturaBuilderOCR --> OCRService
+  FacturaBuilderOCR --> OCRExtractor
+}
+
+' ===== UI SERVICES =====
+package "presentationgui.services" {
+  class ROIEditorService
+  class ModeloOCRVisualizer
+}
+
+' ===== CONTROLLERS =====
+package "presentationgui.fxcontrollers" {
+  class FxCntrlROIEditor
+  class FxCntrlModeloOCRVisualizer
+
+  FxCntrlROIEditor --> ROIEditorService
+  FxCntrlROIEditor --> ModeloOCRService
+  FxCntrlROIEditor --> ModeloOCRParser
+
+  FxCntrlModeloOCRVisualizer --> ModeloOCRVisualizer
+  FxCntrlModeloOCRVisualizer --> ModeloOCRParser
+}
+
+@enduml

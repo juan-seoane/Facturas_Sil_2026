@@ -1,13 +1,21 @@
 package com.sil.facturas.presentationgui.fxcontrollers;
 
 import com.sil.facturas.app.core.AppContext;
+import com.sil.facturas.app.services.FacturasService;
 import com.sil.facturas.domain.interfaces.IDebugService;
 import com.sil.facturas.domain.pojos.Factura;
 import com.sil.facturas.domain.records.Fecha;
 import com.sil.facturas.infrastructure.config.UIDataConfig;
+import com.sil.facturas.infrastructure.servicios.ocr.FacturaBuilderOCR;
+import com.sil.facturas.infrastructure.servicios.ocr.ModeloOCR;
+import com.sil.facturas.infrastructure.servicios.ocr.ModeloOCRService;
+import com.sil.facturas.infrastructure.servicios.ocr.OCRService;
+import com.sil.facturas.infrastructure.servicios.ocr.editor.ModeloOCRParser;
 import com.sil.facturas.presentationgui.helpers.TableScaler;
 import com.sil.facturas.presentationgui.viewmodels.ExtractoFX;
 import com.sil.facturas.presentationgui.viewmodels.FacturaFX;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.*;
@@ -24,7 +32,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTreeTableCell;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import javafx.util.converter.NumberStringConverter;
+import javax.imageio.ImageIO;
 
 public class FxCntrlTablaFCT implements Initializable {
 
@@ -60,8 +71,10 @@ public class FxCntrlTablaFCT implements Initializable {
   @FXML private Label lblNumFact;
   @FXML private Label lblIndexFCT;
 
+  @FXML
+  private ButtonBase btnImg2Fct;
+
   private UIDataConfig uiCfg;
-  private Path cfgPath;
   private FacturaFX facturaVaciaEnEdicion = FacturaFX.filaVacia();
 
   @Override
@@ -113,7 +126,8 @@ public class FxCntrlTablaFCT implements Initializable {
                     recalcularColumnas(); // ← aquí se ajustan
                     // verificarColumnas(); // ← aquí SÍ tienen tamaño
                   });
-            });
+                    });
+    btnImg2Fct.setOnAction(e -> convertirImagenEnFactura((Button)btnImg2Fct));
   }
 
   private void cargarConfigUIAsync(Runnable onReady) {
@@ -194,7 +208,8 @@ public class FxCntrlTablaFCT implements Initializable {
     root.getChildren().stream()
     .filter(item -> item.getValue() instanceof FacturaFX)
     .count();
-    IDebugService.print("[FxCntrlTablaFCT>actualizarDatosPanelControl] numEntradas: " + numFacturas);
+    IDebugService.print(
+        "[FxCntrlTablaFCT>actualizarDatosPanelControl] numEntradas: " + numFacturas);
     FxCntrlPanelControl.getPanelControl().setNumFacturasLbl(" " + (numFacturas-1));
   }
 
@@ -782,36 +797,37 @@ public class FxCntrlTablaFCT implements Initializable {
           // 3) Añadir facturas y extractos
           for (FacturaFX f : facturas) {
 
-              f.devolucionProperty()
-              .addListener(
-                  (obs, oldVal, newVal) -> {
+            f.devolucionProperty()
+                .addListener(
+                    (obs, oldVal, newVal) -> {
                       f.aplicarDevolucionEnCascada();
                     });
 
             TreeItem<Object> nodoFactura = new TreeItem<>(f);
 
             for (ExtractoFX extr : f.getExtractos()) {
-                nodoFactura.getChildren().add(new TreeItem<>(extr));
+              nodoFactura.getChildren().add(new TreeItem<>(extr));
             }
 
             root.getChildren().add(nodoFactura);
-        }
+          }
 
-        // 4) Fila vacía
-        TreeItem<Object> filaVacia = new TreeItem<>(FacturaFX.filaVacia());
-        root.getChildren().add(filaVacia);
+          // 4) Fila vacía
+          TreeItem<Object> filaVacia = new TreeItem<>(FacturaFX.filaVacia());
+          root.getChildren().add(filaVacia);
 
-        // 5) Aplicar a la tabla
-        treeFct.setRoot(root);
-        treeFct.setShowRoot(false);
+          // 5) Aplicar a la tabla
+          treeFct.setRoot(root);
+          treeFct.setShowRoot(false);
 
-        // 6) Actualizar los datos en el PanelControl
-              IDebugService.print("[FxCntrlTablaFCT>cargarDatos] Actualizando datos en el PanelControl");
-                actualizarDatosPanelControl();
-              
-        // 7) Totales
-        actualizarTotales(facturas);
-    });
+          // 6) Actualizar los datos en el PanelControl
+          IDebugService.print(
+              "[FxCntrlTablaFCT>cargarDatos] Actualizando datos en el PanelControl");
+          actualizarDatosPanelControl();
+
+          // 7) Totales
+          actualizarTotales(facturas);
+        });
 
     task.setOnFailed(e -> task.getException().printStackTrace());
 
@@ -845,9 +861,69 @@ public class FxCntrlTablaFCT implements Initializable {
   }
 
   @FXML
-  private void btnScanFctPulsado(ActionEvent ev) {
-    IDebugService.print("[FxCntrlTablaFCT] SCAN pulsado");
-  }
+  private void btnImg2FctPulsado(ActionEvent ev) {
+        IDebugService.print("[FxCntrlTablaFCT] IMG2FCT pulsado");
+        Button btnImg2Fct = new Button("IMG2FCT");
+        btnImg2Fct.setOnAction(e -> convertirImagenEnFactura(btnImg2Fct));
+    }
+
+private void convertirImagenEnFactura(Button btn) {
+    IDebugService.print(
+        "[FxCntrlTablaFCT>convertirImgEnFactura] Abriendo el selector de Archivos para elegir"
+                    + " imagen");
+    FileChooser fc = new FileChooser();
+    fc.setTitle("Abrir imagen de factura escaneada");
+    Window window = btn.getScene().getWindow();
+    File imgFile = fc.showOpenDialog(window);
+
+
+    if (imgFile == null) return;
+
+    try {
+        // 1) Cargar imagen
+        BufferedImage img = ImageIO.read(imgFile);
+
+      // 2) Cargar modelo OCR desde resources
+      IDebugService.print(
+          "[FxCntrlTablaFCT>convertirImgEnFactura] Abriendo el selector de Archivos para elegir"
+              + " modeloOCR");
+
+        FileChooser fcModelo = new FileChooser();
+        fcModelo.setTitle("Seleccionar modelo OCR (.json)");
+        fcModelo.getExtensionFilters().add(new FileChooser.ExtensionFilter("Modelo OCR", "*.json"));
+
+        File modeloFile = fcModelo.showOpenDialog(btn.getScene().getWindow());
+        if (modeloFile == null) return;
+
+        ModeloOCRParser parser = new ModeloOCRParser();
+        ModeloOCR modelo = parser.parse(modeloFile);
+
+        // 3) Crear servicios
+        OCRService ocr = new OCRService();
+        ModeloOCRService modeloService = new ModeloOCRService();
+        FacturaBuilderOCR builder = new FacturaBuilderOCR(ocr, parser, modeloService);
+
+        // 4) Construir factura desde OCR
+        Factura factura = builder.construirFactura(img, modelo);
+
+        if (factura == null) {
+            IDebugService.printError("[IMG2FCT] No se pudo generar la factura desde la imagen");
+            return;
+        }
+
+      // 5) Insertar factura en la tabla
+      FacturasService fserv = AppContext.get().fact();
+      if(fserv.introducirFactura(factura)) {
+          actualizarTotales(fserv.leerFacturas().stream().map(FacturaFX::fromDomain).collect(Collectors.toList()));
+      }
+
+
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        IDebugService.printError("[IMG2FCT] Error: " + ex.getMessage());
+    }
+}
+
 
   @FXML
   private void btnImprimirFctPulsado(ActionEvent ev) {

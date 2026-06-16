@@ -1,4 +1,4 @@
-package com.sil.facturas.infrastructure.servicios.ocr.editor;
+package com.sil.facturas.infrastructure.servicios.ocr.aux_ocr;
 
 public class CampoDTO {
   public String id;

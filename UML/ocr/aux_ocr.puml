@@ -1,0 +1,30 @@
+@startuml
+package "infrastructure.servicios.ocr.aux_ocr" {
+
+  class BloqueOCR {
+    - String nombre
+    - double x
+    - double y
+    - double w
+    - double h
+  }
+
+  class CampoOCR {
+    - String nombre
+    - String parent
+    - String valorSemantico
+    - double offsetX
+    - double offsetY
+    - double w
+    - double h
+    - TipoContenido tipoContenido
+  }
+
+  class OCRItem {
+    - String id
+    - String type
+    - String entity
+  }
+}
+@enduml
+

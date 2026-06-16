@@ -2,6 +2,7 @@ package com.sil.facturas.app.services;
 
 import java.util.List;
 
+import com.sil.facturas.app.core.AppContext;
 import com.sil.facturas.domain.interfaces.IFacturaRepo;
 import com.sil.facturas.domain.pojos.Factura;
 
@@ -53,9 +54,12 @@ public class FacturasService {
   }
 
   public boolean introducirFactura(Factura factura) {
-    if (factura == null) {
-      return false;
+        if (factura == null) {
+            return false;
+        }
+        if (factura.getID() == 0) {
+        factura.setID(generarID());
+        }
+        return repo.guardarFactura(factura);
     }
-    return repo.guardarFactura(factura);
-  }
 }

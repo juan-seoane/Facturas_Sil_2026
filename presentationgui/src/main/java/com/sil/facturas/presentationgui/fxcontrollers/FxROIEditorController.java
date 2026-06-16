@@ -6,24 +6,21 @@ import com.google.gson.reflect.TypeToken;
 import com.sil.facturas.app.core.AppContext;
 import com.sil.facturas.domain.enums._Ruta;
 import com.sil.facturas.domain.interfaces.IDebugService;
+import com.sil.facturas.domain.records.ROI;
 import com.sil.facturas.infrastructure.config.UIDataConfig;
 import com.sil.facturas.infrastructure.servicios.config.ConfigService;
-import com.sil.facturas.infrastructure.servicios.ocr.BloqueDTO;
-import com.sil.facturas.infrastructure.servicios.ocr.BloqueOCR;
 import com.sil.facturas.infrastructure.servicios.ocr.ModeloOCR;
 import com.sil.facturas.infrastructure.servicios.ocr.ModeloOCRService;
-import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.OCRItem;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import com.sil.facturas.infrastructure.servicios.ocr.aux_ocr.*;
+import com.sil.facturas.infrastructure.servicios.ocr.editor.ModeloOCRParser;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -69,6 +66,7 @@ public class FxROIEditorController {
 
   // private final List<Rectangle> listaROIs = new ArrayList();
   private List<BloqueOCR> bloques = new ArrayList<>();
+  private final ModeloOCRParser ocrParser = new ModeloOCRParser();
   private final ModeloOCR.Builder builder = new ModeloOCR.Builder();
 
   private static final double MIN_WIDTH = 10;
@@ -182,7 +180,7 @@ public class FxROIEditorController {
       double imgW = imageView.getImage().getWidth();
       double imgH = imageView.getImage().getHeight();
 
-      normalizarBloques(bloques, imgW, imgH);
+      //normalizarBloques(bloques, imgW, imgH);
 
       // 4) Dibujar en pantalla
       dibujarBloquesEnOverlay();
@@ -280,46 +278,124 @@ public class FxROIEditorController {
   // FINALIZAR ROI
   // ============================
   private void finalizarROI(MouseEvent e) {
-    IDebugService.print("ROI final: " + currentRect.getX() + ", " + currentRect.getY());
-    OCRTest();
+      IDebugService.print("ROI final: " + currentRect.getX() + ", " + currentRect.getY());
+      OCRTest();
   }
 
   @FXML
-  private void onListo() {
-    if (this.modOCRservice.builder.zonas.isEmpty()) {
-      new Alert(Alert.AlertType.WARNING, "[FxROIEditorController>onListo] No hay zonas definidas.")
-          .showAndWait();
+  private void onCargarModelo() {
+
+    Alert tipoDialog = new Alert(Alert.AlertType.CONFIRMATION);
+    tipoDialog.setTitle("Cargar modelo");
+    tipoDialog.setHeaderText("¿Qué tipo de archivo quieres cargar?");
+    tipoDialog.setContentText("Selecciona una opción:");
+
+    ButtonType btnModelo = new ButtonType("Modelo OCR completo");
+    ButtonType btnBloques = new ButtonType("Modelo de bloques");
+    ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+    tipoDialog.getButtonTypes().setAll(btnModelo, btnBloques, btnCancelar);
+
+    Optional<ButtonType> tipo = tipoDialog.showAndWait();
+    if (tipo.isEmpty() || tipo.get() == btnCancelar) return;
+
+    FileChooser fc = new FileChooser();
+    fc.setInitialDirectory(new File(_Ruta.MODELOSOCR.getRuta()));
+
+    if (tipo.get() == btnBloques) {
+      fc.setTitle("Cargar modelo de bloques");
+      fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
+      File f = fc.showOpenDialog(null);
+      if (f != null) cargarBloques(f.toPath());
       return;
     }
 
-    try {
-      // Preguntar nombre del modelo
-      TextInputDialog dialog = new TextInputDialog();
-      dialog.setTitle("Guardar modelo OCR");
-      dialog.setHeaderText("Introduce el nombre del modelo OCR");
-      dialog.setContentText("Nombre:");
-
-      Optional<String> result = dialog.showAndWait();
-      if (result.isEmpty()) return;
-
-      String nombreModelo = result.get().trim();
-      if (nombreModelo.isEmpty()) return;
-
-      // GUARDAR EL NOMBRE EN EL BUILDER
-      this.modOCRservice.setInfoModelo(
-          this.modOCRservice.rutaImagen, // ya la tienes guardada
-          600, // o el dpi real
-          nombreModelo, // <-- aquí el nombre del modelo de factura
-          "1.0");
-      // Construir modelo final
-      ModeloOCR modelo = this.modOCRservice.build();
-      this.modOCRservice.guardarJSON(
-          modelo, Paths.get(_Ruta.MODELOSOCR.getRuta() + "/modelo_" + nombreModelo + ".json"));
-
-    } catch (Exception e) {
-      IDebugService.printError("Error " + e.getMessage());
+    if (tipo.get() == btnModelo) {
+      fc.setTitle("Cargar modelo OCR completo");
+      fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
+      File f = fc.showOpenDialog(null);
+      if (f != null) cargarModeloOCR(f.toPath());
     }
   }
+
+    @FXML
+    private void onListo() {
+
+    // 1. Comprobar que hay ROIs
+    if (this.modOCRservice.builder.zonas.isEmpty()) {
+        new Alert(Alert.AlertType.WARNING,
+            "[FxROIEditorController>onListo] No hay zonas definidas.")
+            .showAndWait();
+        return;
+    }
+
+    // 2. Preguntar qué tipo de guardado quiere el usuario
+    Alert tipoDialog = new Alert(Alert.AlertType.CONFIRMATION);
+    tipoDialog.setTitle("Guardar modelo");
+    tipoDialog.setHeaderText("¿Cómo quieres guardar este trabajo?");
+    tipoDialog.setContentText("Elige una opción:");
+
+    ButtonType btnBloques = new ButtonType("Guardar como BLOQUES");
+    ButtonType btnModelo = new ButtonType("Guardar como MODELO OCR");
+    ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+    tipoDialog.getButtonTypes().setAll(btnBloques, btnModelo, btnCancelar);
+
+    Optional<ButtonType> tipo = tipoDialog.showAndWait();
+    if (tipo.isEmpty() || tipo.get() == btnCancelar) return;
+
+    // 3. Pedir nombre del archivo
+    TextInputDialog dialog = new TextInputDialog();
+    dialog.setTitle("Nombre del archivo");
+    dialog.setHeaderText("Introduce el nombre base del archivo");
+    dialog.setContentText("Nombre:");
+
+    Optional<String> result = dialog.showAndWait();
+    if (result.isEmpty()) return;
+
+    String nombre = result.get().trim();
+    if (nombre.isEmpty()) return;
+
+    try {
+
+        // 4. GUARDAR SOLO BLOQUES
+        if (tipo.get() == btnBloques) {
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Path destino = Paths.get(_Ruta.MODELOSOCR.getRuta() + "/bloques_" + nombre + ".json");
+
+
+            guardarBloquesJSON(destino, bloques);
+
+            IDebugService.print("[ROIEditor] Guardado bloques en: " + destino);
+            return;
+        }
+
+        // 5. GUARDAR MODELO OCR COMPLETO
+        if (tipo.get() == btnModelo) {
+
+            // Guardar info del modelo en el builder
+            this.modOCRservice.setInfoModelo(
+                this.modOCRservice.rutaImagen,
+                600,
+                nombre,
+                "1.0"
+            );
+
+            // Construir modelo final
+            ModeloOCR modelo = this.modOCRservice.build();
+            ModeloOCRDTO dto = ModeloOCRDTO.toDTO(modelo);
+
+            Path destino = Paths.get(_Ruta.MODELOSOCR.getRuta() + "/modelo_" + nombre + ".json");
+            this.modOCRservice.guardarJSON(dto, destino);
+
+            IDebugService.print("[ROIEditor] Guardado modelo OCR en: " + destino);
+        }
+
+    } catch (Exception e) {
+        IDebugService.printError("Error " + e.getMessage());
+    }
+}
 
   @FXML
   private void onAddROI() {
@@ -362,9 +438,29 @@ public class FxROIEditorController {
       new Alert(Alert.AlertType.WARNING, "El ROI no contiene información útil.").showAndWait();
       return;
     }
-
     if (modo == ModoEditor.BLOQUE) {
 
+      // SOLO pedir nombre si es un bloque genérico
+      if (nombre.equalsIgnoreCase("bloque")
+          || nombre.equalsIgnoreCase("generico")
+          || nombre.equalsIgnoreCase("nuevoBloque")) {
+
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("Nuevo bloque genérico");
+        dialog.setHeaderText("Introduce el nombre del bloque");
+        dialog.setContentText("Nombre:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isEmpty() || result.get().isBlank()) {
+          new Alert(Alert.AlertType.WARNING, "Debes introducir un nombre para el bloque")
+              .showAndWait();
+          return;
+        }
+
+        nombre = result.get().trim();
+      }
+
+      // Crear bloque con el nombre final
       BloqueOCR b = new BloqueOCR(nombre, nombre, "generico");
 
       b.setX(currentRect.getX() / viewW);
@@ -374,15 +470,13 @@ public class FxROIEditorController {
 
       bloques.add(b);
 
-      // AÑADIR ROI AL MODELO OCR
       modOCRservice.addROI(nombre, currentRect, viewW, viewH);
 
       IDebugService.print("[ROIEditor] Bloque creado: " + b);
       dibujarBloquesEnOverlay();
-      onGuardarBloques(); // Guardar bloques antes de añadir la ROI, para que el service tenga la
-                          // info actualizada
+      onGuardarBloques();
 
-      return; // ← IMPORTANTE: no llamar a modOCRservice
+      return;
     }
 
     // USAR SOLO EL SERVICE
@@ -417,21 +511,6 @@ public class FxROIEditorController {
     comboCamposOCR.getSelectionModel().clearSelection();
   }
 
-  // private void onCargarBloques() {
-  //     try {
-  //     bloques = cargarBloquesJSON(Path.of("bloques.json"));
-
-  //     overlay.getChildren().clear();
-  //     for (BloqueOCR b : bloques) {
-  //         dibujarBloquesEnOverlay();
-  //     }
-
-  //     System.out.println("Bloques cargados.");
-  //     } catch (Exception e) {
-  //     IDebugService.printError("Error " + e.getMessage());
-  //     }
-  // }
-
   private void onGuardarBloques() {
     try {
       guardarBloquesJSON(Path.of("bloques.json"), bloques);
@@ -465,27 +544,6 @@ public class FxROIEditorController {
     return resultado;
   }
 
-  // public void guardar() {
-  //     Path p = Path.of("bloques.json");
-  //     try {
-  //         guardarBloquesJSON(p, bloques);
-  //     } catch (IOException e) {
-  //         IDebugService.printError("Error " + e.getMessage());
-  //     }
-  // }
-
-  // public void cargar() {
-  //     Path p = Path.of("bloques.json");
-  //     try {
-  //         bloques = cargarBloquesJSON(p);
-  //     } catch (IOException e) {
-  //         IDebugService.printError("Error " + e.getMessage());
-  //     }
-
-  // // Redibujar
-  // dibujarBloquesEnOverlay();
-  // }
-
   private void dibujarBloquesEnOverlay() {
     overlay.getChildren().clear();
 
@@ -493,6 +551,7 @@ public class FxROIEditorController {
     double viewH = imageView.getBoundsInParent().getHeight();
 
     for (BloqueOCR b : bloques) {
+      IDebugService.print("[FxCntrlROIEditor>dibujarBloquesEnOverlay] Bloque: " + b);
       Rectangle r =
           new Rectangle(
               b.getX() * viewW, b.getY() * viewH, b.getWidth() * viewW, b.getHeight() * viewH);
@@ -505,45 +564,137 @@ public class FxROIEditorController {
     }
   }
 
-  //   private void dibujarBloqueEnCanvas(BloqueOCR b) {
-  //     double viewW = imageView.getBoundsInParent().getWidth();
-  //     double viewH = imageView.getBoundsInParent().getHeight();
+  private void registrarBloquesComoROIs() {
+      double viewW = imageView.getImage().getWidth();
+      double viewH = imageView.getImage().getHeight();
 
-  //     Rectangle r =
-  //         new Rectangle(
-  //             b.getX() * viewW, b.getY() * viewH, b.getWidth() * viewW, b.getHeight() * viewH);
+      for (BloqueOCR b : bloques) {
+          // Convertir bloque normalizado a rectángulo absoluto
+          double x = b.getX() * viewW;
+          double y = b.getY() * viewH;
+          double w = b.getWidth() * viewW;
+          double h = b.getHeight() * viewH;
 
-  //     r.setStroke(Color.CYAN);
-  //     r.getStrokeDashArray().addAll(6.0, 4.0);
-  //     r.setFill(Color.TRANSPARENT);
+          Rectangle r = new Rectangle(x, y, w, h);
 
-  //     overlay.getChildren().add(r);
-  //   }
+          // Registrar como ROI en el ModeloOCR
+          modOCRservice.addROI(b.getNombre(), r, viewW, viewH);
+      }
+  }
 
-  private void normalizarBloques(List<BloqueOCR> bloques, double imgW, double imgH) {
-    for (BloqueOCR b : bloques) {
-      b.setX(b.getX() / imgW);
-      b.setY(b.getY() / imgH);
-      b.setWidth(b.getWidth() / imgW);
-      b.setHeight(b.getHeight() / imgH);
+  private void cargarModeloOCR(Path path) {
+    try {
+        // 1. Parsear modelo OCR completo
+
+      ModeloOCR modelo = ocrParser.parse(path.toFile());
+
+      // 2. Limpiar overlay
+      overlay.getChildren().clear();
+
+      // 3. Dibujar ZONAS del modelo (las ROIs del builder)
+      double viewW = imageView.getImage().getWidth();
+      double viewH = imageView.getImage().getHeight();
+
+      for (Map.Entry<String, ROI> entry : modelo.zonas().entrySet()) {
+        ROI roi = entry.getValue();
+
+        Rectangle r = new Rectangle(roi.x1(), roi.y1(), roi.x2() - roi.x1(), roi.y2() - roi.y1());
+
+        r.setStroke(Color.CYAN);
+        r.setFill(Color.TRANSPARENT);
+        overlay.getChildren().add(r);
+
+        // Registrar en el builder
+        modOCRservice.addROI(entry.getKey(), r, viewW, viewH);
+      }
+      IDebugService.print("[FxCntrlROIEditor>cargarModeloOCR] Zonas: " + modelo.zonas());
+      IDebugService.print("[FxCntrlROIEditor>cargarModeloOCR] Bloques: " + modelo.bloques);
+
+      // 4. Dibujar BLOQUES del modelo
+      for (Bloque b: modelo.bloques)
+      {
+        IDebugService.print("[FxCntrlROIEditor>cargarModeloOCR] Bloque: " + b + " - Zona: " + b.zona);
+        dibujarBloqueDeModelo(b);
+      }
+
+      IDebugService.print("[ROIEditor] Modelo OCR cargado desde: " + path);
+
+    } catch (Exception e) {
+      IDebugService.printError("[ROIEditor] Error cargando modelo OCR: " + e.getMessage());
     }
   }
 
-  private void registrarBloquesComoROIs() {
-    double viewW = imageView.getImage().getWidth();
-    double viewH = imageView.getImage().getHeight();
+  private void cargarBloques(Path path) {
+      try {
+          // 1. Cargar lista de BloqueOCR desde JSON
+          bloques = cargarBloquesJSON(path);
 
-    for (BloqueOCR b : bloques) {
-      // Convertir bloque normalizado a rectángulo absoluto
-      double x = b.getX() * viewW;
-      double y = b.getY() * viewH;
-      double w = b.getWidth() * viewW;
-      double h = b.getHeight() * viewH;
+          // 2. Dibujar en overlay (usa coordenadas relativas)
+          dibujarBloquesEnOverlay();
 
-      Rectangle r = new Rectangle(x, y, w, h);
+          // 3. Registrar ROIs en el ModeloOCRService
+          registrarBloquesComoROIs();
 
-      // Registrar como ROI en el ModeloOCR
-      modOCRservice.addROI(b.getNombre(), r, viewW, viewH);
+          IDebugService.print("[ROIEditor] Bloques cargados desde: " + path);
+
+      } catch (Exception e) {
+          IDebugService.printError("[ROIEditor] Error cargando bloques: " + e.getMessage());
+      }
+  }
+
+  private void dibujarBloqueDeModelo(Bloque b) {
+
+    // BLOQUE
+    Rectangle rb =
+        new Rectangle(
+            b.zona.x1(), b.zona.y1(),
+            b.zona.width(), b.zona.height());
+    rb.setStroke(Color.RED);
+    rb.setFill(Color.TRANSPARENT);
+    overlay.getChildren().add(rb);
+
+    // CABECERA
+    if (b.cabecera != null) {
+      Rectangle rc =
+          new Rectangle(
+              b.cabecera.x1(), b.cabecera.y1(),
+              b.cabecera.width(), b.cabecera.height());
+      rc.setStroke(Color.BLUE);
+      rc.setFill(Color.TRANSPARENT);
+      overlay.getChildren().add(rc);
+    }
+
+    // LINEA BASE
+    if (b.lineaBase != null) {
+      Rectangle rl =
+          new Rectangle(
+              b.lineaBase.x1(), b.lineaBase.y1(),
+              b.lineaBase.width(), b.lineaBase.height());
+      rl.setStroke(Color.GREEN);
+      rl.setFill(Color.TRANSPARENT);
+      overlay.getChildren().add(rl);
+    }
+
+    // FINAL EXTRACTOS
+    if (b.finalExtractos != null) {
+      Rectangle rf =
+          new Rectangle(
+              b.finalExtractos.x1(), b.finalExtractos.y1(),
+              b.finalExtractos.width(), b.finalExtractos.height());
+      rf.setStroke(Color.MAGENTA);
+      rf.setFill(Color.TRANSPARENT);
+      overlay.getChildren().add(rf);
+    }
+
+    // CAMPOS
+    for (Campo c : b.campos) {
+      Rectangle rc =
+          new Rectangle(
+              c.zona().x1(), c.zona().y1(),
+              c.zona().width(), c.zona().height());
+      rc.setStroke(Color.ORANGE);
+      rc.setFill(Color.TRANSPARENT);
+      overlay.getChildren().add(rc);
     }
   }
 }

@@ -9,8 +9,6 @@ import java.util.ArrayList;
 
 import com.sil.facturas.domain.records.Fecha;
 import com.sil.facturas.domain.records.Nota;
-import com.sil.facturas.domain.records.TipoGasto;
-import com.sil.facturas.domain.records.Totales;
 
 public class Factura {
 

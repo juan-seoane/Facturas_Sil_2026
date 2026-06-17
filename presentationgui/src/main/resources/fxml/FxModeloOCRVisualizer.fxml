@@ -1,0 +1,20 @@
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="presentation.gui.ocr.FxCntrlModeloOCRVisualizer">
+
+    <BorderPane>
+
+        <top>
+            <ToolBar>
+                <Button text="Cargar modelo" onAction="#onCargarModelo"/>
+                <Button text="Cargar imagen" onAction="#onCargarImagen"/>
+            </ToolBar>
+        </top>
+
+        <center>
+            <ScrollPane fx:id="scrollPane">
+                <Pane fx:id="canvasPane" />
+            </ScrollPane>
+        </center>
+
+    </BorderPane>
+
+</AnchorPane>

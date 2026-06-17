@@ -6,7 +6,7 @@ import com.sil.facturas.domain.enums._Boton;
 import com.sil.facturas.domain.interfaces.IDebugService;
 import com.sil.facturas.domain.interfaces.IFacturaRepo;
 import com.sil.facturas.infrastructure.csv.FacturaCSVRepo;
-import com.sil.facturas.infrastructure.servicios.config.ConfigService;
+import com.sil.facturas.infrastructure.services.config.ConfigService;
 
 public class AppController {
 

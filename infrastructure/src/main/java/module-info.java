@@ -20,17 +20,18 @@ module com.sil.facturas.infrastructure {
   exports com.sil.facturas.infrastructure.debug;
   exports com.sil.facturas.infrastructure.helpers;
   exports com.sil.facturas.infrastructure.records;
-  exports com.sil.facturas.infrastructure.servicios;
-  exports com.sil.facturas.infrastructure.servicios.config;
-  exports com.sil.facturas.infrastructure.servicios.ocr;
-  exports com.sil.facturas.infrastructure.servicios.ocr.aux_ocr;
-  exports com.sil.facturas.infrastructure.servicios.ocr.editor;
+  exports com.sil.facturas.infrastructure.services;
+  exports com.sil.facturas.infrastructure.services.config;
+  exports com.sil.facturas.infrastructure.services.ocr;
+  exports com.sil.facturas.infrastructure.services.ocr.aux_ocr;
+  exports com.sil.facturas.infrastructure.json.ocr;
+  exports com.sil.facturas.infrastructure.json.ocr.dtos;
+
 
   // Para permitir que Gson lea records
   opens com.sil.facturas.infrastructure.records to
       com.google.gson;
   opens com.sil.facturas.infrastructure.config to
       com.google.gson;
-  opens com.sil.facturas.infrastructure.servicios.ocr.aux_ocr to
-      com.google.gson;
+
 }

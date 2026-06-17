@@ -1,4 +1,4 @@
-package com.sil.facturas.infrastructure.servicios;
+package com.sil.facturas.infrastructure.services;
 
 import com.google.gson.Gson;
 import com.sil.facturas.domain.enums._Ruta;

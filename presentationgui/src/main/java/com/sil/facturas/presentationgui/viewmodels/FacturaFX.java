@@ -3,9 +3,7 @@ package com.sil.facturas.presentationgui.viewmodels;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sil.facturas.domain.pojos.Extracto;
-import com.sil.facturas.domain.pojos.Factura;
-import com.sil.facturas.domain.pojos.RazonSocial;
+import com.sil.facturas.domain.pojos.*;
 import com.sil.facturas.domain.records.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;

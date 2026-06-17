@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.sil.facturas.domain.pojos.Factura;
 import com.sil.facturas.domain.pojos.RazonSocial;
+import com.sil.facturas.domain.pojos.TipoGasto;
+import com.sil.facturas.domain.pojos.Totales;
 import com.sil.facturas.domain.records.*;
 import com.sil.facturas.infrastructure.records.LineaCsvDTO;
 

@@ -1,4 +1,4 @@
-package com.sil.facturas.domain.records;
+package com.sil.facturas.domain.pojos;
 
 public class TipoGasto {
   private String tipo;

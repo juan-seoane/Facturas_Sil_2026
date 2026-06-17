@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import com.sil.facturas.domain.records.NIF;
 import com.sil.facturas.domain.records.Nota;
-import com.sil.facturas.domain.records.Totales;
 
 public class RazonSocial implements Comparable<RazonSocial> {
     private int ID;

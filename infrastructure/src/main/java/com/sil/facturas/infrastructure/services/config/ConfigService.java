@@ -1,4 +1,4 @@
-package com.sil.facturas.infrastructure.servicios.config;
+package com.sil.facturas.infrastructure.services.config;
 
 import com.sil.facturas.domain.enums._Ruta;
 import com.sil.facturas.domain.interfaces.IConfigService;

@@ -12,11 +12,9 @@ module com.sil.facturas.presentationgui {
 
   exports com.sil.facturas.presentationgui;
   exports com.sil.facturas.presentationgui.viewmodels;
-  exports com.sil.facturas.presentationgui.services.ocr;
 
   opens com.sil.facturas.presentationgui.fxcontrollers to
       javafx.fxml;
   opens com.sil.facturas.presentationgui to
           javafx.fxml;
-  opens com.sil.facturas.presentationgui.services.ocr to javafx.graphics;
 }

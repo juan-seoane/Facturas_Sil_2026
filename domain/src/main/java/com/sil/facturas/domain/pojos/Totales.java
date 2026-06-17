@@ -1,6 +1,4 @@
-package com.sil.facturas.domain.records;
-
-import com.sil.facturas.domain.pojos.Extracto;
+package com.sil.facturas.domain.pojos;
 
 // REVIEW - 2024-05-07 : La clase Totales...¿heredaba de la clase Extracto?
 

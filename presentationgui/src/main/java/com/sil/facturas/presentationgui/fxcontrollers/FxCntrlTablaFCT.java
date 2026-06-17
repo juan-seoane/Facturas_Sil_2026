@@ -3,14 +3,14 @@ package com.sil.facturas.presentationgui.fxcontrollers;
 import com.sil.facturas.app.core.AppContext;
 import com.sil.facturas.app.services.FacturasService;
 import com.sil.facturas.domain.interfaces.IDebugService;
+import com.sil.facturas.domain.ocr.ModeloOCR;
 import com.sil.facturas.domain.pojos.Factura;
 import com.sil.facturas.domain.records.Fecha;
 import com.sil.facturas.infrastructure.config.UIDataConfig;
-import com.sil.facturas.infrastructure.servicios.ocr.FacturaBuilderOCR;
-import com.sil.facturas.infrastructure.servicios.ocr.ModeloOCR;
-import com.sil.facturas.infrastructure.servicios.ocr.ModeloOCRService;
-import com.sil.facturas.infrastructure.servicios.ocr.OCRService;
-import com.sil.facturas.infrastructure.servicios.ocr.editor.ModeloOCRParser;
+import com.sil.facturas.infrastructure.json.ocr.ModeloOCRParser;
+import com.sil.facturas.infrastructure.services.ocr.FacturaBuilderOCR;
+import com.sil.facturas.infrastructure.services.ocr.ModeloOCRService;
+import com.sil.facturas.infrastructure.services.ocr.OCRService;
 import com.sil.facturas.presentationgui.helpers.TableScaler;
 import com.sil.facturas.presentationgui.viewmodels.ExtractoFX;
 import com.sil.facturas.presentationgui.viewmodels.FacturaFX;
@@ -896,12 +896,12 @@ private void convertirImagenEnFactura(Button btn) {
         if (modeloFile == null) return;
 
         ModeloOCRParser parser = new ModeloOCRParser();
-        ModeloOCR modelo = parser.parse(modeloFile);
+        ModeloOCR modelo = parser.parseModelo(modeloFile);
 
         // 3) Crear servicios
         OCRService ocr = new OCRService();
         ModeloOCRService modeloService = new ModeloOCRService();
-        FacturaBuilderOCR builder = new FacturaBuilderOCR(ocr, parser, modeloService);
+        FacturaBuilderOCR builder = new FacturaBuilderOCR(ocr, modeloService);
 
         // 4) Construir factura desde OCR
         Factura factura = builder.construirFactura(img, modelo);

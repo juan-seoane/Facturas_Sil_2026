@@ -4,7 +4,7 @@ package com.sil.facturas.presentationgui;
 import com.sil.facturas.app.api.INavService;
 import com.sil.facturas.app.core.AppContext;
 import com.sil.facturas.domain.interfaces.IDebugService;
-import com.sil.facturas.infrastructure.servicios.AuthService;
+import com.sil.facturas.infrastructure.services.AuthService;
 import com.sil.facturas.presentationgui.helpers.PanelControlUI;
 import com.sil.facturas.presentationgui.helpers._VentanaFX;
 import com.sil.facturas.presentationgui.services.NavSerFX;

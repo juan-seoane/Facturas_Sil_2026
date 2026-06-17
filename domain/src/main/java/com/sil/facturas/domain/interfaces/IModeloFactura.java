@@ -2,7 +2,7 @@ package com.sil.facturas.domain.interfaces;
 
 import java.util.Map;
 
-import com.sil.facturas.domain.records.ROI;
+import com.sil.facturas.domain.ocr.ROI;
 
 import java.awt.image.BufferedImage;
 

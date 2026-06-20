@@ -1,13 +1,37 @@
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="presentation.gui.ocr.FxCntrlROIEditor">
+<?xml version="1.0" encoding="UTF-8"?>
 
-    <BorderPane prefWidth="1200" prefHeight="800">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 
-        <top>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sil.facturas.presentationgui.fxcontrollers.FxCntrlROIEditor">
+   <children>
+      <BorderPane layoutX="209.0" layoutY="106.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                 <top>
             <ToolBar>
-                <Button text="Cargar imagen" onAction="#onCargarImagen"/>
-                <Button text="Nuevo bloque" onAction="#onNuevoBloque"/>
-                <Button text="Nuevo campo" onAction="#onNuevoCampo"/>
-                <Button text="Guardar modelo" onAction="#onGuardarModelo"/>
+                <Button onAction="#onCargarImagen" text="Cargar imagen" />
+                <Button onAction="#onNuevoBloque" text="Nuevo bloque" />
+                <ComboBox fx:id="comboTipoBloque">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="bloqueCabecera"/>
+                            <String fx:value="bloqueExtractos"/>
+                            <String fx:value="bloqueExtractos.cabecera"/>
+                            <String fx:value="bloqueExtractos.linea"/>
+                            <String fx:value="bloqueTotales"/>
+                            <String fx:value="bloqueGenerico"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <Button onAction="#onNuevoCampo" text="Nuevo campo" />
+                <Button onAction="#onGuardarModelo" text="Guardar modelo" />
             </ToolBar>
         </top>
 
@@ -16,7 +40,6 @@
                 <Pane fx:id="canvasPane" style="-fx-background-color: #333;" />
             </ScrollPane>
         </center>
-
-    </BorderPane>
-
+      </BorderPane>
+   </children>
 </AnchorPane>

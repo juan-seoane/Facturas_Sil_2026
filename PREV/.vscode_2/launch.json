@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "ROIEditor",
+            "request": "launch",
+            "mainClass": "com.sil.facturas.presentationgui.services.ocr.ROIEditor",
+            "projectName": "presentationgui",
+            "vmArgs": "--module-path \"D:/Program Files/JavaJDK/javafx-sdk-21/javafx-sdk-21.0.2/lib\" --add-modules javafx.controls,javafx.fxml,javafx.graphics -Dfile.encoding=UTF-8"
+        }
+    ]
+}

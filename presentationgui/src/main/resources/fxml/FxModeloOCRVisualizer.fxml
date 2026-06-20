@@ -1,4 +1,4 @@
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="presentation.gui.ocr.FxCntrlModeloOCRVisualizer">
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.sil.facturas.presentationgui.fxcontrollers.FxCntrlModeloOCRVisualizer">
 
     <BorderPane>
 

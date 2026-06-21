@@ -50,8 +50,8 @@ public class BloqueOCR extends OCRItem {
     this.anchorY = anchorY;
     this.cabeceraColumnas = cabeceraColumnas != null ? cabeceraColumnas : new ArrayList<>();
   }
-
-    public ROI toROI() {
+  
+  public ROI toROI() {
         double x1 = x;
         double y1 = y;
         double x2 = x + w;
@@ -62,7 +62,7 @@ public class BloqueOCR extends OCRItem {
     public String nombre() {
         return nombre;
     }
-
+    
     public String referencia() {
         return referencia;
     }
@@ -94,7 +94,7 @@ public class BloqueOCR extends OCRItem {
     public _AnchorY anchorY() {
         return anchorY;
     }
-
+    
     public List<CampoOCR> campos() {
         return campos;
     }
@@ -113,5 +113,12 @@ public class BloqueOCR extends OCRItem {
 
     public void setCabeceraColumnas(List<String> lista) {
         this.cabeceraColumnas = lista;
+    }
+    
+        @Override
+        public String toString() {
+        return "BloqueOCR [nombre=" + nombre + ", referencia=" + referencia + ", offsetTipo=" + offsetTipo + ", dx=" + dx
+                + ", dy=" + dy + ", growVertical=" + growVertical + ", growHorizontal=" + growHorizontal + ", anchorX="
+                + anchorX + ", anchorY=" + anchorY + ", NumCampos=" + campos.size() + ", NumColumnasCabecera=" + cabeceraColumnas.size() + "]";
     }
 }

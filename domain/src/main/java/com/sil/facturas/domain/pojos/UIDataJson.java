@@ -15,4 +15,5 @@ public class UIDataJson {
   public List<OCRItem> getOcr() {
     return ocr;
   }
+
 }

@@ -4,7 +4,9 @@ import static com.sil.facturas.domain.interfaces.IDebugService.*;
 
 import com.google.gson.Gson;
 import com.sil.facturas.app.core.AppContext;
+import com.sil.facturas.domain.enums._Colores;
 import com.sil.facturas.domain.ocr.Bloque;
+import com.sil.facturas.domain.ocr.BloqueConfig;
 import com.sil.facturas.domain.ocr.enums._AnchorX;
 import com.sil.facturas.domain.ocr.enums._AnchorY;
 import com.sil.facturas.domain.ocr.enums._OffsetTipo;
@@ -18,6 +20,7 @@ import com.sil.facturas.infrastructure.services.ocr.aux_ocr.OCRItem;
 import com.sil.facturas.infrastructure.services.ocr.aux_ocr._TipoBloque;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -25,11 +28,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javafx.fxml.FXML;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -45,6 +55,7 @@ public class FxCntrlROIEditor {
     private double startX;
     private double startY;
     private Rectangle rectTemp;
+    public double x, y, w, h;
 
     private double scaleX = 1.0;
     private double scaleY = 1.0;
@@ -97,10 +108,11 @@ public class FxCntrlROIEditor {
 
     canvasPane.setOnMouseReleased(
         e -> {
-          double x = rectTemp.getX();
-          double y = rectTemp.getY();
-          double w = rectTemp.getWidth();
-          double h = rectTemp.getHeight();
+          this.x = rectTemp.getX();
+          this.y = rectTemp.getY();
+          this.w = rectTemp.getWidth();
+          this.h = rectTemp.getHeight();
+          printWarning("[FxCntrlROIEditor>initialize>onMouseReleased] Coordenadas del dibujo fijadas en [" + this.x+ ", "+this.y+"] ,w="+this.w+", h="+this.h+"!!!");
 
           if (modoActual == Modo.BLOQUE) {
             BloqueOCR b =
@@ -134,24 +146,34 @@ public class FxCntrlROIEditor {
             items.add(c);
           }
 
-          try {
-            Gson gson = new Gson();
-            String usuario =
-                (AppContext.usuarioActual.isEmpty() || AppContext.usuarioActual == null)
-                    ? "ADMIN"
-                    : AppContext.usuarioActual.toUpperCase();
-            InputStream is = getClass().getResourceAsStream("/config/" + usuario + "/uidata.json");
-            InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
+        Gson gson = new Gson();
+        String usuario = (AppContext.usuarioActual == null || AppContext.usuarioActual.isEmpty())
+                ? "ADMIN"
+                : AppContext.usuarioActual;
+
+        String rutaFS = "data/config/" + usuario.toUpperCase() + "/uidata.json";
+
+        try (FileInputStream fis = new FileInputStream(rutaFS);
+            InputStreamReader reader = new InputStreamReader(fis, StandardCharsets.UTF_8)) {
 
             uiData = gson.fromJson(reader, UIDataJson.class);
 
+        } catch (Exception ee) {
+            printError(
+                        "[FxCntrlROIEditor>initialize] Excepción de tipo "
+                            + ee.getClass()
+                            + "al cargar el archivo uidata.json: "
+                            + ee.getMessage());
+        }
+        try {
+            
             cargarTiposDeBloqueEnComboBox();
 
           } catch (Exception ex) {
             printError(
                 "[FxCntrlROIEditor>initialize] Excepción de tipo "
                     + ex.getClass()
-                    + ": "
+                    + "en cargarTiposDeBloqueEnComboBox(): "
                     + ex.getMessage());
           }
 
@@ -199,86 +221,104 @@ public class FxCntrlROIEditor {
     updateScale();
 }
 
-// ============================================================
-//  #region NUEVO BLOQUE
-// ============================================================
+    // ============================================================
+    //  #region NUEVO BLOQUE
+    // ============================================================
 
-@FXML
-private void onNuevoBloque() {
+    @FXML
+    private void onNuevoBloque() {
 
-    String tipo = comboTipoBloque.getValue().toString();
-    //printError("[FxCntrlROIEditor>onNuevoBloque] Selecciona un tipo de bloque antes de crear uno.");
+        String tipo = comboTipoBloque.getValue().toString();
+        //printError("[FxCntrlROIEditor>onNuevoBloque] Selecciona un tipo de bloque antes de crear uno.");
 
-    switch (tipo) {
-        case "bloqueExtractos":
-            crearBloque(_TipoBloque.EXTRACTOS);
-            break;
+        if (tipo == null || tipo.isEmpty()) {
+            printError("Selecciona un tipo de bloque antes de crear uno.");
+            return; // ← SIN ESTO SE CREA EL RECTÁNGULO FANTASMA
+        }
 
-        case "bloqueExtractos.cabecera":
-            crearBloque(_TipoBloque.EXTRACTOS_CABECERA);
-            break;
+        switch (tipo) {
+            case "bloqueExtractos":
+                printWarning("[FxCntrlROIEDitor>onNuevoBloque] Creando bloque de extractos");
+                crearBloque(_TipoBloque.EXTRACTOS);
+                break;
 
-        case "bloqueExtractos.linea":
-            crearBloque(_TipoBloque.EXTRACTOS_LINEA);
-            break;
+            case "bloqueExtractos.cabecera":
+                printWarning("[FxCntrlROIEDitor>onNuevoBloque] Creando bloque de cabecera de extractos");
+                crearBloque(_TipoBloque.EXTRACTOS_CABECERA);
+                break;
 
-        case "bloqueTotales":
-            crearBloque(_TipoBloque.TOTALES);
-            break;
+            case "bloqueExtractos.linea":
+                printWarning("[FxCntrlROIEDitor>onNuevoBloque] Creando bloque de línea de extractos");
+                crearBloque(_TipoBloque.EXTRACTOS_LINEA);
+                break;
 
-        case "bloqueCabecera":
-            crearBloque(_TipoBloque.CABECERA);
-            break;
+            case "bloqueTotales":
+                printWarning("[FxCntrlROIEDitor>onNuevoBloque] Creando bloque de totales");
+                crearBloque(_TipoBloque.TOTALES);
+                break;
 
-        case "bloqueGenerico":
-            crearBloque(_TipoBloque.GENERICO);
-            break;
-    }
-}
+            case "bloqueCabecera":
+                printWarning("[FxCntrlROIEDitor>onNuevoBloque] Creando bloque de cabecera de factura");
+                crearBloque(_TipoBloque.CABECERA);
+                break;
 
-  private void crearBloque(_TipoBloque tipo) {
-    switch (tipo) {
-      case CABECERA -> crearBloqueCabecera();
-      case EXTRACTOS -> crearBloqueExtractos();
-      case EXTRACTOS_CABECERA -> crearBloqueExtractosCabecera();
-      case EXTRACTOS_LINEA -> crearBloqueExtractosLinea();
-      case TOTALES -> crearBloqueTotales();
-      case GENERICO -> crearBloqueGenerico();
-    }
-  }
-
-private List<String> resolverCabeceraParaNuevoBloque() {
-
-    // 1. Si ya existe un bloque de extractos en el modelo cargado → usar su cabecera
-    var modelo = modeloService.getModelo();
-    if (modelo != null) {
-        for (Bloque b : modelo.getBloques()) {
-            if (b.cabeceraColumnas() != null && !b.cabeceraColumnas().isEmpty()) {
-                return new ArrayList<>(b.cabeceraColumnas());
-            }
+            case "bloqueGenerico":
+                printWarning("[FxCntrlROIEDitor>onNuevoBloque] Creando bloque genérico");
+                crearBloque(_TipoBloque.GENERICO);
+                break;
         }
     }
 
-    // 2. Intentar detectar un bloque de cabecera dibujado por el usuario
-    BloqueOCR bloqueCabecera = items.stream()
-            .filter(i -> i instanceof BloqueOCR b && b.esCabecera())
-            .map(i -> (BloqueOCR) i)
-            .findFirst()
-            .orElse(null);
-
-    if (bloqueCabecera != null) {
-        String texto = ocrService.ocr(toBufferedImage(imageView.getImage()), bloqueCabecera.toROI());
-        List<String> columnas = parsearCabeceraDesdeTexto(texto);
-        if (!columnas.isEmpty())
-            return columnas;
+    private void crearBloque(_TipoBloque tipo) {
+        switch (tipo) {
+        case CABECERA -> crearBloqueCabecera();
+        case EXTRACTOS -> crearBloqueExtractos();
+        case EXTRACTOS_CABECERA -> crearBloqueExtractosCabecera();
+        case EXTRACTOS_LINEA -> crearBloqueExtractosLinea();
+        case TOTALES -> crearBloqueTotales();
+        case GENERICO -> crearBloqueGenerico();
+        }
     }
 
-    // 3. Último recurso: pedir al usuario que defina la cabecera
-    return pedirCabeceraAlUsuario();
-}
+    private List<String> resolverCabeceraParaNuevoBloque() {
 
-  private BloqueOCR crearBloqueGenerico() {
+        // 1. Si ya existe un bloque de extractos en el modelo cargado → usar su cabecera
+        var modelo = modeloService.getModelo();
+        if (modelo != null) {
+            for (Bloque b : modelo.getBloques()) {
+                if (b.cabeceraColumnas() != null && !b.cabeceraColumnas().isEmpty()) {
+                    return new ArrayList<>(b.cabeceraColumnas());
+                }
+            }
+        }
 
+        // 2. Intentar detectar un bloque de cabecera dibujado por el usuario
+        BloqueOCR bloqueCabecera = items.stream()
+                .filter(i -> i instanceof BloqueOCR b && b.esCabecera())
+                .map(i -> (BloqueOCR) i)
+                .findFirst()
+                .orElse(null);
+
+        if (bloqueCabecera != null) {
+            String texto = ocrService.ocr(toBufferedImage(imageView.getImage()), bloqueCabecera.toROI());
+            List<String> columnas = parsearCabeceraDesdeTexto(texto);
+            if (!columnas.isEmpty())
+                return columnas;
+        }
+
+        // 3. Último recurso: pedir al usuario que defina la cabecera
+        return pedirCabeceraAlUsuario();
+    }
+
+    private BloqueOCR crearBloqueGenerico() {
+
+    // 1. Validar selección del usuario
+    if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
+        printError("[FxCntrlROIEditor>crearBloqueGenerico] Debes seleccionar un área en la imagen antes de crear un bloque.");
+        return null;
+    }
+
+    // 2. Pedir nombre del bloque
     TextInputDialog dialog = new TextInputDialog("bloqueGenerico");
     dialog.setTitle("Nuevo bloque genérico");
     dialog.setHeaderText("Introduce el nombre del bloque:");
@@ -286,154 +326,258 @@ private List<String> resolverCabeceraParaNuevoBloque() {
 
     String nombre = result.orElse("bloqueGenerico");
 
+    // 3. Pedir configuración avanzada (offset, anchors, grow…)
+    BloqueConfig cfg = pedirConfigBloqueAlUsuario();
+    if (cfg == null) {
+        printWarning("[FxCntrlROIEditor>crearBloqueGenerico] Creación cancelada por el usuario.");
+        return null;
+    }
+
+    // 4. Crear el bloque con los valores reales
     BloqueOCR b =
         new BloqueOCR(
             nombre,
             "generico",
-            50,
-            50,
-            200,
-            80,
-            _OffsetTipo.NONE,
+            this.x,
+            this.y,
+            this.w,
+            this.h,
+            cfg.offsetTipo,
             0,
             0,
-            false,
-            false,
-            _AnchorX.LEFT,
-            _AnchorY.TOP,
-            // TODO - 26-06-19 : BloqueOCR tiene un campo llamado cabeceraColumnas ¿?
-            new ArrayList<String>());
+            cfg.growHoriz,
+            cfg.growVert,
+            cfg.anchorX,
+            cfg.anchorY,
+            new ArrayList<>());
 
+    // 5. Registrar y dibujar
     items.add(b);
+    printWarning("[FxCntrlROIEditor>crearBloqueGenerico] BloqueOCR: " + b.toString());
     dibujarBloque(b);
+
+    printWarning("Bloque creado: " + b.toString());
+
     return b;
-  }
+}
 
-  private BloqueOCR crearBloqueTotales() {
+private BloqueOCR crearBloqueTotales() {
 
+    // 1. Validar que el usuario ha seleccionado un área
+    if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
+        printError("[FxCntrlROIEditor>crearBloqueTotales] Debes seleccionar un área en la imagen antes de crear un bloque.");
+        return null;
+    }
+
+    // 2. Pedir configuración al usuario
+    BloqueConfig cfg = pedirConfigBloqueAlUsuario();
+    if (cfg == null) {
+        printWarning("[FxCntrlROIEditor>crearBloqueTotales] Creación de bloque cancelada por el usuario.");
+        return null;
+    }
+
+    // 3. Crear el bloque con los valores reales
     BloqueOCR b =
         new BloqueOCR(
             "bloqueTotales",
             "totales",
-            50,
-            150,
-            250,
-            120,
-            _OffsetTipo.NONE,
+            this.x,
+            this.y,
+            this.w,
+            this.h,
+            cfg.offsetTipo,
             0,
             0,
-            false,
-            false,
-            _AnchorX.LEFT,
-            _AnchorY.TOP,
-            // TODO - 26-06-19 : BloqueOCR tiene un campo llamado cabeceraColumnas ¿?
-            new ArrayList<String>());
+            cfg.growHoriz,
+            cfg.growVert,
+            cfg.anchorX,
+            cfg.anchorY,
+            new ArrayList<>());
 
+    // 4. Registrar y dibujar
     items.add(b);
+    printWarning("[FxCntrlROIEditor>crearBloqueTotales] BloqueOCR: " + b.toString());
     dibujarBloque(b);
+
+    printWarning("Bloque creado: " + b.toString());
+
     return b;
-  }
+}
 
-  private BloqueOCR crearBloqueExtractosCabecera() {
 
+    private BloqueOCR crearBloqueExtractosCabecera() {
+
+    // 1. Validar selección del usuario
+    if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
+        printError("[FxCntrlROIEditor>crearBloqueExtractosCabecera] Debes seleccionar un área en la imagen antes de crear un bloque.");
+        return null;
+    }
+
+    // 2. Pedir configuración avanzada al usuario
+    BloqueConfig cfg = pedirConfigBloqueAlUsuario();
+    if (cfg == null) {
+        printWarning("[FxCntrlROIEditor>crearBloqueExtractosCabecera] Creación cancelada por el usuario.");
+        return null;
+    }
+
+    // 3. Crear el bloque con los valores reales
     BloqueOCR b =
         new BloqueOCR(
             "cabeceraExtractos",
             "extracto",
-            50,
-            200,
-            400,
-            40,
-            _OffsetTipo.NONE,
+            this.x,
+            this.y,
+            this.w,
+            this.h,
+            cfg.offsetTipo,
             0,
             0,
-            false,
-            false,
-            _AnchorX.LEFT,
-            _AnchorY.TOP,
-            // TODO - 26-06-19 : BloqueOCR tiene un campo llamado cabeceraColumnas ¿?
-            new ArrayList<String>());
+            cfg.growHoriz,
+            cfg.growVert,
+            cfg.anchorX,
+            cfg.anchorY,
+            new ArrayList<>());
 
+    // 4. Registrar y dibujar
     items.add(b);
+    printWarning("[FxCntrlROIEditor>crearBloqueExtractosCabecera] BloqueOCR: " + b.toString());
     dibujarBloque(b);
+
+    printWarning("Bloque creado: " + b.toString());
+
     return b;
-  }
+}
 
-  private BloqueOCR crearBloqueExtractosLinea() {
 
+private BloqueOCR crearBloqueExtractosLinea() {
+
+    // 1. Validar selección del usuario
+    if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
+        printError("[FxCntrlROIEditor>crearBloqueExtractosLinea] Debes seleccionar un área en la imagen antes de crear un bloque.");
+        return null;
+    }
+
+    // 2. Pedir configuración avanzada al usuario
+    BloqueConfig cfg = pedirConfigBloqueAlUsuario();
+    if (cfg == null) {
+        printWarning("[FxCntrlROIEditor>crearBloqueExtractosLinea] Creación cancelada por el usuario.");
+        return null;
+    }
+
+    // 3. Crear el bloque con los valores reales
     BloqueOCR b =
         new BloqueOCR(
             "lineaExtracto",
             "extracto",
-            50,
-            300,
-            400,
-            30,
-            _OffsetTipo.NONE,
+            this.x,
+            this.y,
+            this.w,
+            this.h,
+            cfg.offsetTipo,
             0,
             0,
-            false,
-            false,
-            _AnchorX.LEFT,
-            _AnchorY.TOP,
-            // TODO - 26-06-19 : BloqueOCR tiene un campo llamado cabeceraColumnas ¿?
-            new ArrayList<String>());
+            cfg.growHoriz,
+            cfg.growVert,
+            cfg.anchorX,
+            cfg.anchorY,
+            new ArrayList<>());
 
+    // 4. Registrar y dibujar
     items.add(b);
+    printWarning("[FxCntrlROIEditor>crearBloqueExtractosLinea] BloqueOCR: " + b.toString());
     dibujarBloque(b);
+
+    printWarning("Bloque creado: " + b.toString());
+
     return b;
-  }
+}
 
-  private BloqueOCR crearBloqueExtractos() {
 
-    BloqueOCR b =
-        new BloqueOCR(
-            "bloqueExtractos",
-            "extracto",
-            50,
-            250,
-            400,
-            200,
-            _OffsetTipo.NONE,
-            0,
-            0,
-            false,
-            false,
-            _AnchorX.LEFT,
-            _AnchorY.TOP,
-            // TODO - 26-06-19 : BloqueOCR tiene un campo llamado cabeceraColumnas ¿?
-            new ArrayList<String>());
+    private BloqueOCR crearBloqueExtractos() {
 
-    items.add(b);
-    dibujarBloque(b);
-    return b;
-  }
+        if (this.x==0.0||this.y==0.0||this.w==0.0||this.h==0.0) {
+            printError("[FxCntrlROIEditor>crearBloqueExtractos] Debes seleccionar un área en la imagen antes de crear un bloque.");
+            return null;
+        }
 
-  private BloqueOCR crearBloqueCabecera() {
+        BloqueConfig cfg = pedirConfigBloqueAlUsuario();
+        if (cfg == null) {
+            printWarning("[FxCntrlROIEditor>crearBloqueExtractos] Creación de bloque cancelada por el usuario.");
+            return null;
+        }
 
+        BloqueOCR b =
+            new BloqueOCR(
+                "bloqueExtractos",
+                "extracto",
+                this.x,
+                this.y,
+                this.w,
+                this.h,
+                cfg.offsetTipo,
+                0,
+                0,
+                cfg.growHoriz,
+                cfg.growVert,
+                cfg.anchorX,
+                cfg.anchorY,
+                new ArrayList<>());
+
+        items.add(b);
+        printWarning("[FxCntrlROIEditot>crearBloqueExtractos] BloqueOCR: " + b.toString());
+        dibujarBloque(b);
+
+        printWarning("Bloque creado: " + b.toString());
+
+        return b;
+    }
+
+private BloqueOCR crearBloqueCabecera() {
+
+    // 1. Validar selección del usuario
+    if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
+        printError("[FxCntrlROIEditor>crearBloqueCabecera] Debes seleccionar un área en la imagen antes de crear un bloque.");
+        return null;
+    }
+
+    // 2. Pedir configuración avanzada al usuario
+    BloqueConfig cfg = pedirConfigBloqueAlUsuario();
+    if (cfg == null) {
+        printWarning("[FxCntrlROIEditor>crearBloqueCabecera] Creación cancelada por el usuario.");
+        return null;
+    }
+
+    // 3. Crear el bloque con los valores reales
     BloqueOCR b =
         new BloqueOCR(
             "bloqueCabecera",
             "factura",
-            50,
-            50,
-            400,
-            100,
-            _OffsetTipo.NONE,
+            this.x,
+            this.y,
+            this.w,
+            this.h,
+            cfg.offsetTipo,
             0,
             0,
-            false,
-            false,
-            _AnchorX.LEFT,
-            _AnchorY.TOP,
-            // TODO - 26-06-19 : BloqueOCR tiene un campo llamado cabeceraColumnas ¿?
-            new ArrayList<String>());
-    items.add(b);
-    dibujarBloque(b);
-    return b;
-  }
+            cfg.growHoriz,
+            cfg.growVert,
+            cfg.anchorX,
+            cfg.anchorY,
+            new ArrayList<>());
 
-// #endregion
+    // 4. Registrar y dibujar
+    items.add(b);
+    printWarning("[FxCntrlROIEditor>crearBloqueCabecera] BloqueOCR: " + b.toString());
+    dibujarBloque(b);
+
+    printWarning("Bloque creado: " + b.toString());
+
+    return b;
+}
+
+
+    // #endregion
+    // ============================================================
 
   // ============================================================
   //  NUEVO CAMPO
@@ -472,34 +616,96 @@ private List<String> resolverCabeceraParaNuevoBloque() {
 
 @FXML
 private void onGuardarModelo() {
+
+    // 1. Preguntar tipo de guardado
+    TipoGuardado tipo = pedirTipoGuardado();
+    if (tipo == null) {
+        printWarning("[onGuardarModelo] Guardado cancelado por el usuario.");
+        return;
+    }
+
+    // 2. Crear modelo nuevo
     modeloService.nuevoModelo("Factura", "1.0");
 
+    // 3. Añadir bloques al modelo
     for (OCRItem item : items) {
         if (item instanceof BloqueOCR b) {
             modeloService.addBloque(modeloService.convertirBloqueOCR(b));
         }
     }
 
-    modeloService.guardarModelo(new File("D:/facturas/modeloOCR.json"));
+    // 4. Pedir nombre del archivo
+    String sugerencia = (tipo == TipoGuardado.BLOQUES)
+            ? "bloques_"
+            : "modeloOCR_";
+
+    String nombre = pedirNombreArchivo(sugerencia);
+    if (nombre == null || nombre.isBlank()) {
+        printWarning("[onGuardarModelo] Nombre de archivo vacío. Cancelado.");
+        return;
+    }
+
+    // 5. Construir ruta final (tu nueva ruta)
+    String ruta = "da7a/datos/modelosOCR/" + nombre + ".json";
+
+    // 6. Guardar modelo
+    modeloService.guardarModelo(new File(ruta));
+
+    printWarning("[onGuardarModelo] Guardado correcto en: " + ruta);
 }
 
-// ============================================================
-//  DIBUJAR ELEMENTOS
-// ============================================================
 
-private void dibujarBloque(BloqueOCR b) {
-    var rect = new javafx.scene.shape.Rectangle(b.x(), b.y(), b.w(), b.h());
-    rect.setStroke(javafx.scene.paint.Color.YELLOW);
-    rect.setFill(javafx.scene.paint.Color.TRANSPARENT);
-    canvasPane.getChildren().add(rect);
+private enum TipoGuardado { MODELO, BLOQUES }
+
+private TipoGuardado pedirTipoGuardado() {
+    ChoiceDialog<String> dialog = new ChoiceDialog<>(
+            "Modelo completo",
+            "Modelo completo",
+            "Solo bloques");
+    dialog.setTitle("Guardar modelo OCR");
+    dialog.setHeaderText("Selecciona el tipo de guardado:");
+
+    Optional<String> result = dialog.showAndWait();
+    if (result.isEmpty())
+        return null;
+
+    return result.get().equals("Solo bloques")
+            ? TipoGuardado.BLOQUES
+            : TipoGuardado.MODELO;
 }
 
-private void dibujarCampo(CampoOCR c) {
-    var rect = new javafx.scene.shape.Rectangle(c.x(), c.y(), c.w(), c.h());
-    rect.setStroke(javafx.scene.paint.Color.CYAN);
-    rect.setFill(javafx.scene.paint.Color.TRANSPARENT);
-    canvasPane.getChildren().add(rect);
+private String pedirNombreArchivo(String sugerencia) {
+    TextInputDialog dialog = new TextInputDialog(sugerencia);
+    dialog.setTitle("Nombre del archivo");
+    dialog.setHeaderText("Introduce el nombre del archivo (sin extensión):");
+
+    Optional<String> result = dialog.showAndWait();
+    return result.orElse(null);
 }
+
+
+    // ============================================================
+    //  #region DIBUJAR elementos
+    // ============================================================
+
+    private void dibujarBloque(BloqueOCR b) {
+        var rect = new javafx.scene.shape.Rectangle(b.x(), b.y(), b.w(), b.h());
+        rect.setStroke(javafx.scene.paint.Color.YELLOW);
+        rect.setFill(javafx.scene.paint.Color.TRANSPARENT);
+        print("[FxCntrlROIEditor>dibujarBloque] Dibujando Rect [" + b.x() + ", " + b.y() + ", " + b.w() + ", " + b.h()
+                + "]");
+        canvasPane.getChildren().add(rect);
+    }
+
+    private void dibujarCampo(CampoOCR c) {
+        var rect = new javafx.scene.shape.Rectangle(c.x(), c.y(), c.w(), c.h());
+        rect.setStroke(javafx.scene.paint.Color.CYAN);
+        rect.setFill(javafx.scene.paint.Color.TRANSPARENT);
+        canvasPane.getChildren().add(rect);
+    }
+
+    //  #endregion 
+    // ============================================================
 
 private BufferedImage toBufferedImage(Image fxImage) {
     return javafx.embed.swing.SwingFXUtils.fromFXImage(fxImage, null);
@@ -575,6 +781,66 @@ private void updateScale() {
 
     comboTipoBloque.getItems().setAll(bloques);
   }
+
+  private BloqueConfig pedirConfigBloqueAlUsuario() {
+
+    Dialog<BloqueConfig> dialog = new Dialog<>();
+    dialog.setTitle("Configuración del bloque");
+    dialog.setHeaderText("Define el comportamiento del bloque");
+
+    ButtonType okButton = new ButtonType("Aceptar", ButtonBar.ButtonData.OK_DONE);
+    dialog.getDialogPane().getButtonTypes().addAll(okButton, ButtonType.CANCEL);
+
+    // --- Controles ---
+    ComboBox<_OffsetTipo> cbOffset = new ComboBox<>();
+    cbOffset.getItems().setAll(_OffsetTipo.values());
+    cbOffset.setValue(_OffsetTipo.NONE);
+
+    CheckBox chkGrowH = new CheckBox("Grow Horizontal");
+    CheckBox chkGrowV = new CheckBox("Grow Vertical");
+
+    ComboBox<_AnchorX> cbAnchorX = new ComboBox<>();
+    cbAnchorX.getItems().setAll(_AnchorX.values());
+    cbAnchorX.setValue(_AnchorX.LEFT);
+
+    ComboBox<_AnchorY> cbAnchorY = new ComboBox<>();
+    cbAnchorY.getItems().setAll(_AnchorY.values());
+    cbAnchorY.setValue(_AnchorY.TOP);
+
+    GridPane grid = new GridPane();
+    grid.setHgap(10);
+    grid.setVgap(10);
+
+    grid.add(new Label("Offset Tipo:"), 0, 0);
+    grid.add(cbOffset, 1, 0);
+
+    grid.add(chkGrowH, 0, 1);
+    grid.add(chkGrowV, 1, 1);
+
+    grid.add(new Label("Anchor X:"), 0, 2);
+    grid.add(cbAnchorX, 1, 2);
+
+    grid.add(new Label("Anchor Y:"), 0, 3);
+    grid.add(cbAnchorY, 1, 3);
+
+    dialog.getDialogPane().setContent(grid);
+
+    dialog.setResultConverter(dialogButton -> {
+        if (dialogButton == okButton) {
+            BloqueConfig cfg = new BloqueConfig();
+            cfg.offsetTipo = cbOffset.getValue();
+            cfg.growHoriz = chkGrowH.isSelected();
+            cfg.growVert = chkGrowV.isSelected();
+            cfg.anchorX = cbAnchorX.getValue();
+            cfg.anchorY = cbAnchorY.getValue();
+            return cfg;
+        }
+        return null;
+    });
+
+    Optional<BloqueConfig> result = dialog.showAndWait();
+    return result.orElse(null);
+}
 
 
 }

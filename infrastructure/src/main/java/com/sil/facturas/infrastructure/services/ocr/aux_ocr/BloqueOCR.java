@@ -8,9 +8,9 @@ import java.util.List;
 
 public class BloqueOCR extends OCRItem {
 
-  private String nombre;
+    private String nombre;
+    public String parentNombre;
   private String referencia;
-
   private _OffsetTipo offsetTipo;
   private int dx;
   private int dy;
@@ -25,21 +25,25 @@ public class BloqueOCR extends OCRItem {
   private List<String> cabeceraColumnas;
 
   public BloqueOCR(
-      String nombre,
+          String nombre,
+              String parentNombre,
       String referencia,
       double x,
       double y,
-      double w,
       double h,
+      double w,
       _OffsetTipo offsetTipo,
       int dx,
       int dy,
       boolean growVertical,
       boolean growHorizontal,
       _AnchorX anchorX,
-      _AnchorY anchorY, List<String> cabeceraColumnas) {
+      _AnchorY anchorY,
+      List<String> cabeceraColumnas) {
+
     super(x, y, w, h);
     this.nombre = nombre;
+    this.parentNombre = parentNombre;
     this.referencia = referencia;
     this.offsetTipo = offsetTipo;
     this.dx = dx;
@@ -50,7 +54,16 @@ public class BloqueOCR extends OCRItem {
     this.anchorY = anchorY;
     this.cabeceraColumnas = cabeceraColumnas != null ? cabeceraColumnas : new ArrayList<>();
   }
-  
+
+  // --- NUEVO ---
+  public void setParentNombre(String parent) {
+    this.parentNombre = parent;
+  }
+
+  public String getParentNombre() {
+    return parentNombre;
+  }
+
   public ROI toROI() {
         double x1 = x;
         double y1 = y;
@@ -62,7 +75,7 @@ public class BloqueOCR extends OCRItem {
     public String nombre() {
         return nombre;
     }
-    
+
     public String referencia() {
         return referencia;
     }
@@ -94,7 +107,7 @@ public class BloqueOCR extends OCRItem {
     public _AnchorY anchorY() {
         return anchorY;
     }
-    
+
     public List<CampoOCR> campos() {
         return campos;
     }
@@ -114,11 +127,33 @@ public class BloqueOCR extends OCRItem {
     public void setCabeceraColumnas(List<String> lista) {
         this.cabeceraColumnas = lista;
     }
-    
+
         @Override
         public String toString() {
-        return "BloqueOCR [nombre=" + nombre + ", referencia=" + referencia + ", offsetTipo=" + offsetTipo + ", dx=" + dx
-                + ", dy=" + dy + ", growVertical=" + growVertical + ", growHorizontal=" + growHorizontal + ", anchorX="
-                + anchorX + ", anchorY=" + anchorY + ", NumCampos=" + campos.size() + ", NumColumnasCabecera=" + cabeceraColumnas.size() + "]";
+    return "BloqueOCR [nombre="
+            + nombre
+            + ", parent="
+        + parentNombre
+        + ", referencia="
+        + referencia
+        + ", offsetTipo="
+        + offsetTipo
+        + ", dx="
+        + dx
+        + ", dy="
+        + dy
+        + ", growVertical="
+        + growVertical
+        + ", growHorizontal="
+        + growHorizontal
+        + ", anchorX="
+        + anchorX
+        + ", anchorY="
+        + anchorY
+        + ", NumCampos="
+        + campos.size()
+        + ", NumColumnasCabecera="
+        + cabeceraColumnas.size()
+        + "]";
     }
 }

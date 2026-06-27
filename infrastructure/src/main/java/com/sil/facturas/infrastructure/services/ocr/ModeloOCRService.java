@@ -1,10 +1,15 @@
 package com.sil.facturas.infrastructure.services.ocr;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sil.facturas.domain.ocr.*;
 import com.sil.facturas.infrastructure.json.ocr.ModeloOCRParser;
 import com.sil.facturas.infrastructure.services.ocr.aux_ocr.BloqueOCR;
 import com.sil.facturas.infrastructure.services.ocr.aux_ocr.CampoOCR;
 import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +34,9 @@ public class ModeloOCRService {
   //  CARGA Y GUARDADO
   // ============================================================
 
-  public void cargarModelo(File file) {
-    this.modelo = parser.parseModelo(file);
+  public ModeloOCR cargarModelo(File file) {
+      this.modelo = parser.parseModelo(file);
+      return this.modelo;
   }
 
   public void guardarModelo(File file) {
@@ -75,6 +81,7 @@ public class ModeloOCRService {
 
     return new Bloque(
         b.nombre(),
+        b.getParentNombre(),
         b.referencia(),
         new Offset(b.offsetTipo(), b.dx(), b.dy()),
         new Rect(b.x(), b.y(), b.w(), b.h()),
@@ -97,8 +104,8 @@ public class ModeloOCRService {
         c.valorSemantico(),
         offsetX,
         offsetY,
-        c.w(),
         c.h(),
+        c.w(),
         c.tipoContenido());
   }
 
@@ -146,11 +153,22 @@ public class ModeloOCRService {
   // ============================================================
 
   public ROI calcularROIReal(Rect rect, double imgW, double imgH) {
-    double x1 = (rect.x() * imgW / 1000.0);
-    double y1 = (rect.y() * imgH / 1000.0);
-    double x2 = x1 + (rect.w() * imgW / 1000.0);
-    double y2 = y1 + (rect.h() * imgH / 1000.0);
+      double x1 = (rect.x() * imgW / 1000.0);
+      double y1 = (rect.y() * imgH / 1000.0);
+      double x2 = x1 + (rect.w() * imgW / 1000.0);
+      double y2 = y1 + (rect.h() * imgH / 1000.0);
 
-    return new ROI(x1, y1, x2, y2);
+      return new ROI(x1, y1, x2, y2);
   }
+    public List<Bloque> cargarBloques(File file) {
+    try (Reader r = new FileReader(file)) {
+      Gson gson = new Gson();
+      Type tipoLista = new TypeToken<List<Bloque>>() {}.getType();
+      return gson.fromJson(r, tipoLista);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return List.of();
+    }
+  }
+
 }

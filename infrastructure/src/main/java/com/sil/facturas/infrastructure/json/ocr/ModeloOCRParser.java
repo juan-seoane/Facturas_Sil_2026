@@ -41,27 +41,45 @@ public class ModeloOCRParser {
         }
     }
 
-    /** Guarda un modeloOCR.json completo */
-    public void guardarModelo(ModeloOCR modelo, File file) {
-        try (FileWriter writer = new FileWriter(file)) {
-            ModeloOCRDTO dto = toDTO(modelo);
-            gson.toJson(dto, writer);
-        } catch (Exception e) {
-            throw new RuntimeException("Error guardando modelo OCR: " + file, e);
-        }
-    }
+  /** Guarda un modeloOCR.json completo */
+  public void guardarModelo(ModeloOCR modelo, File file) {
+    try {
+      // Crear directorios si no existen
+      File parent = file.getParentFile();
+      if (parent != null && !parent.exists()) {
+        parent.mkdirs();
+      }
 
-    /** Guarda un bloques.json (solo bloques) */
-    public void guardarBloques(List<Bloque> bloques, File file) {
-        try (FileWriter writer = new FileWriter(file)) {
-            List<BloqueDTO> dtos = bloques.stream()
-                    .map(this::toDTO)
-                    .collect(Collectors.toList());
-            gson.toJson(dtos, writer);
-        } catch (Exception e) {
-            throw new RuntimeException("Error guardando bloques OCR: " + file, e);
-        }
+      try (FileWriter writer = new FileWriter(file)) {
+        ModeloOCRDTO dto = toDTO(modelo);
+        gson.toJson(dto, writer);
+      }
+
+    } catch (Exception e) {
+      throw new RuntimeException(
+          "[ModeloOCRParser>guardarModelo] Error guardando modelo OCR: " + file, e);
     }
+  }
+
+  /** Guarda un bloques.json (solo bloques) */
+  public void guardarBloques(List<Bloque> bloques, File file) {
+    try {
+      // Crear directorios si no existen
+      File parent = file.getParentFile();
+      if (parent != null && !parent.exists()) {
+        parent.mkdirs();
+      }
+
+      try (FileWriter writer = new FileWriter(file)) {
+        List<BloqueDTO> dtos = bloques.stream().map(this::toDTO).collect(Collectors.toList());
+        gson.toJson(dtos, writer);
+      }
+
+    } catch (Exception e) {
+      throw new RuntimeException(
+          "[ModeloOCRParser>guardarBloques] Error guardando bloques OCR: " + file, e);
+    }
+  }
 
     // ============================================================
     //  DTO → DOMINIO
@@ -126,8 +144,11 @@ public class ModeloOCRParser {
                 })
                 .collect(Collectors.toList());
 
+        List<String> cabecera = dto.cabeceraColumnas != null ? dto.cabeceraColumnas : List.of();
+
     return new Bloque(
         dto.nombre,
+        dto.parentNombre,
         dto.referencia,
         fromDTO(dto.offset),
         fromDTO(dto.zona),
@@ -136,7 +157,7 @@ public class ModeloOCRParser {
         _AnchorX.valueOf(dto.anchorX),
         _AnchorY.valueOf(dto.anchorY),
         campos,
-        dto.cabeceraColumnas);
+        cabecera);
     }
 
     private Campo fromDTO(CampoDTO dto) {
@@ -186,6 +207,7 @@ public class ModeloOCRParser {
     private BloqueDTO toDTO(Bloque bloque) {
         BloqueDTO dto = new BloqueDTO();
         dto.nombre = bloque.nombre();
+        dto.parentNombre = bloque.parentNombre();
         dto.referencia = bloque.referencia();
         dto.offset = toDTO(bloque.offset());
         dto.zona = toDTO(bloque.zona());
@@ -197,7 +219,9 @@ public class ModeloOCRParser {
         dto.campos = bloque.campos().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
-        dto.cabeceraColumnas = bloque.cabeceraColumnas();
+        if (bloque.cabeceraColumnas() != null && !bloque.cabeceraColumnas().isEmpty()) {
+            dto.cabeceraColumnas = bloque.cabeceraColumnas();
+        }
 
         return dto;
     }
@@ -231,4 +255,5 @@ public class ModeloOCRParser {
         dto.h = rect.h();
         return dto;
     }
+
 }

@@ -7,6 +7,7 @@ import com.sil.facturas.domain.ocr.enums._AnchorY;
 
 public record Bloque(
     String nombre,
+    String parentNombre,
     String referencia,
     Offset offset,
     Rect zona,

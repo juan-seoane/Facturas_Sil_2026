@@ -1,0 +1,95 @@
+{
+  "nombre": "Factura",
+  "version": "1.0",
+  "dpi": 0,
+  "bloques": [
+    {
+      "nombre": "bloqueNombreEmpresa",
+      "parentNombre": "",
+      "referencia": "ref",
+      "offset": {
+        "tipo": "NONE",
+        "dx": 0,
+        "dy": 0
+      },
+      "zona": {
+        "x": 31.0,
+        "y": 80.0,
+        "w": 110.0,
+        "h": 47.0
+      },
+      "growVertical": false,
+      "growHorizontal": false,
+      "anchorX": "LEFT",
+      "anchorY": "TOP",
+      "campos": [],
+      "cabeceraColumnas": []
+    },
+    {
+      "nombre": "bloqueExtractos",
+      "parentNombre": null,
+      "referencia": "extracto",
+      "offset": {
+        "tipo": "RELATIVO_ORIGEN",
+        "dx": 0,
+        "dy": 0
+      },
+      "zona": {
+        "x": 33.0,
+        "y": 210.0,
+        "w": 435.0,
+        "h": 102.0
+      },
+      "growVertical": true,
+      "growHorizontal": false,
+      "anchorX": "RIGHT",
+      "anchorY": "TOP",
+      "campos": [],
+      "cabeceraColumnas": []
+    },
+    {
+      "nombre": "bloqueTotales",
+      "parentNombre": "bloqueExtractos",
+      "referencia": "totales",
+      "offset": {
+        "tipo": "DEBAJO_FINAL",
+        "dx": 0,
+        "dy": 0
+      },
+      "zona": {
+        "x": 286.0,
+        "y": 315.0,
+        "w": 180.0,
+        "h": 67.0
+      },
+      "growVertical": false,
+      "growHorizontal": false,
+      "anchorX": "RIGHT",
+      "anchorY": "TOP",
+      "campos": [],
+      "cabeceraColumnas": []
+    },
+    {
+      "nombre": "bloqueInfoFactura",
+      "parentNombre": "",
+      "referencia": "ref",
+      "offset": {
+        "tipo": "NONE",
+        "dx": 0,
+        "dy": 0
+      },
+      "zona": {
+        "x": 293.0,
+        "y": 127.0,
+        "w": 174.0,
+        "h": 79.0
+      },
+      "growVertical": false,
+      "growHorizontal": false,
+      "anchorX": "LEFT",
+      "anchorY": "TOP",
+      "campos": [],
+      "cabeceraColumnas": []
+    }
+  ]
+}

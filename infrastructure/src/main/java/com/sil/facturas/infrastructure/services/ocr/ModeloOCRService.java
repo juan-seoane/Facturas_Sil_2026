@@ -153,22 +153,22 @@ public class ModeloOCRService {
   // ============================================================
 
   public ROI calcularROIReal(Rect rect, double imgW, double imgH) {
-      double x1 = (rect.x() * imgW / 1000.0);
-      double y1 = (rect.y() * imgH / 1000.0);
-      double x2 = x1 + (rect.w() * imgW / 1000.0);
-      double y2 = y1 + (rect.h() * imgH / 1000.0);
+    double x1 = (rect.x() * imgW / 1000.0);
+    double y1 = (rect.y() * imgH / 1000.0);
+    double x2 = x1 + (rect.w() * imgW / 1000.0);
+    double y2 = y1 + (rect.h() * imgH / 1000.0);
 
-      return new ROI(x1, y1, x2, y2);
+    return new ROI(x1, y1, x2, y2);
   }
-    public List<Bloque> cargarBloques(File file) {
-    try (Reader r = new FileReader(file)) {
-      Gson gson = new Gson();
-      Type tipoLista = new TypeToken<List<Bloque>>() {}.getType();
-      return gson.fromJson(r, tipoLista);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return List.of();
-    }
+  
+  public List<Bloque> cargarBloques(File file) {
+      try (Reader r = new FileReader(file)) {
+          Gson gson = new Gson();
+          ModeloBloques mb = gson.fromJson(r, ModeloBloques.class);
+          return mb.bloques();
+      } catch (Exception e) {
+          e.printStackTrace();
+          return List.of();
+      }
   }
-
 }

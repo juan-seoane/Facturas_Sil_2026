@@ -3,12 +3,12 @@ module com.sil.facturas.presentationgui {
   requires transitive javafx.controls;
   requires transitive javafx.fxml;
   requires transitive javafx.graphics;
-  requires javafx.base;
+  requires transitive javafx.base;
+  requires transitive javafx.swing;
   requires com.sil.facturas.app;
   requires com.sil.facturas.domain;
   requires com.google.gson;
   requires java.desktop;
-  requires javafx.swing;
 
   exports com.sil.facturas.presentationgui;
   exports com.sil.facturas.presentationgui.viewmodels;

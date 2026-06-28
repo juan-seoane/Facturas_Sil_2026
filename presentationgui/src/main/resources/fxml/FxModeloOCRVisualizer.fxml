@@ -6,18 +6,12 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
 <?import javafx.scene.image.ImageView?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.sil.facturas.presentationgui.fxcontrollers.FxCntrlModeloOCRVisualizer">
 
     <children>
-        <BorderPane AnchorPane.topAnchor="0"
-                    AnchorPane.bottomAnchor="0"
-                    AnchorPane.leftAnchor="0"
-                    AnchorPane.rightAnchor="0">
+        <BorderPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
 
             <top>
                 <ToolBar>
@@ -27,7 +21,7 @@
             </top>
 
             <center>
-                <ScrollPane fx:id="scrollPane">
+                <ScrollPane fx:id="scrollPane" fitToWidth="true" fitToHeight="true">
                     <Pane fx:id="canvasPane">
                         <children>
                             <ImageView fx:id="imageView" />

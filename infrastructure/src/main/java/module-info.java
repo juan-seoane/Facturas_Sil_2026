@@ -9,10 +9,7 @@ module com.sil.facturas.infrastructure {
   requires jasperreports;
   requires java.desktop;
   requires java.logging;
-  requires javafx.controls;
-  requires javafx.swing;
-  requires javafx.fxml;
-  requires javafx.graphics;
+
 
   // Exporta adaptadores
   exports com.sil.facturas.infrastructure.config;

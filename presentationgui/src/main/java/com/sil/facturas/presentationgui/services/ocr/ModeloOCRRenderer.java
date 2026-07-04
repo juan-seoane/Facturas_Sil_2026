@@ -39,8 +39,12 @@ public class ModeloOCRRenderer {
 
   private final PauseTransition resizeDebounce = new PauseTransition(Duration.millis(60));
   private boolean resizingByCode = false;
-  private boolean lockAspectToImage = true; // controla si el Stage debe mantener aspect ratio de la imagen
-  private double imageAspect = 1.0; // ancho/alto de la imagen cargada
+  private double imageAspect = 0.70710678118;
+  private Stage attachedStage;
+
+  //------------------------------------------------------------------------------
+  // #region METODOS_GENERALES
+  //------------------------------------------------------------------------------
 
   public ModeloOCRRenderer() {
     resizeDebounce.setOnFinished(
@@ -52,12 +56,18 @@ public class ModeloOCRRenderer {
   }
 
   public void attachTo(Group group, ImageView imageView, Pane overlayPane, Pane rootPane) {
+    printWarning("[ModeloOCRRenderer>attachTo] group=" + group);
+    printWarning("[ModeloOCRRenderer>attachTo] imageView=" + imageView);
+    printWarning("[ModeloOCRRenderer>attachTo] overlayPane=" + overlayPane);
+    printWarning("[ModeloOCRRenderer>attachTo] rootPane=" + rootPane);
+
     this.group = Objects.requireNonNull(group);
     this.imageView = Objects.requireNonNull(imageView);
     this.overlayPane = Objects.requireNonNull(overlayPane);
     this.rootPane = Objects.requireNonNull(rootPane);
 
-    overlayPane.setManaged(false);
+    this.overlayPane.setManaged(false);
+
 
     // Helper que instala listeners en el Stage cuando esté disponible
     final java.util.function.Consumer<Stage> installOnStage =
@@ -125,156 +135,200 @@ public class ModeloOCRRenderer {
   }
 
   private void instalarResizeListener(Stage stage) {
-    // Debounce para evitar recalculos continuos
-    resizeDebounce.setOnFinished(
-        e -> {
-          if (imageView != null && imageView.getImage() != null) {
-            recomputeScaleOnResize();
-            enforceAspectRatioOnStage(stage, true);
-          }
-        });
+    print("[ModeloOCRRenderer>instalarResizeListener] installing resize listener on stage: " + stage);
+    // Scene scene = stage.getScene();
 
-    // Escuchar cambios de tamaño del Scene
+    // scene.widthProperty().addListener((obs, oldV, newV) -> {
+    //     if (!resizingByCode) enforceAspectRatio(stage, true);
+    //     recomputeScaleOnResize();
+    // });
 
-    Scene scene = stage.getScene();
+    // scene.heightProperty().addListener((obs, oldV, newV) -> {
+    //     if (!resizingByCode) enforceAspectRatio(stage, false);
+    //     recomputeScaleOnResize();
+    // });
+  }
+  
+  //------------------------------------------------------------------------------
+  // #endregion
+  //------------------------------------------------------------------------------
+  
+  //------------------------------------------------------------------------------
+  // #region ESCALA Y ASPECT RATIO
+  //------------------------------------------------------------------------------
 
-    scene
-        .widthProperty()
-        .addListener(
-            (obs, oldV, newV) -> {
-              recomputeScaleOnResize();
-              enforceAspectRatioOnStage(stage, true);
-            });
+  public void recomputeScale() {
+    print("[ModeloOCRRenderer>recomputeScale] recomputing scale");
+  //   Scene scene = rootPane.getScene();
+  //   double sceneW = scene.getWidth();
+  //   double sceneH = scene.getHeight();
 
-    scene
-        .heightProperty()
-        .addListener(
-            (obs, oldV, newV) -> {
-              recomputeScaleOnResize();
-              enforceAspectRatioOnStage(stage, false);
-            });
+  //   double scale = Math.min(sceneW / imgW, sceneH / imgH);
+  //   applyScale(scale);
+  // }
 
-    // stage
-    //     .heightProperty()
-    //     .addListener(
-    //         (obs, oldV, newV) -> {
-    //           if (resizingByCode) return;
-    //           resizeDebounce.playFromStart();
-    //           if (lockAspectToImage && imageView != null && imageView.getImage() != null) {
-    //             enforceAspectRatioOnStage(stage, false); // alto cambió, ajustar ancho
-    //           }
-    //         });
+  //   private void recomputeScaleOnResize() {
+  //   if (rootPane == null
+  //       || rootPane.getScene() == null
+  //       || imageView == null
+  //       || imageView.getImage() == null)
+  //     return;
 
-    // // También escuchar cambios directos en la Scene (por si el usuario redimensiona desde la Scene)
-    // if (rootPane != null) {
-    //   rootPane
-    //       .sceneProperty()
-    //       .addListener(
-    //           (obs, oldS, newS) -> {
-    //             if (newS != null) {
-    //               newS.widthProperty()
-    //                   .addListener(
-    //                       (o, ov, nv) -> {
-    //                         if (resizingByCode) return;
-    //                         resizeDebounce.playFromStart();
-    //                       });
-    //               newS.heightProperty()
-    //                   .addListener(
-    //                       (o, ov, nv) -> {
-    //                         if (resizingByCode) return;
-    //                         resizeDebounce.playFromStart();
-    //                       });
-    //             }
-    //           });
-    // }
+  //   // // Forzar layout para obtener medidas fiables
+  //   // rootPane.getScene().getRoot().requestLayout();
+
+  //   double sceneW = rootPane.getScene().getWidth();
+  //   double sceneH = rootPane.getScene().getHeight();
+
+  //   // Si quieres que la imagen siempre llene el alto usa sceneH/imgH
+  //   double scale = Math.min(sceneW / imgW, sceneH / imgH);
+
+  //   applyScale(scale);
+  }
+    
+  private void applyScale(double scale) {
+    print("[ModeloOCRRenderer>applyScale] applying scale: " + scale);
+    // currentScale = scale;
+
+    // group.setScaleX(scale);
+    // group.setScaleY(scale);
+
+    // double imgScaledW = imgW * scale;
+    // double imgScaledH = imgH * scale;
+
+    // Scene scene = rootPane.getScene();
+    // double sceneW = scene.getWidth();
+    // double sceneH = scene.getHeight();
+
+    // double tx = (sceneW - imgScaledW) / 2;
+    // double ty = (sceneH - imgScaledH) / 2;
+    
+    // group.setTranslateX(tx);
+    // group.setTranslateY(ty);
+    
+    // printWarning(
+    //   "[ModeloOCRRenderer>applyScale] group layoutX,Y = "
+    //   + group.getLayoutX()
+    //   + ","
+    //   + group.getLayoutY());
+    // printWarning(
+    //   "[ModeloOCRRenderer>applyScale] group translateX,Y = "
+    //   + group.getTranslateX()
+    //   + ","
+    //   + group.getTranslateY());
+    // printWarning(
+    //   "[ModeloOCRRenderer>applyScale] group boundsInParent = " + group.getBoundsInParent());
+    // printWarning(
+    //   "[ModeloOCRRenderer>applyScale] overlay boundsInLocal = " + overlayPane.getBoundsInLocal());
+    // printWarning(
+    //   "[ModeloOCRRenderer>applyScale] overlay boundsInParent = "
+    //   + overlayPane.getBoundsInParent());
+    // printWarning(
+    //   "[ModeloOCRRenderer>applyScale] overlay pref = "
+    //   + overlayPane.getPrefWidth()
+    //   + "x"
+    //   + overlayPane.getPrefHeight());
+    //   printWarning(
+    //     "[ModeloOCRRenderer>applyScale] imageView bounds = " + imageView.getBoundsInParent());
+        
+    //   redibujarModelo();
+    }
+        
+  private void ajustarInicial(Image img) {
+    Scene scene = rootPane.getScene();
+    
+    double w = scene.getWidth();
+    double h = scene.getHeight();
+    
+    double scale = Math.min(w / imgW, h / imgH);
+  
+    double tx = (scene.getWidth() - imgW * scale) / 2;
+    double ty = (scene.getHeight() - imgH * scale) / 2;
+  
+    group.setTranslateX(tx);
+    group.setTranslateY(ty);
+    
+    applyScale(scale);
+  
+    infoImagen = new InfoImagen(imgW, imgH, new Escala(scale, scale));
+  }
+  
+  private void ajustarSegunStage(Image img) {
+    print("[ModeloOCRRenderer>ajustarSegunStage] adjusting according to stage");
+    // Scene scene = rootPane.getScene();
+    // double w = scene.getWidth();
+    // double h = scene.getHeight();
+
+    // double scale = Math.min(w / imgW, h / imgH);
+    // applyScale(scale);
+
+    // infoImagen = new InfoImagen(imgW, imgH, new Escala(scale, scale));
   }
 
-  private void enforceAspectRatioOnStage(Stage stage, boolean widthChanged) {
-    if (imageAspect <= 0) return;
-
-    // No forzar si está maximizado
-    if (stage.isMaximized()) return;
-
-    // Calcula la diferencia entre stage y scene (decoraciones)
-    double decoW = stage.getWidth() - (stage.getScene() != null ? stage.getScene().getWidth() : 0);
-    double decoH =
-        stage.getHeight() - (stage.getScene() != null ? stage.getScene().getHeight() : 0);
+private void instalarAspectRatioListener(Stage stage) {
+  stage.heightProperty().addListener((obs, oldV, newV) -> {
+    if (resizingByCode)
+      return;
+    if (imageView == null || imageView.getImage() == null)
+      return;
 
     resizingByCode = true;
     try {
-      if (widthChanged) {
-        double targetSceneW = stage.getWidth() - decoW;
-        double targetSceneH = Math.round(targetSceneW / imageAspect);
-        stage.setHeight(targetSceneH + decoH);
-      } else {
-        double targetSceneH = stage.getHeight() - decoH;
-        double targetSceneW = Math.round(targetSceneH * imageAspect);
-        stage.setWidth(targetSceneW + decoW);
-      }
+      reajustarImagenYVentana(stage);
     } finally {
-      // Pequeño delay para evitar que el mismo cambio vuelva a disparar listeners inmediatamente
       Platform.runLater(() -> resizingByCode = false);
     }
-  }
-
-  private void recomputeScaleOnResize() {
-    if (rootPane == null
-        || rootPane.getScene() == null
-        || imageView == null
-        || imageView.getImage() == null) return;
-
-    // Forzar layout para obtener medidas fiables
-    rootPane.getScene().getRoot().requestLayout();
-
-    double sceneW = rootPane.getScene().getWidth();
-    double sceneH = rootPane.getScene().getHeight();
-
-    // Si quieres que la imagen siempre llene el alto usa sceneH/imgH
-    double scale = Math.min(sceneW / imgW, sceneH / imgH);
-
-    applyScale(scale);
-  }
+  });
+}
 
   private void ajustarStageA4(Stage stage) {
-    Rectangle2D visual = Screen.getPrimary().getVisualBounds();
-    double targetSceneH = visual.getHeight();
-    double targetSceneW = targetSceneH * 0.7;
+    print("[ModeloOCRRenderer>ajustarStageA4] adjusting stage to A4 aspect ratio");
 
-    Platform.runLater(
-        () -> {
-          if (stage.getScene() == null) return;
+    if (stage == null || stage.getScene() == null) return;
 
-          // 1) Forzar layout para obtener medidas reales
-          stage.getScene().getRoot().applyCss();
-          stage.getScene().getRoot().layout();
+    Scene scene = stage.getScene();
+    scene.getRoot().applyCss();
+    scene.getRoot().layout();
 
-          // 2) Calcular decoraciones reales
-          double decoW = stage.getWidth() - stage.getScene().getWidth();
-          double decoH = stage.getHeight() - stage.getScene().getHeight();
+    double a4Ratio = 0.70710678118;
+    double decoW = stage.getWidth() - scene.getWidth();
+    double decoH = stage.getHeight() - scene.getHeight();
 
-          // 3) Ajustar Stage para que la Scene tenga EXACTAMENTE el tamaño A4
-          stage.setWidth(targetSceneW);
-          stage.setHeight(targetSceneH + decoH);
+    double screenH = Screen.getPrimary().getVisualBounds().getHeight();
 
-          stage.centerOnScreen();
+    double toolbarH = 0;
+    if (rootPane != null && rootPane.getScene() != null) {
+        toolbarH = rootPane.getScene().lookup(".tool-bar") != null
+                ? rootPane.getScene().lookup(".tool-bar").getBoundsInParent().getHeight()
+                : 0;
+    }
 
-          // 4) Ajustar rootPane al tamaño de la Scene
-          rootPane.setPrefWidth(targetSceneW);
-          rootPane.setPrefHeight(targetSceneH);
+    double targetSceneH = screenH - toolbarH;
+    double targetSceneW = targetSceneH * a4Ratio;
 
-          rootPane.setClip(new Rectangle(0, 0, targetSceneW, targetSceneH));
+    stage.setWidth(targetSceneW + decoW);
+    stage.setHeight(targetSceneH + decoH);
+    stage.centerOnScreen();
 
-          System.out.println(
-              "Scene final: " + stage.getScene().getWidth() + "x" + stage.getScene().getHeight());
-        });
-  }
+    rootPane.setPrefWidth(targetSceneW);
+    rootPane.setPrefHeight(targetSceneH);
+    rootPane.setMinWidth(targetSceneW);
+    rootPane.setMinHeight(targetSceneH);
+    rootPane.setMaxWidth(targetSceneW);
+    rootPane.setMaxHeight(targetSceneH);
+}
+  
+  //------------------------------------------------------------------------------
+  // #endregion
+  //------------------------------------------------------------------------------
 
- public void setImage(Image img) {
-    // Evitar fitWidth/fitHeight que interfieran
+  //------------------------------------------------------------------------------
+  // #region IMAGEN
+  //------------------------------------------------------------------------------
+
+public void setImage(Image img) {
     imageView.setPreserveRatio(true);
     imageView.setSmooth(true);
-    imageView.setFitWidth(0);
-    imageView.setFitHeight(0);
 
     imageView.setImage(img);
 
@@ -282,19 +336,20 @@ public class ModeloOCRRenderer {
         onImageReady(img);
         return;
     }
+    final ChangeListener<Number>[] hListenerRef = new ChangeListener[1];
 
-    // listeners reutilizables guardados en campos (ver mensajes anteriores)
     ChangeListener<Number> wListener = new ChangeListener<>() {
         @Override
         public void changed(ObservableValue<? extends Number> obs, Number oldV, Number newV) {
             if (newV.doubleValue() > 0) {
                 img.widthProperty().removeListener(this);
-                img.heightProperty().removeListener(this);
+                img.heightProperty().removeListener(hListenerRef[0]);
                 onImageReady(img);
             }
         }
     };
-    ChangeListener<Number> hListener = new ChangeListener<>() {
+
+    hListenerRef[0] = new ChangeListener<>() {
         @Override
         public void changed(ObservableValue<? extends Number> obs, Number oldV, Number newV) {
             if (newV.doubleValue() > 0) {
@@ -306,89 +361,98 @@ public class ModeloOCRRenderer {
     };
 
     img.widthProperty().addListener(wListener);
-    img.heightProperty().addListener(hListener);
+    img.heightProperty().addListener(hListenerRef[0]);
 }
 
 private void onImageReady(Image img) {
-    imgW = img.getWidth();
-    imgH = img.getHeight();
-    imgRatio = imgW / imgH;
+  print("[ModeloOCRRenderer>onImageReady] image ready: " + img.getWidth() + "x" + img.getHeight());
 
-    // Preparar overlay en coordenadas de imagen
-    overlayPane.setManaged(false);
-    overlayPane.setPrefWidth(imgW);
-    overlayPane.setPrefHeight(imgH);
-    overlayPane.resizeRelocate(0, 0, imgW, imgH);
-    overlayPane.setMouseTransparent(true);
+  imgW = img.getWidth();
+  imgH = img.getHeight();
+  imgRatio = imgW / imgH;
 
-    // Forzar layout y luego ajustar la imagen
-    Platform.runLater(() -> {
-        if (rootPane == null || rootPane.getScene() == null) return;
-        rootPane.getScene().getRoot().requestLayout();
-        ajustarInicial(img);
-    });
+  overlayPane.setManaged(false);
+  overlayPane.setPrefWidth(imgW);
+  overlayPane.setPrefHeight(imgH);
+  overlayPane.resizeRelocate(0, 0, imgW, imgH);
+  overlayPane.setMouseTransparent(true);
+
+  Platform.runLater(() -> {
+      if (rootPane == null || rootPane.getScene() == null) return;
+      Stage stage = (Stage) rootPane.getScene().getWindow();
+      ajustarImagenSegunAltura();
+      instalarAspectRatioListener(stage);
+  });
 }
 
-  private void ajustarInicial(Image img) {
-    Scene scene = rootPane.getScene();
-    double w = scene.getWidth();
-    double h = scene.getHeight();
+private void ajustarImagenSegunAltura() {
+  if (rootPane == null || rootPane.getScene() == null || imageView == null || imageView.getImage() == null)
+    return;
 
-    double scale = Math.min(w / imgW, h / imgH);
-    applyScale(scale);
+  Scene scene = rootPane.getScene();
+  double sceneH = scene.getHeight();
+  double sceneW = scene.getWidth();
 
-    infoImagen = new InfoImagen(imgW, imgH, new Escala(scale, scale));
+  double toolbarH = 0;
+  if (scene.lookup(".tool-bar") != null) {
+    toolbarH = scene.lookup(".tool-bar").getBoundsInParent().getHeight();
   }
 
-  private void ajustarSegunStage(Image img) {
-    Scene scene = rootPane.getScene();
-    double w = scene.getWidth();
-    double h = scene.getHeight();
+  double availableH = sceneH - toolbarH;
 
-    double scale = Math.min(w / imgW, h / imgH);
-    applyScale(scale);
+  imageView.setPreserveRatio(true);
+  imageView.setFitHeight(availableH);
+  imageView.setFitWidth(0);
 
-    infoImagen = new InfoImagen(imgW, imgH, new Escala(scale, scale));
-  }
+  currentScale = availableH / imgH;
 
-  private void applyScale(double scale) {
-    currentScale = scale;
-    // group.setScaleX(scale);
-    // group.setScaleY(scale);
+  double scaledW = imgW * currentScale;
+  double decoW = rootPane.getScene().getWindow().getWidth() - sceneW;
+  double decoH = rootPane.getScene().getWindow().getHeight() - sceneH;
 
-    rootPane.setPrefWidth(imgW * scale);
-    rootPane.setPrefHeight(imgH * scale);
+  rootPane.getScene().getWindow().setWidth(scaledW + decoW);
+  rootPane.getScene().getWindow().setHeight(availableH + toolbarH + decoH);
+}
 
-    printWarning(
-        "[ModeloOCRRenderer>applyScale] group layoutX,Y = "
-            + group.getLayoutX()
-            + ","
-            + group.getLayoutY());
-    printWarning(
-        "[ModeloOCRRenderer>applyScale] group translateX,Y = "
-            + group.getTranslateX()
-            + ","
-            + group.getTranslateY());
-    printWarning(
-        "[ModeloOCRRenderer>applyScale] group boundsInParent = " + group.getBoundsInParent());
-    printWarning(
-        "[ModeloOCRRenderer>applyScale] overlay boundsInLocal = " + overlayPane.getBoundsInLocal());
-    printWarning(
-        "[ModeloOCRRenderer>applyScale] overlay boundsInParent = "
-            + overlayPane.getBoundsInParent());
-    printWarning(
-        "[ModeloOCRRenderer>applyScale] overlay pref = "
-            + overlayPane.getPrefWidth()
-            + "x"
-            + overlayPane.getPrefHeight());
-    printWarning(
-        "[ModeloOCRRenderer>applyScale] imageView bounds = " + imageView.getBoundsInParent());
+private void reajustarImagenYVentana(Stage stage) {
+    if (stage == null || stage.getScene() == null || imageView == null || imageView.getImage() == null) return;
 
+    Scene scene = stage.getScene();
+    double decoW = stage.getWidth() - scene.getWidth();
+    double decoH = stage.getHeight() - scene.getHeight();
+
+    double toolbarH = 0;
+    var toolbar = scene.lookup(".tool-bar");
+    if (toolbar != null) toolbarH = toolbar.getBoundsInParent().getHeight();
+
+    double availableH = scene.getHeight() - toolbarH;
+
+    imageView.setPreserveRatio(true);
+    imageView.setSmooth(true);
+    imageView.setFitHeight(availableH);
+    imageView.setFitWidth(0);
+
+    currentScale = availableH / imgH;
+
+    double targetSceneW = availableH * imageAspect;
+    stage.setWidth(targetSceneW + decoW);
+}
+//------------------------------------------------------------------------------
+  // #endregion
+  //------------------------------------------------------------------------------
+
+  //------------------------------------------------------------------------------
+  // #region MODELOOCR
+  //------------------------------------------------------------------------------
+
+  public void setModelo(ModeloOCR modelo) {
+    this.modelo = modelo;
     redibujarModelo();
   }
 
   private void redibujarModelo() {
-        overlayPane.getChildren().clear();
+    overlayPane.getChildren().clear();
+
         //logging
         Scene scene = overlayPane.getScene();
     printWarning(
@@ -418,11 +482,6 @@ private void onImageReady(Image img) {
       for (Bloque b : modelo.getBloques()) {
           dibujarBloque(b);
       }
-  }
-
-  public void setModelo(ModeloOCR modelo) {
-    this.modelo = modelo;
-    redibujarModelo();
   }
 
 
@@ -471,4 +530,8 @@ private void onImageReady(Image img) {
     label.setY(y + 14);
     overlayPane.getChildren().add(label);
   }
+
+  //------------------------------------------------------------------------------
+  // #endregion
+  //------------------------------------------------------------------------------
 }

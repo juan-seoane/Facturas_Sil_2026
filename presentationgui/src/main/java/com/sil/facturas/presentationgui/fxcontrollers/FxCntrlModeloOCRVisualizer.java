@@ -6,6 +6,8 @@ import com.sil.facturas.domain.ocr.ModeloOCR;
 import com.sil.facturas.infrastructure.services.ocr.ModeloOCRService;
 import com.sil.facturas.presentationgui.services.ocr.ModeloOCRRenderer;
 import java.io.File;
+
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
@@ -31,7 +33,7 @@ public class FxCntrlModeloOCRVisualizer {
 
   public void postInit() {
     printWarning("[FxCntrlModeloOCRVisualizer>postInit] postInit() ejecutado");
-    renderer.attachTo(group, imageView, overlayPane, rootPane);
+    renderer.attachTo(group, imageView, overlayPane, rootPane);// overlayPane después de imageView
   }
 
   @FXML
@@ -43,6 +45,8 @@ public class FxCntrlModeloOCRVisualizer {
 
     Image img = new Image(file.toURI().toString());
     renderer.setImage(img);
+    Platform.runLater(() -> renderer.recomputeScale());
+
   }
 
   @FXML

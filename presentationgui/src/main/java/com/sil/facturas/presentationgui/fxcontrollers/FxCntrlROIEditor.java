@@ -18,12 +18,12 @@ import com.sil.facturas.infrastructure.services.ocr.aux_ocr.CampoOCR;
 import com.sil.facturas.infrastructure.services.ocr.aux_ocr.OCRItem;
 import com.sil.facturas.infrastructure.services.ocr.aux_ocr._TipoBloque;
 import com.sil.facturas.presentationgui.services.ocr.ModeloOCRRenderer;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.*;
-
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -37,10 +37,22 @@ import javafx.stage.Window;
 
 public class FxCntrlROIEditor {
 
+  // ============================================================
+  //  #region CAMPOS FXML
+  // ============================================================
+
     @FXML private ScrollPane scrollPane;
-    @FXML private Pane canvasPane;
     @FXML private ImageView imageView;
     @FXML private ComboBox<String> comboTipoBloque;
+    @FXML private Pane overlayPane;
+
+  // ============================================================
+  //  #endregion
+  // ============================================================
+
+  // ============================================================
+  //  #region OTROS CAMPOS
+  // ============================================================
 
     // ROI interactivo
     private double startX;
@@ -73,570 +85,623 @@ public class FxCntrlROIEditor {
     private ModeloOCRRenderer renderer;
     private InfoImagen infoImagen;
 
-    public void initialize() {
-        printWarning("[FxCntrlROIEditor.initialize] Dentro del initialize()");
-
-        // servicios
-        modeloService = new ModeloOCRService();
-        renderer = new ModeloOCRRenderer();
-
-        // imageView
-        if (imageView == null) {
-            printError("[FxCntrlROIEditor>initialize] ERROR: imageView no fue inyectado desde el FXML");
-        } else {
-            imageView.setPreserveRatio(true);
-            imageView.setSmooth(true);
-
-            if (!canvasPane.getChildren().contains(imageView)) {
-                canvasPane.getChildren().add(0, imageView); // siempre al fondo
-            }
-        }
-
-        // scrollPane
-        scrollPane.setFitToHeight(true);
-        scrollPane.setFitToWidth(true);
-
-        // canvasPane ligado al imageView
-        canvasPane.minWidthProperty().bind(imageView.fitWidthProperty());
-        canvasPane.minHeightProperty().bind(imageView.fitHeightProperty());
-        canvasPane.prefWidthProperty().bind(imageView.fitWidthProperty());
-        canvasPane.prefHeightProperty().bind(imageView.fitHeightProperty());
-
-        // eventos de ratón para ROI
-        canvasPane.setOnMousePressed(e -> {
-            if (rectTemp != null) {
-                canvasPane.getChildren().remove(rectTemp);
-                rectTemp = null;
-            }
-            bloqueTemp = null;
-
-            startX = e.getX();
-            startY = e.getY();
-
-            rectTemp = new Rectangle(startX, startY, 1, 1);
-            rectTemp.setStroke(Color.YELLOW);
-            rectTemp.setStrokeWidth(2);
-            rectTemp.setFill(Color.color(1, 1, 0, 0.25));
-
-            canvasPane.getChildren().add(rectTemp);
-        });
-
-        canvasPane.setOnMouseDragged(e -> {
-            if (rectTemp == null) return;
-
-            double currentX = e.getX();
-            double currentY = e.getY();
-
-            double x = Math.min(startX, currentX);
-            double y = Math.min(startY, currentY);
-            double w = Math.abs(currentX - startX);
-            double h = Math.abs(currentY - startY);
-
-            rectTemp.setX(x);
-            rectTemp.setY(y);
-            rectTemp.setWidth(w);
-            rectTemp.setHeight(h);
-        });
-
-        canvasPane.setOnMouseReleased(e -> {
-            if (rectTemp == null) return;
-
-            this.x = rectTemp.getX();
-            this.y = rectTemp.getY();
-            this.w = rectTemp.getWidth();
-            this.h = rectTemp.getHeight();
-
-            printWarning("[ROIEditor] Bloque temporal definido en [" + x + ", " + y + "] w=" + w + ", h=" + h);
-
-            bloqueTemp =
-                new BloqueOCR(
-                    cfg.nombreBloque,
-                    "",
-                    cfg.referencia,
-                    x,
-                    y,
-                    w,
-                    h,
-                    cfg.offsetTipo,
-                    0,
-                    0,
-                    cfg.growVert,
-                    cfg.growHoriz,
-                    cfg.anchorX,
-                    cfg.anchorY,
-                    new ArrayList<>());
-
-            if (!"Imagen (root)".equals(cfg.parentNombre)) {
-                bloqueTemp.setParentNombre(cfg.parentNombre);
-            } else {
-                bloqueTemp.setParentNombre(null);
-            }
-        });
-    }
-
-    // ============================================================
-    //  CARGAR IMAGEN
-    // ============================================================
-
-    @FXML
-    private void onCargarImagen() {
-
-        FileChooser fc = new FileChooser();
-        fc.setTitle("Seleccionar imagen");
-        fc.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg")
-        );
-
-        Window window = canvasPane.getScene().getWindow();
-        File file = fc.showOpenDialog(window);
-        if (file == null) return;
-
-        renderer.cargarImagenYCalcularEscala(
-            imageView,
-            scrollPane,
-            file,
-            info -> {
-                this.infoImagen = info;
-
-                this.realImageWidth = info.realWidth();
-                this.realImageHeight = info.realHeight();
-                this.scaleX = info.escala().x();
-                this.scaleY = info.escala().y();
-
-                if (bloques != null && !bloques.isEmpty()) {
-                    renderer.dibujarBloques(canvasPane, bloques, this.infoImagen, mapaBloques);
-                }
-            }
-        );
-    }
-
-    // ============================================================
-    //  CARGAR BLOQUES
-    // ============================================================
-
-    @FXML
-    private void onCargarBloques() {
-
-        FileChooser fc = new FileChooser();
-        fc.setTitle("Seleccionar archivo de bloques");
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Bloques (*.json)", "*.json"));
-
-        File file = fc.showOpenDialog(canvasPane.getScene().getWindow());
-        if (file == null) return;
-
-        bloques = modeloService.cargarBloques(file);
-
-        mapaBloques.clear();
-        for (Bloque b : bloques) {
-            mapaBloques.put(b.nombre(), b);
-        }
-
-        if (infoImagen != null) {
-            renderer.dibujarBloques(canvasPane, bloques, infoImagen, mapaBloques);
-        } else {
-            printWarning("[FxCntrlROIEditor>onCargarBloques] No hay imagen cargada todavía; no se puede dibujar.");
-        }
-    }
-
-    // ============================================================
-    //  DIÁLOGO CARGA INICIAL
-    // ============================================================
-
-    @FXML
-    private void mostrarDialogoCarga() {
-
-        ButtonType btnBloques = new ButtonType("Modelo de bloques");
-        ButtonType btnOCR = new ButtonType("Modelo OCR completo");
-        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Cargar modelo");
-        alert.setHeaderText("Selecciona el tipo de modelo que quieres cargar");
-        alert.getButtonTypes().setAll(btnBloques, btnOCR, btnCancelar);
-
-        Optional<ButtonType> result = alert.showAndWait();
-
-        if (result.isEmpty() || result.get() == btnCancelar) {
-            return;
-        }
-
-        if (result.get() == btnBloques) {
-            cargarModeloBloquesInicial();
-        } else if (result.get() == btnOCR) {
-            // cargarModeloOCRInicial();
-        }
-    }
-
-    private void cargarModeloBloquesInicial() {
-
-        FileChooser fc = new FileChooser();
-        fc.setTitle("Seleccionar archivo de bloques");
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Bloques (*.json)", "*.json"));
-
-        File file = fc.showOpenDialog(canvasPane.getScene().getWindow());
-        if (file == null) return;
-
-        bloques = modeloService.cargarBloques(file);
-
-        mapaBloques.clear();
-        for (Bloque b : bloques) {
-            mapaBloques.put(b.nombre(), b);
-        }
-
-        if (infoImagen != null) {
-            renderer.dibujarBloques(canvasPane, bloques, infoImagen, mapaBloques);
-        } else {
-            printWarning("[FxCntrlROIEditor>cargarModeloBloquesInicial] No hay imagen cargada; carga primero la imagen.");
-        }
-    }
-
-    // ============================================================
-    //  NUEVO BLOQUE
-    // ============================================================
-
-    @FXML
-    private void onNuevoBloque() {
-
-        String tipo = comboTipoBloque.getValue();
-        if (tipo == null || tipo.isEmpty()) {
-            printError("Selecciona un tipo de bloque antes de crear uno.");
-            return;
-        }
-
-        switch (tipo) {
-            case "bloqueExtractos" -> crearBloque(_TipoBloque.EXTRACTOS);
-            case "bloqueExtractos.cabecera" -> crearBloque(_TipoBloque.EXTRACTOS_CABECERA);
-            case "bloqueExtractos.linea" -> crearBloque(_TipoBloque.EXTRACTOS_LINEA);
-            case "bloqueTotales" -> crearBloque(_TipoBloque.TOTALES);
-            case "bloqueCabecera" -> crearBloque(_TipoBloque.CABECERA);
-            case "bloqueGenerico" -> crearBloque(_TipoBloque.GENERICO);
-        }
-    }
-
-    private void crearBloque(_TipoBloque tipo) {
-        switch (tipo) {
-            case CABECERA -> crearBloqueCabecera();
-            case EXTRACTOS -> crearBloqueExtractos();
-            case EXTRACTOS_CABECERA -> crearBloqueExtractosCabecera();
-            case EXTRACTOS_LINEA -> crearBloqueExtractosLinea();
-            case TOTALES -> crearBloqueTotales();
-            case GENERICO -> crearBloqueGenerico();
-        }
-    }
-
-    private BloqueOCR crearBloqueCabecera() {
-
-        if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
-            printError("[FxCntrlROIEditor>crearBloqueCabecera] Debes seleccionar un área antes.");
-            return null;
-        }
-
-        BloqueConfig cfg = pedirConfigBloqueAlUsuario();
-        if (cfg == null) return null;
-
-        BloqueOCR b = new BloqueOCR(
-                "bloqueCabecera",
-                cfg.parentNombre,
-                "factura",
-                this.x,
-                this.y,
-                this.h,
-                this.w,
-                cfg.offsetTipo,
-                0,
-                0,
-                cfg.growVert,
-                cfg.growHoriz,
-                cfg.anchorX,
-                cfg.anchorY,
-                new ArrayList<>());
-
-        items.add(b);
-        dibujarBloque(b);
-        return b;
-    }
-
-    private BloqueOCR crearBloqueExtractos() {
-
-        if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
-            printError("[FxCntrlROIEditor>crearBloqueExtractos] Selecciona un área primero.");
-            return null;
-        }
-
-        BloqueConfig cfg = pedirConfigBloqueAlUsuario();
-        if (cfg == null) return null;
-
-        BloqueOCR b = new BloqueOCR(
-                "bloqueExtractos",
-                cfg.parentNombre,
-                "extracto",
-                this.x,
-                this.y,
-                this.h,
-                this.w,
-                cfg.offsetTipo,
-                0,
-                0,
-                cfg.growVert,
-                cfg.growHoriz,
-                cfg.anchorX,
-                cfg.anchorY,
-                new ArrayList<>());
-
-        items.add(b);
-        dibujarBloque(b);
-        return b;
-    }
-
-    private BloqueOCR crearBloqueExtractosCabecera() {
-
-        if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
-            printError("[FxCntrlROIEditor>crearBloqueExtractosCabecera] Selecciona un área primero.");
-            return null;
-        }
-
-        BloqueConfig cfg = pedirConfigBloqueAlUsuario();
-        if (cfg == null) return null;
-
-        BloqueOCR b = new BloqueOCR(
-                "cabeceraExtractos",
-                cfg.parentNombre,
-                "extracto",
-                this.x,
-                this.y,
-                this.h,
-                this.w,
-                cfg.offsetTipo,
-                0,
-                0,
-                cfg.growVert,
-                cfg.growHoriz,
-                cfg.anchorX,
-                cfg.anchorY,
-                new ArrayList<>());
-
-        items.add(b);
-        dibujarBloque(b);
-        return b;
-    }
-
-    private BloqueOCR crearBloqueExtractosLinea() {
-
-        if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
-            printError("[FxCntrlROIEditor>crearBloqueExtractosLinea] Selecciona un área primero.");
-            return null;
-        }
-
-        BloqueConfig cfg = pedirConfigBloqueAlUsuario();
-        if (cfg == null) return null;
-
-        BloqueOCR b = new BloqueOCR(
-                "lineaExtracto",
-                cfg.parentNombre,
-                "extracto",
-                this.x,
-                this.y,
-                this.h,
-                this.w,
-                cfg.offsetTipo,
-                0,
-                0,
-                cfg.growVert,
-                cfg.growHoriz,
-                cfg.anchorX,
-                cfg.anchorY,
-                new ArrayList<>());
-
-        items.add(b);
-        dibujarBloque(b);
-        return b;
-    }
-
-    private BloqueOCR crearBloqueTotales() {
-
-        if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
-            printError("[FxCntrlROIEditor>crearBloqueTotales] Selecciona un área primero.");
-            return null;
-        }
-
-        BloqueConfig cfg = pedirConfigBloqueAlUsuario();
-        if (cfg == null) return null;
-
-        BloqueOCR b = new BloqueOCR(
-                "bloqueTotales",
-                cfg.parentNombre,
-                "totales",
-                this.x,
-                this.y,
-                this.h,
-                this.w,
-                cfg.offsetTipo,
-                0,
-                0,
-                cfg.growVert,
-                cfg.growHoriz,
-                cfg.anchorX,
-                cfg.anchorY,
-                new ArrayList<>());
-
-        items.add(b);
-        dibujarBloque(b);
-        return b;
-    }
-
-    private BloqueOCR crearBloqueGenerico() {
-
-        if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
-            printError("[FxCntrlROIEditor>crearBloqueGenerico] Selecciona un área primero.");
-            return null;
-        }
-
-        BloqueConfig cfg = pedirConfigBloqueAlUsuario();
-        if (cfg == null) return null;
-
-        String referencia = cfg.nombreBloque.toLowerCase().replace(" ", "_");
-
-        BloqueOCR b = new BloqueOCR(
-                cfg.nombreBloque,
-                cfg.parentNombre,
-                referencia,
-                this.x,
-                this.y,
-                this.h,
-                this.w,
-                cfg.offsetTipo,
-                0,
-                0,
-                cfg.growVert,
-                cfg.growHoriz,
-                cfg.anchorX,
-                cfg.anchorY,
-                new ArrayList<>());
-
-        items.add(b);
-        dibujarBloque(b);
-        return b;
-    }
-
-    private void dibujarBloque(BloqueOCR b) {
-        var rect = new javafx.scene.shape.Rectangle(b.x(), b.y(), b.w(), b.h());
-        rect.setStroke(javafx.scene.paint.Color.YELLOW);
-        rect.setFill(javafx.scene.paint.Color.TRANSPARENT);
-        rect.setOnMouseClicked(
-            e -> print(" [FxCntrlROIEditor>dibujarBloque>onMouseClicked] Bloque seleccionado: " + b.nombre())
-        );
-
-        print("[FxCntrlROIEditor>dibujarBloque] Dibujando Rect [" + b.x() + ", " + b.y() + ", " + b.w() + ", " + b.h() + "]");
-        canvasPane.getChildren().add(rect);
-    }
-
-    private void dibujarCampo(CampoOCR c) {
-        var rect = new javafx.scene.shape.Rectangle(c.x(), c.y(), c.w(), c.h());
-        rect.setStroke(javafx.scene.paint.Color.CYAN);
-        rect.setFill(javafx.scene.paint.Color.TRANSPARENT);
-        canvasPane.getChildren().add(rect);
-    }
-
-    // ============================================================
-    //  NUEVO CAMPO
-    // ============================================================
-
-    @FXML
-    private void onNuevoCampo() {
-        BloqueOCR bloque = (BloqueOCR) items.stream()
-            .filter(i -> i instanceof BloqueOCR)
-            .findFirst()
-            .orElse(null);
-
-        if (bloque == null) return;
-
-        CampoOCR c = new CampoOCR(
-            "campo" + (bloque.campos().size() + 1),
-            bloque.nombre(),
-            "concepto",
-            bloque.x() + 10,
-            bloque.y() + 10,
-            100,
-            30,
-            _TipoContenido.TEXTO_COMPLETO
-        );
-
-        bloque.addCampo(c);
-        items.add(c);
-
-        dibujarCampo(c);
-    }
-
-    // ============================================================
-    //  GUARDAR MODELO
-    // ============================================================
-
-    @FXML
-    private void onGuardarModelo() {
-
-        TipoGuardado tipo = pedirTipoGuardado();
-        if (tipo == null) {
-            printWarning("[onGuardarModelo] Guardado cancelado por el usuario.");
-            return;
-        }
-
-        modeloService.nuevoModelo("Factura", "1.0");
-
-        for (OCRItem item : items) {
-            if (item instanceof BloqueOCR b) {
-                modeloService.addBloque(modeloService.convertirBloqueOCR(b));
-            }
-        }
-
-        String sugerencia = (tipo == TipoGuardado.BLOQUES)
-                ? "bloques_"
-                : "modeloOCR_";
-
-        String nombre = pedirNombreArchivo(sugerencia);
-        if (nombre == null || nombre.isBlank()) {
-            printWarning("[onGuardarModelo] Nombre de archivo vacío. Cancelado.");
-            return;
-        }
-
-        String ruta = "data/datos/modelosOCR/" + nombre + ".json";
-        modeloService.guardarModelo(new File(ruta));
-
-        printWarning("[onGuardarModelo] Guardado correcto en: " + ruta);
-    }
-
-    private enum TipoGuardado { MODELO, BLOQUES }
-
-    private TipoGuardado pedirTipoGuardado() {
-        ChoiceDialog<String> dialog = new ChoiceDialog<>(
-                "Modelo completo",
-                "Modelo completo",
-                "Solo bloques");
-        dialog.setTitle("Guardar modelo OCR");
-        dialog.setHeaderText("Selecciona el tipo de guardado:");
-
-        Optional<String> result = dialog.showAndWait();
-        if (result.isEmpty())
-            return null;
-
-        return result.get().equals("Solo bloques")
-                ? TipoGuardado.BLOQUES
-                : TipoGuardado.MODELO;
-    }
-
-    private String pedirNombreArchivo(String sugerencia) {
-        TextInputDialog dialog = new TextInputDialog(sugerencia);
-        dialog.setTitle("Nombre del archivo");
-        dialog.setHeaderText("Introduce el nombre del archivo (sin extensión):");
-
-        Optional<String> result = dialog.showAndWait();
-        return result.orElse(null);
-    }
-
-    // ============================================================
-    //  UTILIDADES
-    // ============================================================
-
-    private BufferedImage toBufferedImage(Image fxImage) {
+  // ============================================================
+  //  #endregion
+  // ============================================================
+
+//   // ============================================================
+//   //  #region INIT
+//   // ============================================================
+
+//   public void initialize() {
+
+//     printWarning("[FxCntrlROIEditor.initialize] Dentro del initialize()");
+
+//     modeloService = new ModeloOCRService();
+
+//     // imageView
+//     if (imageView == null) {
+//         printError("[FxCntrlROIEditor>initialize] ERROR: imageView no fue inyectado desde el FXML");
+//     } else {
+//         imageView.setPreserveRatio(true);
+//         imageView.setSmooth(true);
+//     }
+
+//     // overlayPane
+//     if (overlayPane == null) {
+//       printError("[FxCntrlROIEditor>initialize] ERROR: overlayPane no fue inyectado desde el FXML");
+//     } else {
+//         overlayPane.setPickOnBounds(false);
+//     }
+
+//     // ScrollPane
+//     scrollPane.setFitToHeight(true);
+//     scrollPane.setFitToWidth(true);
+
+//     // Layout correcto: imageView + overlayPane dentro del mismo Group
+//     Group group = new Group(imageView, overlayPane);
+//     scrollPane.setContent(group);
+
+//     // Crear renderer cuando la escena exista
+//     Platform.runLater(() -> {
+//         renderer = new ModeloOCRRenderer(imageView, overlayPane);
+//     });
+
+//     // Eventos de ratón para ROI (usando overlayPane)
+//     overlayPane.setOnMousePressed(e -> {
+//         if (rectTemp != null) {
+//             overlayPane.getChildren().remove(rectTemp);
+//             rectTemp = null;
+//         }
+
+//         startX = e.getX();
+//         startY = e.getY();
+
+//         rectTemp = new Rectangle(startX, startY, 1, 1);
+//         rectTemp.setStroke(Color.YELLOW);
+//         rectTemp.setStrokeWidth(2);
+//         rectTemp.setFill(Color.color(1, 1, 0, 0.25));
+
+//         overlayPane.getChildren().add(rectTemp);
+//     });
+
+//     overlayPane.setOnMouseDragged(e -> {
+//         if (rectTemp == null) return;
+
+//         double currentX = e.getX();
+//         double currentY = e.getY();
+
+//         double x = Math.min(startX, currentX);
+//         double y = Math.min(startY, currentY);
+//         double w = Math.abs(currentX - startX);
+//         double h = Math.abs(currentY - startY);
+
+//         rectTemp.setX(x);
+//         rectTemp.setY(y);
+//         rectTemp.setWidth(w);
+//         rectTemp.setHeight(h);
+//     });
+
+//     overlayPane.setOnMouseReleased(
+//         e -> {
+//           if (rectTemp == null) return;
+
+//           this.x = rectTemp.getX();
+//           this.y = rectTemp.getY();
+//           this.w = rectTemp.getWidth();
+//           this.h = rectTemp.getHeight();
+
+//           printWarning(
+//               "[ROIEditor] Bloque temporal definido en [" + x + ", " + y + "] w=" + w + ", h=" + h);
+
+//           bloqueTemp =
+//               new BloqueOCR(
+//                   cfg.nombreBloque,
+//                   "",
+//                   cfg.referencia,
+//                   x,
+//                   y,
+//                   w,
+//                   h,
+//                   cfg.offsetTipo,
+//                   0,
+//                   0,
+//                   cfg.growVert,
+//                   cfg.growHoriz,
+//                   cfg.anchorX,
+//                   cfg.anchorY,
+//                   new ArrayList<>());
+
+//           if (!"Imagen (root)".equals(cfg.parentNombre)) {
+//             bloqueTemp.setParentNombre(cfg.parentNombre);
+//           } else {
+//             bloqueTemp.setParentNombre(null);
+//           }
+//         });
+//     }
+
+//   // ============================================================
+//   //  #endregion
+//   // ============================================================
+
+//   // ============================================================
+//   //  #region CARGAR IMAGEN
+//   // ============================================================
+
+//   @FXML
+//   private void onCargarImagen() {
+
+//         FileChooser fc = new FileChooser();
+//         fc.setTitle("Seleccionar imagen");
+//         fc.getExtensionFilters().add(
+//             new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg")
+//         );
+
+//         Window window = scrollPane.getScene().getWindow();
+//         File file = fc.showOpenDialog(window);
+//         if (file == null) return;
+
+//         renderer.cargarImagenYCalcularEscala(imageView, scrollPane,
+//             file,
+//             info -> {
+//                 this.infoImagen = info;
+
+//                 this.realImageWidth = info.realWidth();
+//                 this.realImageHeight = info.realHeight();
+//                 this.scaleX = info.escala().x();
+//                 this.scaleY = info.escala().y();
+
+//                 if (bloques != null && !bloques.isEmpty())
+//                     renderer.dibujarBloques(bloques);
+//             }
+//         );
+//     }
+
+//     // ============================================================
+//     //  #endregion
+//     // ============================================================
+
+//     // ============================================================
+//     //  #region CARGAR BLOQUES
+//     // ============================================================
+
+//     @FXML
+//     private void onCargarBloques() {
+
+//         FileChooser fc = new FileChooser();
+//         fc.setTitle("Seleccionar archivo de bloques");
+//         fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Bloques (*.json)", "*.json"));
+
+//         File file = fc.showOpenDialog(overlayPane.getScene().getWindow());
+//         if (file == null) return;
+
+//         bloques = modeloService.cargarBloques(file);
+
+//         mapaBloques.clear();
+//         for (Bloque b : bloques) {
+//             mapaBloques.put(b.nombre(), b);
+//         }
+
+//         if (infoImagen != null) {
+//             renderer.dibujarBloques(bloques);
+//         } else {
+//       printWarning(
+//           "[FxCntrlROIEditor>onCargarBloques] No hay imagen cargada todavía; no se puede dibujar.");
+//         }
+//     }
+
+//   // ============================================================
+//   //  #endregion
+//   // ============================================================
+
+//   // ============================================================
+//   //  #region DIÁLOGO CARGA INICIAL
+//   // ============================================================
+
+//   @FXML
+//   private void mostrarDialogoCarga() {
+
+//         ButtonType btnBloques = new ButtonType("Modelo de bloques");
+//         ButtonType btnOCR = new ButtonType("Modelo OCR completo");
+//         ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+//         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//         alert.setTitle("Cargar modelo");
+//         alert.setHeaderText("Selecciona el tipo de modelo que quieres cargar");
+//         alert.getButtonTypes().setAll(btnBloques, btnOCR, btnCancelar);
+
+//         Optional<ButtonType> result = alert.showAndWait();
+
+//         if (result.isEmpty() || result.get() == btnCancelar) {
+//             return;
+//         }
+
+//         if (result.get() == btnBloques) {
+//             cargarModeloBloquesInicial();
+//         } else if (result.get() == btnOCR) {
+//             // cargarModeloOCRInicial();
+//         }
+//     }
+
+//     private void cargarModeloBloquesInicial() {
+
+//         FileChooser fc = new FileChooser();
+//         fc.setTitle("Seleccionar archivo de bloques");
+//         fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Bloques (*.json)", "*.json"));
+
+//         File file = fc.showOpenDialog(scrollPane.getScene().getWindow());
+//         if (file == null) return;
+
+//         bloques = modeloService.cargarBloques(file);
+
+//         mapaBloques.clear();
+//         for (Bloque b : bloques) {
+//             mapaBloques.put(b.nombre(), b);
+//         }
+
+//         if (infoImagen != null) {
+//             renderer.dibujarBloques(bloques);
+//         } else {
+//       printWarning(
+//           "[FxCntrlROIEditor>cargarModeloBloquesInicial] No hay imagen cargada; carga primero la"
+//               + " imagen.");
+//         }
+//     }
+
+//   // ============================================================
+//   //  #endregion
+//   // ============================================================
+
+//   // ============================================================
+//   // #region NUEVO BLOQUE
+//   // ============================================================
+
+//   @FXML
+//   private void onNuevoBloque() {
+
+//         String tipo = comboTipoBloque.getValue();
+//         if (tipo == null || tipo.isEmpty()) {
+//             printError("Selecciona un tipo de bloque antes de crear uno.");
+//             return;
+//         }
+
+//         switch (tipo) {
+//             case "bloqueExtractos" -> crearBloque(_TipoBloque.EXTRACTOS);
+//             case "bloqueExtractos.cabecera" -> crearBloque(_TipoBloque.EXTRACTOS_CABECERA);
+//             case "bloqueExtractos.linea" -> crearBloque(_TipoBloque.EXTRACTOS_LINEA);
+//             case "bloqueTotales" -> crearBloque(_TipoBloque.TOTALES);
+//             case "bloqueCabecera" -> crearBloque(_TipoBloque.CABECERA);
+//             case "bloqueGenerico" -> crearBloque(_TipoBloque.GENERICO);
+//         }
+//     }
+
+//     private void crearBloque(_TipoBloque tipo) {
+//         switch (tipo) {
+//             case CABECERA -> crearBloqueCabecera();
+//             case EXTRACTOS -> crearBloqueExtractos();
+//             case EXTRACTOS_CABECERA -> crearBloqueExtractosCabecera();
+//             case EXTRACTOS_LINEA -> crearBloqueExtractosLinea();
+//             case TOTALES -> crearBloqueTotales();
+//             case GENERICO -> crearBloqueGenerico();
+//         }
+//     }
+
+//     private BloqueOCR crearBloqueCabecera() {
+
+//         if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
+//             printError("[FxCntrlROIEditor>crearBloqueCabecera] Debes seleccionar un área antes.");
+//             return null;
+//         }
+
+//         BloqueConfig cfg = pedirConfigBloqueAlUsuario();
+//         if (cfg == null) return null;
+
+//         BloqueOCR b = new BloqueOCR(
+//                 "bloqueCabecera",
+//                 cfg.parentNombre,
+//                 "factura",
+//                 this.x,
+//                 this.y,
+//                 this.h,
+//                 this.w,
+//                 cfg.offsetTipo,
+//                 0,
+//                 0,
+//                 cfg.growVert,
+//                 cfg.growHoriz,
+//                 cfg.anchorX,
+//                 cfg.anchorY,
+//                 new ArrayList<>());
+
+//         items.add(b);
+//         dibujarBloque(b);
+//         return b;
+//     }
+
+//     private BloqueOCR crearBloqueExtractos() {
+
+//         if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
+//             printError("[FxCntrlROIEditor>crearBloqueExtractos] Selecciona un área primero.");
+//             return null;
+//         }
+
+//         BloqueConfig cfg = pedirConfigBloqueAlUsuario();
+//         if (cfg == null) return null;
+
+//         BloqueOCR b = new BloqueOCR(
+//                 "bloqueExtractos",
+//                 cfg.parentNombre,
+//                 "extracto",
+//                 this.x,
+//                 this.y,
+//                 this.h,
+//                 this.w,
+//                 cfg.offsetTipo,
+//                 0,
+//                 0,
+//                 cfg.growVert,
+//                 cfg.growHoriz,
+//                 cfg.anchorX,
+//                 cfg.anchorY,
+//                 new ArrayList<>());
+
+//         items.add(b);
+//         dibujarBloque(b);
+//         return b;
+//     }
+
+//     private BloqueOCR crearBloqueExtractosCabecera() {
+
+//         if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
+//       printError("[FxCntrlROIEditor>crearBloqueExtractosCabecera] Selecciona un área primero.");
+//             return null;
+//         }
+
+//         BloqueConfig cfg = pedirConfigBloqueAlUsuario();
+//         if (cfg == null) return null;
+
+//         BloqueOCR b = new BloqueOCR(
+//                 "cabeceraExtractos",
+//                 cfg.parentNombre,
+//                 "extracto",
+//                 this.x,
+//                 this.y,
+//                 this.h,
+//                 this.w,
+//                 cfg.offsetTipo,
+//                 0,
+//                 0,
+//                 cfg.growVert,
+//                 cfg.growHoriz,
+//                 cfg.anchorX,
+//                 cfg.anchorY,
+//                 new ArrayList<>());
+
+//         items.add(b);
+//         dibujarBloque(b);
+//         return b;
+//     }
+
+//     private BloqueOCR crearBloqueExtractosLinea() {
+
+//         if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
+//             printError("[FxCntrlROIEditor>crearBloqueExtractosLinea] Selecciona un área primero.");
+//             return null;
+//         }
+
+//         BloqueConfig cfg = pedirConfigBloqueAlUsuario();
+//         if (cfg == null) return null;
+
+//         BloqueOCR b = new BloqueOCR(
+//                 "lineaExtracto",
+//                 cfg.parentNombre,
+//                 "extracto",
+//                 this.x,
+//                 this.y,
+//                 this.h,
+//                 this.w,
+//                 cfg.offsetTipo,
+//                 0,
+//                 0,
+//                 cfg.growVert,
+//                 cfg.growHoriz,
+//                 cfg.anchorX,
+//                 cfg.anchorY,
+//                 new ArrayList<>());
+
+//         items.add(b);
+//         dibujarBloque(b);
+//         return b;
+//     }
+
+//     private BloqueOCR crearBloqueTotales() {
+
+//         if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
+//             printError("[FxCntrlROIEditor>crearBloqueTotales] Selecciona un área primero.");
+//             return null;
+//         }
+
+//         BloqueConfig cfg = pedirConfigBloqueAlUsuario();
+//         if (cfg == null) return null;
+
+//         BloqueOCR b = new BloqueOCR(
+//                 "bloqueTotales",
+//                 cfg.parentNombre,
+//                 "totales",
+//                 this.x,
+//                 this.y,
+//                 this.h,
+//                 this.w,
+//                 cfg.offsetTipo,
+//                 0,
+//                 0,
+//                 cfg.growVert,
+//                 cfg.growHoriz,
+//                 cfg.anchorX,
+//                 cfg.anchorY,
+//                 new ArrayList<>());
+
+//         items.add(b);
+//         dibujarBloque(b);
+//         return b;
+//     }
+
+//     private BloqueOCR crearBloqueGenerico() {
+
+//         if (this.x == 0.0 || this.y == 0.0 || this.w == 0.0 || this.h == 0.0) {
+//             printError("[FxCntrlROIEditor>crearBloqueGenerico] Selecciona un área primero.");
+//             return null;
+//         }
+
+//         BloqueConfig cfg = pedirConfigBloqueAlUsuario();
+//         if (cfg == null) return null;
+
+//         String referencia = cfg.nombreBloque.toLowerCase().replace(" ", "_");
+
+//         BloqueOCR b = new BloqueOCR(
+//                 cfg.nombreBloque,
+//                 cfg.parentNombre,
+//                 referencia,
+//                 this.x,
+//                 this.y,
+//                 this.h,
+//                 this.w,
+//                 cfg.offsetTipo,
+//                 0,
+//                 0,
+//                 cfg.growVert,
+//                 cfg.growHoriz,
+//                 cfg.anchorX,
+//                 cfg.anchorY,
+//                 new ArrayList<>());
+
+//         items.add(b);
+//         dibujarBloque(b);
+//         return b;
+//     }
+
+//     private void dibujarBloque(BloqueOCR b) {
+//         var rect = new javafx.scene.shape.Rectangle(b.x(), b.y(), b.w(), b.h());
+//         rect.setStroke(javafx.scene.paint.Color.YELLOW);
+//         rect.setFill(javafx.scene.paint.Color.TRANSPARENT);
+//     rect.setOnMouseClicked(
+//         e ->
+//             print(
+//                 " [FxCntrlROIEditor>dibujarBloque>onMouseClicked] Bloque seleccionado: "
+//                     + b.nombre()));
+
+//     print(
+//         "[FxCntrlROIEditor>dibujarBloque] Dibujando Rect ["
+//             + b.x()
+//             + ", "
+//             + b.y()
+//             + ", "
+//             + b.w()
+//             + ", "
+//             + b.h()
+//             + "]");
+//         overlayPane.getChildren().add(rect);
+//     }
+
+//     private void dibujarCampo(CampoOCR c) {
+//         var rect = new javafx.scene.shape.Rectangle(c.x(), c.y(), c.w(), c.h());
+//         rect.setStroke(javafx.scene.paint.Color.CYAN);
+//         rect.setFill(javafx.scene.paint.Color.TRANSPARENT);
+//         overlayPane.getChildren().add(rect);
+//     }
+
+//   // ============================================================
+//   //  #endregion
+//   // ============================================================
+
+//   // ============================================================
+//   //  #region NUEVO CAMPO
+//   // ============================================================
+
+//   @FXML
+//   private void onNuevoCampo() {
+//         BloqueOCR bloque = (BloqueOCR) items.stream()
+//             .filter(i -> i instanceof BloqueOCR)
+//             .findFirst()
+//             .orElse(null);
+
+//         if (bloque == null) return;
+
+//         CampoOCR c = new CampoOCR(
+//             "campo" + (bloque.campos().size() + 1),
+//             bloque.nombre(),
+//             "concepto",
+//             bloque.x() + 10,
+//             bloque.y() + 10,
+//             100,
+//             30,
+//             _TipoContenido.TEXTO_COMPLETO
+//         );
+
+//         bloque.addCampo(c);
+//         items.add(c);
+
+//         dibujarCampo(c);
+//     }
+
+//   // ============================================================
+//   //  #endregion
+//   // ============================================================
+
+//   // ============================================================
+//   //  #region GUARDAR MODELO
+//   // ============================================================
+
+//   @FXML
+//   private void onGuardarModelo() {
+
+//         TipoGuardado tipo = pedirTipoGuardado();
+//         if (tipo == null) {
+//             printWarning("[onGuardarModelo] Guardado cancelado por el usuario.");
+//             return;
+//         }
+
+//         modeloService.nuevoModelo("Factura", "1.0");
+
+//         for (OCRItem item : items) {
+//             if (item instanceof BloqueOCR b) {
+//                 modeloService.addBloque(modeloService.convertirBloqueOCR(b));
+//             }
+//         }
+
+//         String sugerencia = (tipo == TipoGuardado.BLOQUES)
+//                 ? "bloques_"
+//                 : "modeloOCR_";
+
+//         String nombre = pedirNombreArchivo(sugerencia);
+//         if (nombre == null || nombre.isBlank()) {
+//             printWarning("[onGuardarModelo] Nombre de archivo vacío. Cancelado.");
+//             return;
+//         }
+
+//         String ruta = "data/datos/modelosOCR/" + nombre + ".json";
+//         modeloService.guardarModelo(new File(ruta));
+
+//         printWarning("[onGuardarModelo] Guardado correcto en: " + ruta);
+//     }
+
+//     private enum TipoGuardado { MODELO, BLOQUES }
+
+//     private TipoGuardado pedirTipoGuardado() {
+//         ChoiceDialog<String> dialog = new ChoiceDialog<>(
+//                 "Modelo completo",
+//                 "Modelo completo",
+//                 "Solo bloques");
+//         dialog.setTitle("Guardar modelo OCR");
+//         dialog.setHeaderText("Selecciona el tipo de guardado:");
+
+//         Optional<String> result = dialog.showAndWait();
+//         if (result.isEmpty())
+//             return null;
+
+//         return result.get().equals("Solo bloques")
+//                 ? TipoGuardado.BLOQUES
+//                 : TipoGuardado.MODELO;
+//     }
+
+//     private String pedirNombreArchivo(String sugerencia) {
+//         TextInputDialog dialog = new TextInputDialog(sugerencia);
+//         dialog.setTitle("Nombre del archivo");
+//         dialog.setHeaderText("Introduce el nombre del archivo (sin extensión):");
+
+//         Optional<String> result = dialog.showAndWait();
+//         return result.orElse(null);
+//     }
+
+//   // ============================================================
+//   //  #endregion
+//   // ============================================================
+
+  // ============================================================
+  //  #region UTILIDADES
+  // ============================================================
+
+  private BufferedImage toBufferedImage(Image fxImage) {
         return javafx.embed.swing.SwingFXUtils.fromFXImage(fxImage, null);
     }
 
@@ -697,8 +762,6 @@ public class FxCntrlROIEditor {
         }
         return lista;
     }
-
-
 
     private void cargarTiposDeBloqueEnComboBox() {
 
@@ -799,14 +862,6 @@ public class FxCntrlROIEditor {
         return result.orElse(null);
     }
 
-    //   private void dibujarBloques() {
-    //     canvasPane.getChildren().clear();
-
-    //     for (Bloque b : bloques) {
-    //       dibujarBloqueModelo(b);
-    //     }
-    //   }
-
     private void dibujarBloqueModelo(Bloque b) {
         double x = b.zona().x() * scaleX;
         double y = b.zona().y() * scaleY;
@@ -818,7 +873,7 @@ public class FxCntrlROIEditor {
         r.setStroke(Color.RED);
         r.setStrokeWidth(2);
         r.setFill(Color.TRANSPARENT);
-        canvasPane.getChildren().add(r);
+        overlayPane.getChildren().add(r);
 
         // Nombre arriba a la izquierda
         Text label = new Text(b.nombre());
@@ -826,7 +881,7 @@ public class FxCntrlROIEditor {
         label.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
         label.setX(x);
         label.setY(y - 6);
-        canvasPane.getChildren().add(label);
+        overlayPane.getChildren().add(label);
 
         // Campos
         for (Campo c : b.campos()) {
@@ -852,7 +907,7 @@ public class FxCntrlROIEditor {
         r.setStrokeWidth(2);
         r.setFill(Color.TRANSPARENT);
 
-        canvasPane.getChildren().add(r);
+        overlayPane.getChildren().add(r);
 
         // Nombre del campo (encima a la izquierda)
         Text label = new Text(c.nombre());
@@ -861,7 +916,7 @@ public class FxCntrlROIEditor {
         label.setX(bx + cx);
         label.setY(by + cy - 4);
 
-        canvasPane.getChildren().add(label);
+        overlayPane.getChildren().add(label);
     }
 
     public class ParentOption {
@@ -869,13 +924,18 @@ public class FxCntrlROIEditor {
         public final String nombre; // nombre visible
 
         public ParentOption(String referencia, String nombre) {
-        this.referencia = referencia;
-        this.nombre = nombre;
+            this.referencia = referencia;
+            this.nombre = nombre;
         }
 
         @Override
         public String toString() {
-        return nombre; // ← lo que se muestra en el ComboBox
+            return nombre; // ← lo que se muestra en el ComboBox
         }
     }
+
+  // ============================================================
+  //  #endregion
+  // ============================================================
+
 }

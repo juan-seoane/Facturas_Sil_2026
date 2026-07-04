@@ -38,10 +38,10 @@
         </top>
 
         <center>
-            <ScrollPane fx:id="scrollPane">
-                <Pane fx:id="canvasPane" style="-fx-background-color: #333;">
+            <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true">
+                <Pane fx:id="overlayPane">
                     <children>
-                        <ImageView fx:id="imageView" />
+                        <ImageView fx:id="imageView"/>
                     </children>
                 </Pane>
             </ScrollPane>

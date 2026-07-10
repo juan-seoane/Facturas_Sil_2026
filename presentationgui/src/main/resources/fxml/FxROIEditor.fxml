@@ -4,48 +4,61 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
+<?import javafx.scene.Group?>
 <?import javafx.scene.image.ImageView?>
 
+<AnchorPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sil.facturas.presentationgui.fxcontrollers.FxCntrlROIEditor"
+            prefHeight="800.0"
+            prefWidth="1200.0">
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sil.facturas.presentationgui.fxcontrollers.FxCntrlROIEditor">
-   <children>
-      <BorderPane layoutX="209.0" layoutY="106.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                 <top>
-            <ToolBar>
-                <Button onAction="#onCargarImagen" text="Cargar imagen" />
-                <Button onAction="#mostrarDialogoCarga" text="Cargar modelo" />
-                <Button onAction="#onNuevoBloque" text="Nuevo bloque" />
-                <ComboBox fx:id="comboTipoBloque">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="bloqueCabecera"/>
-                            <String fx:value="bloqueExtractos"/>
-                            <String fx:value="bloqueExtractos.cabecera"/>
-                            <String fx:value="bloqueExtractos.linea"/>
-                            <String fx:value="bloqueTotales"/>
-                            <String fx:value="bloqueGenerico"/>
-                        </FXCollections>
-                    </items>
-                </ComboBox>
-                <Button onAction="#onNuevoCampo" text="Nuevo campo" />
-                <Button onAction="#onGuardarModelo" text="Guardar modelo" />
-            </ToolBar>
-        </top>
+    <children>
+        <BorderPane AnchorPane.topAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0"
+                    AnchorPane.bottomAnchor="0.0"
+                    AnchorPane.leftAnchor="0.0">
 
-        <center>
-            <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true">
-                <Pane fx:id="overlayPane">
+            <top>
+                <ToolBar>
+                    <Button text="Cargar imagen" onAction="#onCargarImagen"/>
+                    <Button text="Cargar modelo" onAction="#mostrarDialogoCarga"/>
+                    <Button text="Nuevo bloque" onAction="#onNuevoBloque"/>
+                    <ComboBox fx:id="comboTipoBloque">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="bloqueCabecera"/>
+                                <String fx:value="bloqueExtractos"/>
+                                <String fx:value="bloqueExtractos.cabecera"/>
+                                <String fx:value="bloqueExtractos.linea"/>
+                                <String fx:value="bloqueTotales"/>
+                                <String fx:value="bloqueGenerico"/>
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                    <Button text="Nuevo campo" onAction="#onNuevoCampo"/>
+                    <Button text="Guardar modelo" onAction="#onGuardarModelo"/>
+                </ToolBar>
+            </top>
+
+            <center>
+                <Pane fx:id="rootPane" style="-fx-padding:0;">
                     <children>
-                        <ImageView fx:id="imageView"/>
+                        <Group fx:id="group">
+                            <children>
+                                <ImageView fx:id="imageView"/>
+                                <Pane fx:id="overlayPane" pickOnBounds="false"/>
+                            </children>
+                        </Group>
                     </children>
                 </Pane>
-            </ScrollPane>
-        </center>
-      </BorderPane>
-   </children>
+            </center>
+
+        </BorderPane>
+    </children>
 </AnchorPane>
